@@ -1,0 +1,9 @@
+services:
+  figma:
+    build:
+      context: .
+      dockerfile: figma/Dockerfile
+    container_name: bezum-figma
+    ports:
+      - "8080:80"
+    restart: unless-stopped
