@@ -1,7 +1,7 @@
 import { ErrorBoundaryProvider } from './ErrorBoundaryProvider.tsx'
-import { QueryClientProvider } from './QueryClientProvider'
-import { RouterProvider } from './RouterProvider'
-import { ToastProvider } from './ToastProvider'
+import { QueryClientProvider } from './QueryClientProvider.tsx'
+import { RouterProvider } from './RouterProvider.tsx'
+import { ToastProvider } from './ToastProvider.tsx'
 
 export const Providers = () => {
   return (

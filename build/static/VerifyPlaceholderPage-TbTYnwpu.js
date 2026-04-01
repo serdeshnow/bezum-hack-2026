@@ -1,2 +1,0 @@
-import{j as e}from"./index-NvqGr9W_.js";import{C as r}from"./Card-BELVMecc.js";function t(){return e.jsx(r,{children:e.jsxs(r.Container,{children:[e.jsx("p",{children:"Optional Auth Module"}),e.jsx("h1",{children:"Verification placeholder"}),e.jsx("p",{children:"Replace this screen when your project needs a multi-step authentication flow."})]})})}export{t as VerifyPlaceholderPage};
-//# sourceMappingURL=VerifyPlaceholderPage-TbTYnwpu.js.map
