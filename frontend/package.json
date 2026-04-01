@@ -1,0 +1,90 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "2.2.05-beta",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "typecheck": "npm run typecheck:app && npm run typecheck:node && npm run typecheck:test && npm run typecheck:e2e",
+    "typecheck:app": "tsc --noEmit -p tsconfig.app.json",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
+    "typecheck:test": "tsc --noEmit -p tsconfig.test.json",
+    "typecheck:e2e": "tsc --noEmit -p tsconfig.e2e.json",
+    "build": "vite build",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "e2e:install": "playwright install chromium",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:styles": "prettier --write \"src/**/*.{scss,css}\"",
+    "generate-api": "node ./scripts/generate-api.mjs",
+    "generate-api:example": "node ./scripts/generate-api.mjs",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@tanstack/react-query": "^5.81.5",
+    "@tanstack/react-query-devtools": "^5.81.5",
+    "axios": "^1.11.0",
+    "classnames": "^2.5.1",
+    "dayjs": "^1.11.13",
+    "highcharts-react-official": "^3.2.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-error-boundary": "^6.0.0",
+    "react-resizable": "^3.0.5",
+    "react-router": "^7.6.3",
+    "recharts": "^3.1.0",
+    "sonner": "^2.0.6",
+    "swagger-typescript-api": "^13.2.10",
+    "zod": "^3.25.75",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/vite": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/js-cookie": "^3.0.6",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@types/react-resizable": "^3.0.8",
+    "@vitejs/plugin-react-swc": "^3.9.0",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
+    "jsdom": "^29.0.1",
+    "lint-staged": "^16.4.0",
+    "prettier": "3.6.2",
+    "simple-git-hooks": "^2.13.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.30.1",
+    "vite": "^6.2.4",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.1.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,css,scss}": [
+      "prettier --write"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npm --prefix frontend exec lint-staged -- --cwd frontend"
+  }
+}
