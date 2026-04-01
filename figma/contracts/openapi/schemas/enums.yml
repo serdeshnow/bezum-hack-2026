@@ -1,0 +1,71 @@
+WorkspaceRole:
+  type: string
+  enum: [customer, developer, manager, admin]
+
+ThemePreference:
+  type: string
+  enum: [light, dark, system]
+
+ProjectStatus:
+  type: string
+  enum: [draft, active, at-risk, archived, completed]
+
+VisibilityMode:
+  type: string
+  enum: [internal, customer]
+
+GoalStatus:
+  type: string
+  enum: [not-started, in-progress, completed, blocked]
+
+TaskStatus:
+  type: string
+  enum: [backlog, todo, in-progress, review, done, cancelled]
+
+TaskPriority:
+  type: string
+  enum: [low, medium, high, critical]
+
+DocumentStatus:
+  type: string
+  enum: [draft, in-review, approved, obsolete, rejected]
+
+DocumentAccessScope:
+  type: string
+  enum: [customer, manager, dev, internal]
+
+DocumentLinkEntityType:
+  type: string
+  enum: [epoch, task, meeting, release, project]
+
+ChangeSource:
+  type: string
+  enum: [manual, meeting, task, imported]
+
+ApprovalDecision:
+  type: string
+  enum: [pending, approved, rejected, requested-changes]
+
+MeetingStatus:
+  type: string
+  enum: [draft, scheduled, completed, cancelled]
+
+MeetingType:
+  type: string
+  enum: [standup, planning, review, retrospective, workshop, ad-hoc]
+
+MeetingSourceContextType:
+  type: string
+  enum: [task, doc, epoch, project, none]
+
+VoteStatus:
+  type: string
+  enum: [available, maybe, unavailable, no-response]
+
+ReleaseStatus:
+  type: string
+  enum: [planned, in-progress, deployed, failed, rolled-back]
+
+PullRequestStatus:
+  type: string
+  enum: [open, reviewing, merged, closed]

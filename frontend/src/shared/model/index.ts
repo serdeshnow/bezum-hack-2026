@@ -1,0 +1,1 @@
+export { corePathKeys } from './coreRouter'

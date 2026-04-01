@@ -1,0 +1,315 @@
+paths:
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: List tasks
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: epochId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: assigneeUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/TaskStatus
+        - name: priority
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/TaskPriority
+        - name: releaseId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: query
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Task
+    post:
+      tags: [Tasks]
+      summary: Create task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateTaskRequest
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Task
+
+  /tasks/{taskId}:
+    get:
+      tags: [Tasks]
+      summary: Get task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Task
+    patch:
+      tags: [Tasks]
+      summary: Update task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateTaskRequest
+      responses:
+        '200':
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Task
+    delete:
+      tags: [Tasks]
+      summary: Delete task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /tasks/{taskId}/tags:
+    get:
+      tags: [Tasks]
+      summary: List task tags
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/TaskTag
+    post:
+      tags: [Tasks]
+      summary: Create task tag
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateTaskTagRequest
+      responses:
+        '201':
+          description: Task tag created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskTag
+
+  /task-tags/{taskTagId}:
+    get:
+      tags: [Tasks]
+      summary: Get task tag
+      parameters:
+        - name: taskTagId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task tag
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskTag
+    patch:
+      tags: [Tasks]
+      summary: Update task tag
+      parameters:
+        - name: taskTagId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateTaskTagRequest
+      responses:
+        '200':
+          description: Task tag updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskTag
+    delete:
+      tags: [Tasks]
+      summary: Delete task tag
+      parameters:
+        - name: taskTagId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task tag deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /tasks/{taskId}/comments:
+    get:
+      tags: [Tasks]
+      summary: List task comments
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/TaskComment
+    post:
+      tags: [Tasks]
+      summary: Create task comment
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateTaskCommentRequest
+      responses:
+        '201':
+          description: Task comment created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskComment
+
+  /task-comments/{taskCommentId}:
+    get:
+      tags: [Tasks]
+      summary: Get task comment
+      parameters:
+        - name: taskCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task comment
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskComment
+    patch:
+      tags: [Tasks]
+      summary: Update task comment
+      parameters:
+        - name: taskCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateTaskCommentRequest
+      responses:
+        '200':
+          description: Task comment updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/TaskComment
+    delete:
+      tags: [Tasks]
+      summary: Delete task comment
+      parameters:
+        - name: taskCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Task comment deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

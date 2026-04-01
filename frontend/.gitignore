@@ -141,6 +141,7 @@ vite.config.ts.timestamp-*
 # misc
 
 .DS_Store
-build
-dist
-node_modules
+build/
+dist/
+test-results/
+playwright-report/
