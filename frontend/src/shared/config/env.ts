@@ -9,3 +9,4 @@ export const env = envSchema.parse({
   VITE_API_BASEURL: import.meta.env.VITE_API_BASEURL,
   __NODE_ENV__: import.meta.env.MODE
 })
+

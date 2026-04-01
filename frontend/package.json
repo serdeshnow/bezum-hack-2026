@@ -78,10 +78,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "eslint --fix"
+      "npm exec -- eslint --fix"
     ],
     "*.{json,md,css,scss}": [
-      "prettier --write"
+      "npm exec -- prettier --write"
     ]
   },
   "simple-git-hooks": {

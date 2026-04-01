@@ -1,0 +1,194 @@
+paths:
+  /epochs:
+    get:
+      tags: [Planning]
+      summary: List epochs
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/ProjectStatus
+      responses:
+        '200':
+          description: Epochs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Epoch
+    post:
+      tags: [Planning]
+      summary: Create epoch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateEpochRequest
+      responses:
+        '201':
+          description: Epoch created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Epoch
+
+  /epochs/{epochId}:
+    get:
+      tags: [Planning]
+      summary: Get epoch
+      parameters:
+        - name: epochId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Epoch
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Epoch
+    patch:
+      tags: [Planning]
+      summary: Update epoch
+      parameters:
+        - name: epochId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateEpochRequest
+      responses:
+        '200':
+          description: Epoch updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Epoch
+    delete:
+      tags: [Planning]
+      summary: Delete epoch
+      parameters:
+        - name: epochId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Epoch deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /goals:
+    get:
+      tags: [Planning]
+      summary: List goals
+      parameters:
+        - name: epochId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/GoalStatus
+        - name: ownerUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Goal
+    post:
+      tags: [Planning]
+      summary: Create goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateGoalRequest
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Goal
+
+  /goals/{goalId}:
+    get:
+      tags: [Planning]
+      summary: Get goal
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Goal
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Goal
+    patch:
+      tags: [Planning]
+      summary: Update goal
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateGoalRequest
+      responses:
+        '200':
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Goal
+    delete:
+      tags: [Planning]
+      summary: Delete goal
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Goal deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

@@ -1,0 +1,103 @@
+paths:
+  /notifications:
+    get:
+      tags: [Communication]
+      summary: List notifications
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: actorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: entityType
+          in: query
+          schema:
+            type: string
+        - name: unreadOnly
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Notification
+    post:
+      tags: [Communication]
+      summary: Create notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateNotificationRequest
+      responses:
+        '201':
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Notification
+
+  /notifications/{notificationId}:
+    get:
+      tags: [Communication]
+      summary: Get notification
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Notification
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Notification
+    patch:
+      tags: [Communication]
+      summary: Update notification
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateNotificationRequest
+      responses:
+        '200':
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Notification
+    delete:
+      tags: [Communication]
+      summary: Delete notification
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Notification deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

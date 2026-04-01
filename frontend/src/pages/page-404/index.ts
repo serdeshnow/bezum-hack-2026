@@ -1,1 +1,1 @@
-export { Page404 } from './ui/Page404/Page404'
+export { Page404 } from './ui/page-404/page-404'
