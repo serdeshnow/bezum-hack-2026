@@ -12,7 +12,7 @@ const TemplateShell = lazy(() =>
   import('@/widgets/layout/ui/template-shell/TemplateShell.tsx').then((module) => ({ default: module.TemplateShell }))
 )
 const HomePage = lazy(() => import('@/pages/home').then((module) => ({ default: module.HomePage })))
-const Page404 = lazy(() => import('@/pages/page-404/ui/Page404/Page404.tsx').then((module) => ({ default: module.Page404 })))
+const Page404 = lazy(() => import('@/pages/page-404/ui/page-404/page-404').then((module) => ({ default: module.Page404 })))
 const SignInPlaceholderPage = lazy(() =>
   import('@/pages/auth-placeholder/ui/SignInPlaceholderPage/SignInPlaceholderPage.tsx').then((module) => ({
     default: module.SignInPlaceholderPage
