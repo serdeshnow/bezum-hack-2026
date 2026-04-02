@@ -1,0 +1,826 @@
+paths:
+  /document-folders:
+    get:
+      tags: [Documents]
+      summary: List document folders
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentFolder
+    post:
+      tags: [Documents]
+      summary: Create document folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentFolderRequest
+      responses:
+        '201':
+          description: Document folder created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentFolder
+
+  /document-folders/{folderId}:
+    get:
+      tags: [Documents]
+      summary: Get document folder
+      parameters:
+        - name: folderId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document folder
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentFolder
+    patch:
+      tags: [Documents]
+      summary: Update document folder
+      parameters:
+        - name: folderId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentFolderRequest
+      responses:
+        '200':
+          description: Document folder updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentFolder
+    delete:
+      tags: [Documents]
+      summary: Delete document folder
+      parameters:
+        - name: folderId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document folder deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents:
+    get:
+      tags: [Documents]
+      summary: List documents
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: folderId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/DocumentStatus
+        - name: accessScope
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/DocumentAccessScope
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: awaitingApproval
+          in: query
+          schema:
+            type: boolean
+        - name: archived
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Document
+    post:
+      tags: [Documents]
+      summary: Create document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentRequest
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Document
+
+  /documents/{documentId}:
+    get:
+      tags: [Documents]
+      summary: Get document
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Document
+    patch:
+      tags: [Documents]
+      summary: Update document
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentRequest
+      responses:
+        '200':
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Document
+    delete:
+      tags: [Documents]
+      summary: Delete document
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents/{documentId}/owners:
+    get:
+      tags: [Documents]
+      summary: List document owners
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document owners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentOwner
+    post:
+      tags: [Documents]
+      summary: Add document owner
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentOwnerRequest
+      responses:
+        '201':
+          description: Document owner created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentOwner
+
+  /document-owners/{documentOwnerId}:
+    get:
+      tags: [Documents]
+      summary: Get document owner
+      parameters:
+        - name: documentOwnerId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document owner
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentOwner
+    patch:
+      tags: [Documents]
+      summary: Update document owner
+      parameters:
+        - name: documentOwnerId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentOwnerRequest
+      responses:
+        '200':
+          description: Document owner updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentOwner
+    delete:
+      tags: [Documents]
+      summary: Delete document owner
+      parameters:
+        - name: documentOwnerId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document owner deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents/{documentId}/approvers:
+    get:
+      tags: [Documents]
+      summary: List document approvers
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document approvers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentApprover
+    post:
+      tags: [Documents]
+      summary: Add document approver
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentApproverRequest
+      responses:
+        '201':
+          description: Document approver created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApprover
+
+  /document-approvers/{documentApproverId}:
+    get:
+      tags: [Documents]
+      summary: Get document approver
+      parameters:
+        - name: documentApproverId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document approver
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApprover
+    patch:
+      tags: [Documents]
+      summary: Update document approver
+      parameters:
+        - name: documentApproverId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentApproverRequest
+      responses:
+        '200':
+          description: Document approver updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApprover
+    delete:
+      tags: [Documents]
+      summary: Delete document approver
+      parameters:
+        - name: documentApproverId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document approver deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents/{documentId}/versions:
+    get:
+      tags: [Documents]
+      summary: List document versions
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document versions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentVersion
+    post:
+      tags: [Documents]
+      summary: Create document version
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentVersionRequest
+      responses:
+        '201':
+          description: Document version created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentVersion
+
+  /document-versions/{versionId}:
+    get:
+      tags: [Documents]
+      summary: Get document version
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document version
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentVersion
+    patch:
+      tags: [Documents]
+      summary: Update document version
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentVersionRequest
+      responses:
+        '200':
+          description: Document version updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentVersion
+    delete:
+      tags: [Documents]
+      summary: Delete document version
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document version deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /document-versions/{versionId}/approvals:
+    get:
+      tags: [Documents]
+      summary: List document approvals for version
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: approverUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/ApprovalDecision
+      responses:
+        '200':
+          description: Document approvals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentApproval
+    post:
+      tags: [Documents]
+      summary: Create document approval
+      parameters:
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentApprovalRequest
+      responses:
+        '201':
+          description: Document approval created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApproval
+
+  /document-approvals/{documentApprovalId}:
+    get:
+      tags: [Documents]
+      summary: Get document approval
+      parameters:
+        - name: documentApprovalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document approval
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApproval
+    patch:
+      tags: [Documents]
+      summary: Update document approval
+      parameters:
+        - name: documentApprovalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentApprovalRequest
+      responses:
+        '200':
+          description: Document approval updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentApproval
+    delete:
+      tags: [Documents]
+      summary: Delete document approval
+      parameters:
+        - name: documentApprovalId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document approval deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents/{documentId}/comments:
+    get:
+      tags: [Documents]
+      summary: List document comments
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: resolved
+          in: query
+          schema:
+            type: boolean
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentComment
+    post:
+      tags: [Documents]
+      summary: Create document comment
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentCommentRequest
+      responses:
+        '201':
+          description: Document comment created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentComment
+
+  /document-comments/{documentCommentId}:
+    get:
+      tags: [Documents]
+      summary: Get document comment
+      parameters:
+        - name: documentCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document comment
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentComment
+    patch:
+      tags: [Documents]
+      summary: Update document comment
+      parameters:
+        - name: documentCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentCommentRequest
+      responses:
+        '200':
+          description: Document comment updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentComment
+    delete:
+      tags: [Documents]
+      summary: Delete document comment
+      parameters:
+        - name: documentCommentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document comment deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /documents/{documentId}/links:
+    get:
+      tags: [Documents]
+      summary: List document links
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: entityType
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/DocumentLinkEntityType
+        - name: entityId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/DocumentLink
+    post:
+      tags: [Documents]
+      summary: Create document link
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateDocumentLinkRequest
+      responses:
+        '201':
+          description: Document link created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentLink
+
+  /document-links/{documentLinkId}:
+    get:
+      tags: [Documents]
+      summary: Get document link
+      parameters:
+        - name: documentLinkId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document link
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentLink
+    patch:
+      tags: [Documents]
+      summary: Update document link
+      parameters:
+        - name: documentLinkId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateDocumentLinkRequest
+      responses:
+        '200':
+          description: Document link updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/DocumentLink
+    delete:
+      tags: [Documents]
+      summary: Delete document link
+      parameters:
+        - name: documentLinkId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Document link deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

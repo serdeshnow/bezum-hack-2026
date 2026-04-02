@@ -1,0 +1,195 @@
+paths:
+  /users:
+    get:
+      tags: [Identity]
+      summary: List users
+      parameters:
+        - name: role
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/WorkspaceRole
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+        - name: query
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/User
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/ErrorResponse
+    post:
+      tags: [Identity]
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateUserRequest
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/User
+
+  /users/{userId}:
+    get:
+      tags: [Identity]
+      summary: Get user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/User
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/ErrorResponse
+    patch:
+      tags: [Identity]
+      summary: Update user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateUserRequest
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/User
+    delete:
+      tags: [Identity]
+      summary: Delete user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /users/{userId}/preferences:
+    get:
+      tags: [Identity]
+      summary: Get user preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Preferences
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/UserPreferences
+        '404':
+          description: Preferences not found
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/ErrorResponse
+    put:
+      tags: [Identity]
+      summary: Create or replace user preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateUserPreferencesRequest
+      responses:
+        '200':
+          description: Preferences saved
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/UserPreferences
+    patch:
+      tags: [Identity]
+      summary: Update user preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateUserPreferencesRequest
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/UserPreferences
+    delete:
+      tags: [Identity]
+      summary: Delete user preferences
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Preferences deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

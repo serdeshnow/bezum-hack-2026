@@ -1,0 +1,10 @@
+import type { ErrorInfo } from 'react'
+import { env } from '@/shared/config'
+
+export function logError(error: Error, info: ErrorInfo) {
+  if (env.__NODE_ENV__ === 'development') {
+    console.error('Caught by ErrorBoundary:', error, info)
+  } else {
+    // Sentry.captureException(error, { extra: info });
+  }
+}

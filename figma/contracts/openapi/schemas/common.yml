@@ -1,0 +1,45 @@
+UUID:
+  type: string
+  format: uuid
+
+ISODate:
+  type: string
+  format: date
+
+ISODateTime:
+  type: string
+  format: date-time
+
+ErrorResponse:
+  type: object
+  required: [code, message]
+  properties:
+    code:
+      type: string
+    message:
+      type: string
+    details:
+      type: object
+      additionalProperties: true
+
+ListMeta:
+  type: object
+  required: [page, pageSize, total]
+  properties:
+    page:
+      type: integer
+      minimum: 1
+    pageSize:
+      type: integer
+      minimum: 1
+    total:
+      type: integer
+      minimum: 0
+
+DeleteResponse:
+  type: object
+  required: [deleted]
+  properties:
+    deleted:
+      type: boolean
+      const: true

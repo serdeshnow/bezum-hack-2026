@@ -1,0 +1,4935 @@
+---
+openapi: 3.1.0
+info:
+  title: Seamless Service API
+  version: 0.2.0
+  summary: Backend API for projects, planning, delivery, docs, meetings, and communication
+  description: |
+    Backend-level OpenAPI specification derived from `figma/contracts/review.md`
+    and cross-checked against the product flows in `/figma/src`.
+
+    Notes:
+    - API payloads use camelCase names even though the persistence model in `review.md` is expressed in snake_case.
+    - The spec includes CRUD coverage for all reviewed tables, plus the main product-facing flows.
+servers:
+- url: http://localhost:8080/api
+  description: Local development
+- url: https://seamless.example.com/api
+  description: Production example
+tags:
+- name: Identity
+- name: Projects
+- name: Planning
+- name: Tasks
+- name: Documents
+- name: Meetings
+- name: Delivery
+- name: Communication
+security:
+- bearerAuth: []
+paths:
+  "/notifications":
+    get:
+      tags:
+      - Communication
+      summary: List notifications
+      parameters:
+      - name: userId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: actorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: entityType
+        in: query
+        schema:
+          type: string
+      - name: unreadOnly
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Notification"
+    post:
+      tags:
+      - Communication
+      summary: Create notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateNotificationRequest"
+      responses:
+        '201':
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Notification"
+  "/notifications/{notificationId}":
+    get:
+      tags:
+      - Communication
+      summary: Get notification
+      parameters:
+      - name: notificationId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Notification
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Notification"
+    patch:
+      tags:
+      - Communication
+      summary: Update notification
+      parameters:
+      - name: notificationId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateNotificationRequest"
+      responses:
+        '200':
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Notification"
+    delete:
+      tags:
+      - Communication
+      summary: Delete notification
+      parameters:
+      - name: notificationId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Notification deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/releases":
+    get:
+      tags:
+      - Delivery
+      summary: List releases
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/ReleaseStatus"
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Releases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Release"
+    post:
+      tags:
+      - Delivery
+      summary: Create release
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateReleaseRequest"
+      responses:
+        '201':
+          description: Release created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Release"
+  "/releases/{releaseId}":
+    get:
+      tags:
+      - Delivery
+      summary: Get release
+      parameters:
+      - name: releaseId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Release
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Release"
+    patch:
+      tags:
+      - Delivery
+      summary: Update release
+      parameters:
+      - name: releaseId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateReleaseRequest"
+      responses:
+        '200':
+          description: Release updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Release"
+    delete:
+      tags:
+      - Delivery
+      summary: Delete release
+      parameters:
+      - name: releaseId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Release deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/pull-requests":
+    get:
+      tags:
+      - Delivery
+      summary: List pull requests
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: releaseId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/PullRequestStatus"
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Pull requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/PullRequest"
+    post:
+      tags:
+      - Delivery
+      summary: Create pull request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePullRequestRequest"
+      responses:
+        '201':
+          description: Pull request created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PullRequest"
+  "/pull-requests/{pullRequestId}":
+    get:
+      tags:
+      - Delivery
+      summary: Get pull request
+      parameters:
+      - name: pullRequestId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Pull request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PullRequest"
+    patch:
+      tags:
+      - Delivery
+      summary: Update pull request
+      parameters:
+      - name: pullRequestId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdatePullRequestRequest"
+      responses:
+        '200':
+          description: Pull request updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/PullRequest"
+    delete:
+      tags:
+      - Delivery
+      summary: Delete pull request
+      parameters:
+      - name: pullRequestId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Pull request deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/document-folders":
+    get:
+      tags:
+      - Documents
+      summary: List document folders
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentFolder"
+    post:
+      tags:
+      - Documents
+      summary: Create document folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentFolderRequest"
+      responses:
+        '201':
+          description: Document folder created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentFolder"
+  "/document-folders/{folderId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document folder
+      parameters:
+      - name: folderId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document folder
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentFolder"
+    patch:
+      tags:
+      - Documents
+      summary: Update document folder
+      parameters:
+      - name: folderId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentFolderRequest"
+      responses:
+        '200':
+          description: Document folder updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentFolder"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document folder
+      parameters:
+      - name: folderId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document folder deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents":
+    get:
+      tags:
+      - Documents
+      summary: List documents
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: folderId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/DocumentStatus"
+      - name: accessScope
+        in: query
+        schema:
+          "$ref": "#/components/schemas/DocumentAccessScope"
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: awaitingApproval
+        in: query
+        schema:
+          type: boolean
+      - name: archived
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Document"
+    post:
+      tags:
+      - Documents
+      summary: Create document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentRequest"
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Document"
+  "/documents/{documentId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Document"
+    patch:
+      tags:
+      - Documents
+      summary: Update document
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentRequest"
+      responses:
+        '200':
+          description: Document updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Document"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents/{documentId}/owners":
+    get:
+      tags:
+      - Documents
+      summary: List document owners
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document owners
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentOwner"
+    post:
+      tags:
+      - Documents
+      summary: Add document owner
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentOwnerRequest"
+      responses:
+        '201':
+          description: Document owner created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentOwner"
+  "/document-owners/{documentOwnerId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document owner
+      parameters:
+      - name: documentOwnerId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document owner
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentOwner"
+    patch:
+      tags:
+      - Documents
+      summary: Update document owner
+      parameters:
+      - name: documentOwnerId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentOwnerRequest"
+      responses:
+        '200':
+          description: Document owner updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentOwner"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document owner
+      parameters:
+      - name: documentOwnerId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document owner deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents/{documentId}/approvers":
+    get:
+      tags:
+      - Documents
+      summary: List document approvers
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document approvers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentApprover"
+    post:
+      tags:
+      - Documents
+      summary: Add document approver
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentApproverRequest"
+      responses:
+        '201':
+          description: Document approver created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApprover"
+  "/document-approvers/{documentApproverId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document approver
+      parameters:
+      - name: documentApproverId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document approver
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApprover"
+    patch:
+      tags:
+      - Documents
+      summary: Update document approver
+      parameters:
+      - name: documentApproverId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentApproverRequest"
+      responses:
+        '200':
+          description: Document approver updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApprover"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document approver
+      parameters:
+      - name: documentApproverId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document approver deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents/{documentId}/versions":
+    get:
+      tags:
+      - Documents
+      summary: List document versions
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          type: string
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document versions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentVersion"
+    post:
+      tags:
+      - Documents
+      summary: Create document version
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentVersionRequest"
+      responses:
+        '201':
+          description: Document version created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentVersion"
+  "/document-versions/{versionId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document version
+      parameters:
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document version
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentVersion"
+    patch:
+      tags:
+      - Documents
+      summary: Update document version
+      parameters:
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentVersionRequest"
+      responses:
+        '200':
+          description: Document version updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentVersion"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document version
+      parameters:
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document version deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/document-versions/{versionId}/approvals":
+    get:
+      tags:
+      - Documents
+      summary: List document approvals for version
+      parameters:
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: approverUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/ApprovalDecision"
+      responses:
+        '200':
+          description: Document approvals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentApproval"
+    post:
+      tags:
+      - Documents
+      summary: Create document approval
+      parameters:
+      - name: versionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentApprovalRequest"
+      responses:
+        '201':
+          description: Document approval created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApproval"
+  "/document-approvals/{documentApprovalId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document approval
+      parameters:
+      - name: documentApprovalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document approval
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApproval"
+    patch:
+      tags:
+      - Documents
+      summary: Update document approval
+      parameters:
+      - name: documentApprovalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentApprovalRequest"
+      responses:
+        '200':
+          description: Document approval updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentApproval"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document approval
+      parameters:
+      - name: documentApprovalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document approval deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents/{documentId}/comments":
+    get:
+      tags:
+      - Documents
+      summary: List document comments
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: resolved
+        in: query
+        schema:
+          type: boolean
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentComment"
+    post:
+      tags:
+      - Documents
+      summary: Create document comment
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentCommentRequest"
+      responses:
+        '201':
+          description: Document comment created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentComment"
+  "/document-comments/{documentCommentId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document comment
+      parameters:
+      - name: documentCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document comment
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentComment"
+    patch:
+      tags:
+      - Documents
+      summary: Update document comment
+      parameters:
+      - name: documentCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentCommentRequest"
+      responses:
+        '200':
+          description: Document comment updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentComment"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document comment
+      parameters:
+      - name: documentCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document comment deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/documents/{documentId}/links":
+    get:
+      tags:
+      - Documents
+      summary: List document links
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: entityType
+        in: query
+        schema:
+          "$ref": "#/components/schemas/DocumentLinkEntityType"
+      - name: entityId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/DocumentLink"
+    post:
+      tags:
+      - Documents
+      summary: Create document link
+      parameters:
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateDocumentLinkRequest"
+      responses:
+        '201':
+          description: Document link created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentLink"
+  "/document-links/{documentLinkId}":
+    get:
+      tags:
+      - Documents
+      summary: Get document link
+      parameters:
+      - name: documentLinkId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document link
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentLink"
+    patch:
+      tags:
+      - Documents
+      summary: Update document link
+      parameters:
+      - name: documentLinkId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateDocumentLinkRequest"
+      responses:
+        '200':
+          description: Document link updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DocumentLink"
+    delete:
+      tags:
+      - Documents
+      summary: Delete document link
+      parameters:
+      - name: documentLinkId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Document link deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/users":
+    get:
+      tags:
+      - Identity
+      summary: List users
+      parameters:
+      - name: role
+        in: query
+        schema:
+          "$ref": "#/components/schemas/WorkspaceRole"
+      - name: isActive
+        in: query
+        schema:
+          type: boolean
+      - name: query
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/User"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    post:
+      tags:
+      - Identity
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserRequest"
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+  "/users/{userId}":
+    get:
+      tags:
+      - Identity
+      summary: Get user
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+      - Identity
+      summary: Update user
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateUserRequest"
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+    delete:
+      tags:
+      - Identity
+      summary: Delete user
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/users/{userId}/preferences":
+    get:
+      tags:
+      - Identity
+      summary: Get user preferences
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Preferences
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserPreferences"
+        '404':
+          description: Preferences not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    put:
+      tags:
+      - Identity
+      summary: Create or replace user preferences
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserPreferencesRequest"
+      responses:
+        '200':
+          description: Preferences saved
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserPreferences"
+    patch:
+      tags:
+      - Identity
+      summary: Update user preferences
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateUserPreferencesRequest"
+      responses:
+        '200':
+          description: Preferences updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserPreferences"
+    delete:
+      tags:
+      - Identity
+      summary: Delete user preferences
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Preferences deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings":
+    get:
+      tags:
+      - Meetings
+      summary: List meetings
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: epochId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: sourceContextType
+        in: query
+        schema:
+          "$ref": "#/components/schemas/MeetingSourceContextType"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/MeetingStatus"
+      - name: type
+        in: query
+        schema:
+          "$ref": "#/components/schemas/MeetingType"
+      responses:
+        '200':
+          description: Meetings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Meeting"
+    post:
+      tags:
+      - Meetings
+      summary: Create meeting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingRequest"
+      responses:
+        '201':
+          description: Meeting created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Meeting"
+  "/meetings/{meetingId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get meeting
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Meeting"
+    patch:
+      tags:
+      - Meetings
+      summary: Update meeting
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingRequest"
+      responses:
+        '200':
+          description: Meeting updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Meeting"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete meeting
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/participants":
+    get:
+      tags:
+      - Meetings
+      summary: List meeting participants
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: attended
+        in: query
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Meeting participants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingParticipant"
+    post:
+      tags:
+      - Meetings
+      summary: Create meeting participant
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingParticipantRequest"
+      responses:
+        '201':
+          description: Meeting participant created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingParticipant"
+  "/meeting-participants/{meetingParticipantId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get meeting participant
+      parameters:
+      - name: meetingParticipantId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting participant
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingParticipant"
+    patch:
+      tags:
+      - Meetings
+      summary: Update meeting participant
+      parameters:
+      - name: meetingParticipantId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingParticipantRequest"
+      responses:
+        '200':
+          description: Meeting participant updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingParticipant"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete meeting participant
+      parameters:
+      - name: meetingParticipantId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting participant deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/availability-slots":
+    get:
+      tags:
+      - Meetings
+      summary: List availability slots
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Availability slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingAvailabilitySlot"
+    post:
+      tags:
+      - Meetings
+      summary: Create availability slot
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingAvailabilitySlotRequest"
+      responses:
+        '201':
+          description: Availability slot created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilitySlot"
+  "/meeting-availability-slots/{slotId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get availability slot
+      parameters:
+      - name: slotId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Availability slot
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilitySlot"
+    patch:
+      tags:
+      - Meetings
+      summary: Update availability slot
+      parameters:
+      - name: slotId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingAvailabilitySlotRequest"
+      responses:
+        '200':
+          description: Availability slot updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilitySlot"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete availability slot
+      parameters:
+      - name: slotId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Availability slot deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meeting-availability-slots/{slotId}/votes":
+    get:
+      tags:
+      - Meetings
+      summary: List votes for availability slot
+      parameters:
+      - name: slotId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/VoteStatus"
+      responses:
+        '200':
+          description: Availability votes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingAvailabilityVote"
+    post:
+      tags:
+      - Meetings
+      summary: Create availability vote
+      parameters:
+      - name: slotId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingAvailabilityVoteRequest"
+      responses:
+        '201':
+          description: Availability vote created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilityVote"
+  "/meeting-availability-votes/{voteId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get availability vote
+      parameters:
+      - name: voteId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Availability vote
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilityVote"
+    patch:
+      tags:
+      - Meetings
+      summary: Update availability vote
+      parameters:
+      - name: voteId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingAvailabilityVoteRequest"
+      responses:
+        '200':
+          description: Availability vote updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingAvailabilityVote"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete availability vote
+      parameters:
+      - name: voteId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Availability vote deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/transcript-entries":
+    get:
+      tags:
+      - Meetings
+      summary: List transcript entries
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: speakerUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Transcript entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingTranscriptEntry"
+    post:
+      tags:
+      - Meetings
+      summary: Create transcript entry
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingTranscriptEntryRequest"
+      responses:
+        '201':
+          description: Transcript entry created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingTranscriptEntry"
+  "/meeting-transcript-entries/{entryId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get transcript entry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Transcript entry
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingTranscriptEntry"
+    patch:
+      tags:
+      - Meetings
+      summary: Update transcript entry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingTranscriptEntryRequest"
+      responses:
+        '200':
+          description: Transcript entry updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingTranscriptEntry"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete transcript entry
+      parameters:
+      - name: entryId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Transcript entry deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/decisions":
+    get:
+      tags:
+      - Meetings
+      summary: List meeting decisions
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting decisions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingDecision"
+    post:
+      tags:
+      - Meetings
+      summary: Create meeting decision
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingDecisionRequest"
+      responses:
+        '201':
+          description: Meeting decision created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingDecision"
+  "/meeting-decisions/{decisionId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get meeting decision
+      parameters:
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting decision
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingDecision"
+    patch:
+      tags:
+      - Meetings
+      summary: Update meeting decision
+      parameters:
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingDecisionRequest"
+      responses:
+        '200':
+          description: Meeting decision updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingDecision"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete meeting decision
+      parameters:
+      - name: decisionId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting decision deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/action-items":
+    get:
+      tags:
+      - Meetings
+      summary: List meeting action items
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting action items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingActionItem"
+    post:
+      tags:
+      - Meetings
+      summary: Create meeting action item
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingActionItemRequest"
+      responses:
+        '201':
+          description: Meeting action item created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingActionItem"
+  "/meeting-action-items/{actionItemId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get meeting action item
+      parameters:
+      - name: actionItemId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting action item
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingActionItem"
+    patch:
+      tags:
+      - Meetings
+      summary: Update meeting action item
+      parameters:
+      - name: actionItemId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingActionItemRequest"
+      responses:
+        '200':
+          description: Meeting action item updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingActionItem"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete meeting action item
+      parameters:
+      - name: actionItemId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting action item deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/meetings/{meetingId}/linked-documents":
+    get:
+      tags:
+      - Meetings
+      summary: List meeting linked documents
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting linked documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/MeetingLinkedDocument"
+    post:
+      tags:
+      - Meetings
+      summary: Create meeting linked document
+      parameters:
+      - name: meetingId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMeetingLinkedDocumentRequest"
+      responses:
+        '201':
+          description: Meeting linked document created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingLinkedDocument"
+  "/meeting-linked-documents/{meetingLinkedDocumentId}":
+    get:
+      tags:
+      - Meetings
+      summary: Get meeting linked document
+      parameters:
+      - name: meetingLinkedDocumentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting linked document
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingLinkedDocument"
+    patch:
+      tags:
+      - Meetings
+      summary: Update meeting linked document
+      parameters:
+      - name: meetingLinkedDocumentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateMeetingLinkedDocumentRequest"
+      responses:
+        '200':
+          description: Meeting linked document updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MeetingLinkedDocument"
+    delete:
+      tags:
+      - Meetings
+      summary: Delete meeting linked document
+      parameters:
+      - name: meetingLinkedDocumentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Meeting linked document deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/epochs":
+    get:
+      tags:
+      - Planning
+      summary: List epochs
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/ProjectStatus"
+      responses:
+        '200':
+          description: Epochs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Epoch"
+    post:
+      tags:
+      - Planning
+      summary: Create epoch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateEpochRequest"
+      responses:
+        '201':
+          description: Epoch created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Epoch"
+  "/epochs/{epochId}":
+    get:
+      tags:
+      - Planning
+      summary: Get epoch
+      parameters:
+      - name: epochId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Epoch
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Epoch"
+    patch:
+      tags:
+      - Planning
+      summary: Update epoch
+      parameters:
+      - name: epochId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateEpochRequest"
+      responses:
+        '200':
+          description: Epoch updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Epoch"
+    delete:
+      tags:
+      - Planning
+      summary: Delete epoch
+      parameters:
+      - name: epochId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Epoch deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/goals":
+    get:
+      tags:
+      - Planning
+      summary: List goals
+      parameters:
+      - name: epochId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/GoalStatus"
+      - name: ownerUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Goal"
+    post:
+      tags:
+      - Planning
+      summary: Create goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateGoalRequest"
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Goal"
+  "/goals/{goalId}":
+    get:
+      tags:
+      - Planning
+      summary: Get goal
+      parameters:
+      - name: goalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Goal
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Goal"
+    patch:
+      tags:
+      - Planning
+      summary: Update goal
+      parameters:
+      - name: goalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateGoalRequest"
+      responses:
+        '200':
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Goal"
+    delete:
+      tags:
+      - Planning
+      summary: Delete goal
+      parameters:
+      - name: goalId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Goal deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/projects":
+    get:
+      tags:
+      - Projects
+      summary: List projects
+      parameters:
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/ProjectStatus"
+      - name: visibilityMode
+        in: query
+        schema:
+          "$ref": "#/components/schemas/VisibilityMode"
+      - name: ownerUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: query
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Project"
+    post:
+      tags:
+      - Projects
+      summary: Create project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateProjectRequest"
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+  "/projects/{projectId}":
+    get:
+      tags:
+      - Projects
+      summary: Get project
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Project
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+      - Projects
+      summary: Update project
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateProjectRequest"
+      responses:
+        '200':
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+    delete:
+      tags:
+      - Projects
+      summary: Delete project
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Project deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/projects/{projectId}/members":
+    get:
+      tags:
+      - Projects
+      summary: List project members
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: userId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Project members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ProjectMember"
+    post:
+      tags:
+      - Projects
+      summary: Add project member
+      parameters:
+      - name: projectId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateProjectMemberRequest"
+      responses:
+        '201':
+          description: Project member created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProjectMember"
+  "/project-members/{projectMemberId}":
+    get:
+      tags:
+      - Projects
+      summary: Get project member
+      parameters:
+      - name: projectMemberId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Project member
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProjectMember"
+        '404':
+          description: Project member not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorResponse"
+    patch:
+      tags:
+      - Projects
+      summary: Update project member
+      parameters:
+      - name: projectMemberId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateProjectMemberRequest"
+      responses:
+        '200':
+          description: Project member updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProjectMember"
+    delete:
+      tags:
+      - Projects
+      summary: Remove project member
+      parameters:
+      - name: projectMemberId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Project member deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/tasks":
+    get:
+      tags:
+      - Tasks
+      summary: List tasks
+      parameters:
+      - name: projectId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: epochId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: assigneeUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: status
+        in: query
+        schema:
+          "$ref": "#/components/schemas/TaskStatus"
+      - name: priority
+        in: query
+        schema:
+          "$ref": "#/components/schemas/TaskPriority"
+      - name: releaseId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: query
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Task"
+    post:
+      tags:
+      - Tasks
+      summary: Create task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateTaskRequest"
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+  "/tasks/{taskId}":
+    get:
+      tags:
+      - Tasks
+      summary: Get task
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+    patch:
+      tags:
+      - Tasks
+      summary: Update task
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateTaskRequest"
+      responses:
+        '200':
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+    delete:
+      tags:
+      - Tasks
+      summary: Delete task
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/tasks/{taskId}/tags":
+    get:
+      tags:
+      - Tasks
+      summary: List task tags
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TaskTag"
+    post:
+      tags:
+      - Tasks
+      summary: Create task tag
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateTaskTagRequest"
+      responses:
+        '201':
+          description: Task tag created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskTag"
+  "/task-tags/{taskTagId}":
+    get:
+      tags:
+      - Tasks
+      summary: Get task tag
+      parameters:
+      - name: taskTagId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task tag
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskTag"
+    patch:
+      tags:
+      - Tasks
+      summary: Update task tag
+      parameters:
+      - name: taskTagId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateTaskTagRequest"
+      responses:
+        '200':
+          description: Task tag updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskTag"
+    delete:
+      tags:
+      - Tasks
+      summary: Delete task tag
+      parameters:
+      - name: taskTagId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task tag deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+  "/tasks/{taskId}/comments":
+    get:
+      tags:
+      - Tasks
+      summary: List task comments
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      - name: authorUserId
+        in: query
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TaskComment"
+    post:
+      tags:
+      - Tasks
+      summary: Create task comment
+      parameters:
+      - name: taskId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateTaskCommentRequest"
+      responses:
+        '201':
+          description: Task comment created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskComment"
+  "/task-comments/{taskCommentId}":
+    get:
+      tags:
+      - Tasks
+      summary: Get task comment
+      parameters:
+      - name: taskCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task comment
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskComment"
+    patch:
+      tags:
+      - Tasks
+      summary: Update task comment
+      parameters:
+      - name: taskCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateTaskCommentRequest"
+      responses:
+        '200':
+          description: Task comment updated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TaskComment"
+    delete:
+      tags:
+      - Tasks
+      summary: Delete task comment
+      parameters:
+      - name: taskCommentId
+        in: path
+        required: true
+        schema:
+          "$ref": "#/components/schemas/UUID"
+      responses:
+        '200':
+          description: Task comment deleted
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/DeleteResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+    ISODate:
+      type: string
+      format: date
+    ISODateTime:
+      type: string
+      format: date-time
+    ErrorResponse:
+      type: object
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    ListMeta:
+      type: object
+      required:
+      - page
+      - pageSize
+      - total
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        pageSize:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+    DeleteResponse:
+      type: object
+      required:
+      - deleted
+      properties:
+        deleted:
+          type: boolean
+          const: true
+    WorkspaceRole:
+      type: string
+      enum:
+      - customer
+      - developer
+      - manager
+      - admin
+    ThemePreference:
+      type: string
+      enum:
+      - light
+      - dark
+      - system
+    ProjectStatus:
+      type: string
+      enum:
+      - draft
+      - active
+      - at-risk
+      - archived
+      - completed
+    VisibilityMode:
+      type: string
+      enum:
+      - internal
+      - customer
+    GoalStatus:
+      type: string
+      enum:
+      - not-started
+      - in-progress
+      - completed
+      - blocked
+    TaskStatus:
+      type: string
+      enum:
+      - backlog
+      - todo
+      - in-progress
+      - review
+      - done
+      - cancelled
+    TaskPriority:
+      type: string
+      enum:
+      - low
+      - medium
+      - high
+      - critical
+    DocumentStatus:
+      type: string
+      enum:
+      - draft
+      - in-review
+      - approved
+      - obsolete
+      - rejected
+    DocumentAccessScope:
+      type: string
+      enum:
+      - customer
+      - manager
+      - dev
+      - internal
+    DocumentLinkEntityType:
+      type: string
+      enum:
+      - epoch
+      - task
+      - meeting
+      - release
+      - project
+    ChangeSource:
+      type: string
+      enum:
+      - manual
+      - meeting
+      - task
+      - imported
+    ApprovalDecision:
+      type: string
+      enum:
+      - pending
+      - approved
+      - rejected
+      - requested-changes
+    MeetingStatus:
+      type: string
+      enum:
+      - draft
+      - scheduled
+      - completed
+      - cancelled
+    MeetingType:
+      type: string
+      enum:
+      - standup
+      - planning
+      - review
+      - retrospective
+      - workshop
+      - ad-hoc
+    MeetingSourceContextType:
+      type: string
+      enum:
+      - task
+      - doc
+      - epoch
+      - project
+      - none
+    VoteStatus:
+      type: string
+      enum:
+      - available
+      - maybe
+      - unavailable
+      - no-response
+    ReleaseStatus:
+      type: string
+      enum:
+      - planned
+      - in-progress
+      - deployed
+      - failed
+      - rolled-back
+    PullRequestStatus:
+      type: string
+      enum:
+      - open
+      - reviewing
+      - merged
+      - closed
+    AuditFields:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          "$ref": "./common.yml#/UUID"
+        createdAt:
+          "$ref": "./common.yml#/ISODateTime"
+        updatedAt:
+          "$ref": "./common.yml#/ISODateTime"
+    User:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - email
+        - firstName
+        - lastName
+        - role
+        - isActive
+        properties:
+          email:
+            type: string
+            format: email
+          firstName:
+            type: string
+          lastName:
+            type: string
+          avatarUrl:
+            type: string
+            nullable: true
+          role:
+            "$ref": "./enums.yml#/WorkspaceRole"
+          isActive:
+            type: boolean
+          passwordHash:
+            type: string
+            nullable: true
+          lastLoginAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+    CreateUserRequest:
+      type: object
+      required:
+      - email
+      - firstName
+      - lastName
+      - role
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        role:
+          "$ref": "./enums.yml#/WorkspaceRole"
+        isActive:
+          type: boolean
+          default: true
+        passwordHash:
+          type: string
+          nullable: true
+    UpdateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        role:
+          "$ref": "./enums.yml#/WorkspaceRole"
+        isActive:
+          type: boolean
+        passwordHash:
+          type: string
+          nullable: true
+        lastLoginAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    UserPreferences:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - userId
+        - theme
+        - emailNotifications
+        - taskAssignmentsEnabled
+        - meetingRemindersEnabled
+        - releaseNotificationsEnabled
+        - mentionNotificationsEnabled
+        properties:
+          userId:
+            "$ref": "./common.yml#/UUID"
+          theme:
+            "$ref": "./enums.yml#/ThemePreference"
+          emailNotifications:
+            type: boolean
+          taskAssignmentsEnabled:
+            type: boolean
+          meetingRemindersEnabled:
+            type: boolean
+          releaseNotificationsEnabled:
+            type: boolean
+          mentionNotificationsEnabled:
+            type: boolean
+    CreateUserPreferencesRequest:
+      type: object
+      required:
+      - userId
+      - theme
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        theme:
+          "$ref": "./enums.yml#/ThemePreference"
+        emailNotifications:
+          type: boolean
+          default: true
+        taskAssignmentsEnabled:
+          type: boolean
+          default: true
+        meetingRemindersEnabled:
+          type: boolean
+          default: true
+        releaseNotificationsEnabled:
+          type: boolean
+          default: true
+        mentionNotificationsEnabled:
+          type: boolean
+          default: true
+    UpdateUserPreferencesRequest:
+      type: object
+      properties:
+        theme:
+          "$ref": "./enums.yml#/ThemePreference"
+        emailNotifications:
+          type: boolean
+        taskAssignmentsEnabled:
+          type: boolean
+        meetingRemindersEnabled:
+          type: boolean
+        releaseNotificationsEnabled:
+          type: boolean
+        mentionNotificationsEnabled:
+          type: boolean
+    Project:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - key
+        - name
+        - description
+        - status
+        - visibilityMode
+        - ownerUserId
+        - progressPercent
+        properties:
+          key:
+            type: string
+          name:
+            type: string
+          description:
+            type: string
+          status:
+            "$ref": "./enums.yml#/ProjectStatus"
+          visibilityMode:
+            "$ref": "./enums.yml#/VisibilityMode"
+          ownerUserId:
+            "$ref": "./common.yml#/UUID"
+          activeEpochId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          dueDate:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          startedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          completedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          progressPercent:
+            type: integer
+            minimum: 0
+            maximum: 100
+    CreateProjectRequest:
+      type: object
+      required:
+      - key
+      - name
+      - description
+      - status
+      - visibilityMode
+      - ownerUserId
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ProjectStatus"
+        visibilityMode:
+          "$ref": "./enums.yml#/VisibilityMode"
+        ownerUserId:
+          "$ref": "./common.yml#/UUID"
+        activeEpochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        startedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        completedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 0
+    UpdateProjectRequest:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ProjectStatus"
+        visibilityMode:
+          "$ref": "./enums.yml#/VisibilityMode"
+        ownerUserId:
+          "$ref": "./common.yml#/UUID"
+        activeEpochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        startedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        completedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+    ProjectMember:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - userId
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          userId:
+            "$ref": "./common.yml#/UUID"
+    CreateProjectMemberRequest:
+      type: object
+      required:
+      - userId
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+    UpdateProjectMemberRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        projectId:
+          "$ref": "./common.yml#/UUID"
+    Epoch:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - name
+        - status
+        - startDate
+        - endDate
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          name:
+            type: string
+          status:
+            "$ref": "./enums.yml#/ProjectStatus"
+          startDate:
+            "$ref": "./common.yml#/ISODate"
+          endDate:
+            "$ref": "./common.yml#/ISODate"
+    CreateEpochRequest:
+      type: object
+      required:
+      - projectId
+      - name
+      - status
+      - startDate
+      - endDate
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        name:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ProjectStatus"
+        startDate:
+          "$ref": "./common.yml#/ISODate"
+        endDate:
+          "$ref": "./common.yml#/ISODate"
+    UpdateEpochRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ProjectStatus"
+        startDate:
+          "$ref": "./common.yml#/ISODate"
+        endDate:
+          "$ref": "./common.yml#/ISODate"
+    Goal:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - epochId
+        - title
+        - description
+        - status
+        - progressPercent
+        - ownerUserId
+        properties:
+          epochId:
+            "$ref": "./common.yml#/UUID"
+          title:
+            type: string
+          description:
+            type: string
+          status:
+            "$ref": "./enums.yml#/GoalStatus"
+          progressPercent:
+            type: integer
+            minimum: 0
+            maximum: 100
+          ownerUserId:
+            "$ref": "./common.yml#/UUID"
+    CreateGoalRequest:
+      type: object
+      required:
+      - epochId
+      - title
+      - description
+      - status
+      - ownerUserId
+      properties:
+        epochId:
+          "$ref": "./common.yml#/UUID"
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/GoalStatus"
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 0
+        ownerUserId:
+          "$ref": "./common.yml#/UUID"
+    UpdateGoalRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/GoalStatus"
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        ownerUserId:
+          "$ref": "./common.yml#/UUID"
+    Task:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - key
+        - title
+        - description
+        - status
+        - priority
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          epochId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          key:
+            type: string
+          title:
+            type: string
+          description:
+            type: string
+          status:
+            "$ref": "./enums.yml#/TaskStatus"
+          priority:
+            "$ref": "./enums.yml#/TaskPriority"
+          assigneeUserId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          reporterUserId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          dueDate:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          createdDate:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          releaseId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+    CreateTaskRequest:
+      type: object
+      required:
+      - projectId
+      - key
+      - title
+      - description
+      - status
+      - priority
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        epochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        key:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/TaskStatus"
+        priority:
+          "$ref": "./enums.yml#/TaskPriority"
+        assigneeUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        reporterUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        createdDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        releaseId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+    UpdateTaskRequest:
+      type: object
+      properties:
+        epochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        key:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/TaskStatus"
+        priority:
+          "$ref": "./enums.yml#/TaskPriority"
+        assigneeUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        reporterUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        createdDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        releaseId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+    TaskTag:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - taskId
+        - value
+        properties:
+          taskId:
+            "$ref": "./common.yml#/UUID"
+          value:
+            type: string
+    CreateTaskTagRequest:
+      type: object
+      required:
+      - value
+      properties:
+        value:
+          type: string
+    UpdateTaskTagRequest:
+      type: object
+      properties:
+        value:
+          type: string
+    TaskComment:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - taskId
+        - authorUserId
+        - content
+        properties:
+          taskId:
+            "$ref": "./common.yml#/UUID"
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+          content:
+            type: string
+    CreateTaskCommentRequest:
+      type: object
+      required:
+      - authorUserId
+      - content
+      properties:
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        content:
+          type: string
+    UpdateTaskCommentRequest:
+      type: object
+      properties:
+        content:
+          type: string
+    DocumentFolder:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - children
+        - name
+        - sortOrder
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          children:
+            type: array
+            items:
+              "$ref": "./common.yml#/UUID"
+          name:
+            type: string
+          sortOrder:
+            type: integer
+    CreateDocumentFolderRequest:
+      type: object
+      required:
+      - projectId
+      - name
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        children:
+          type: array
+          items:
+            "$ref": "./common.yml#/UUID"
+          default: []
+        name:
+          type: string
+        sortOrder:
+          type: integer
+          default: 0
+    UpdateDocumentFolderRequest:
+      type: object
+      properties:
+        children:
+          type: array
+          items:
+            "$ref": "./common.yml#/UUID"
+        name:
+          type: string
+        sortOrder:
+          type: integer
+    Document:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - title
+        - description
+        - status
+        - accessScope
+        - authorUserId
+        - awaitingApproval
+        - isStarred
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          folderId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          title:
+            type: string
+          description:
+            type: string
+          status:
+            "$ref": "./enums.yml#/DocumentStatus"
+          accessScope:
+            "$ref": "./enums.yml#/DocumentAccessScope"
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+          currentVersionId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          awaitingApproval:
+            type: boolean
+          isStarred:
+            type: boolean
+          archivedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+    CreateDocumentRequest:
+      type: object
+      required:
+      - projectId
+      - title
+      - description
+      - status
+      - accessScope
+      - authorUserId
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        folderId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/DocumentStatus"
+        accessScope:
+          "$ref": "./enums.yml#/DocumentAccessScope"
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        currentVersionId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        awaitingApproval:
+          type: boolean
+          default: false
+        isStarred:
+          type: boolean
+          default: false
+        archivedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    UpdateDocumentRequest:
+      type: object
+      properties:
+        folderId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          "$ref": "./enums.yml#/DocumentStatus"
+        accessScope:
+          "$ref": "./enums.yml#/DocumentAccessScope"
+        currentVersionId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        awaitingApproval:
+          type: boolean
+        isStarred:
+          type: boolean
+        archivedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    DocumentOwner:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentId
+        - userId
+        properties:
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          userId:
+            "$ref": "./common.yml#/UUID"
+    CreateDocumentOwnerRequest:
+      type: object
+      required:
+      - userId
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+    UpdateDocumentOwnerRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+    DocumentApprover:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentId
+        - userId
+        - approved
+        properties:
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          userId:
+            "$ref": "./common.yml#/UUID"
+          approved:
+            type: boolean
+    CreateDocumentApproverRequest:
+      type: object
+      required:
+      - userId
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        approved:
+          type: boolean
+          default: false
+    UpdateDocumentApproverRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        approved:
+          type: boolean
+    DocumentVersion:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentId
+        - versionLabel
+        - contentMarkdown
+        - changeSource
+        - authorUserId
+        - additions
+        - deletions
+        - modifications
+        - status
+        properties:
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          versionLabel:
+            type: string
+          contentMarkdown:
+            type: string
+          changeSource:
+            "$ref": "./enums.yml#/ChangeSource"
+          sourceDetail:
+            type: string
+            nullable: true
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+          additions:
+            type: integer
+            minimum: 0
+          deletions:
+            type: integer
+            minimum: 0
+          modifications:
+            type: integer
+            minimum: 0
+          status:
+            oneOf:
+            - "$ref": "./enums.yml#/DocumentStatus"
+            - type: string
+              const: pending-approval
+    CreateDocumentVersionRequest:
+      type: object
+      required:
+      - versionLabel
+      - contentMarkdown
+      - changeSource
+      - authorUserId
+      - status
+      properties:
+        versionLabel:
+          type: string
+        contentMarkdown:
+          type: string
+        changeSource:
+          "$ref": "./enums.yml#/ChangeSource"
+        sourceDetail:
+          type: string
+          nullable: true
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        additions:
+          type: integer
+          minimum: 0
+          default: 0
+        deletions:
+          type: integer
+          minimum: 0
+          default: 0
+        modifications:
+          type: integer
+          minimum: 0
+          default: 0
+        status:
+          oneOf:
+          - "$ref": "./enums.yml#/DocumentStatus"
+          - type: string
+            const: pending-approval
+    UpdateDocumentVersionRequest:
+      type: object
+      properties:
+        versionLabel:
+          type: string
+        contentMarkdown:
+          type: string
+        changeSource:
+          "$ref": "./enums.yml#/ChangeSource"
+        sourceDetail:
+          type: string
+          nullable: true
+        additions:
+          type: integer
+          minimum: 0
+        deletions:
+          type: integer
+          minimum: 0
+        modifications:
+          type: integer
+          minimum: 0
+        status:
+          oneOf:
+          - "$ref": "./enums.yml#/DocumentStatus"
+          - type: string
+            const: pending-approval
+    DocumentApproval:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentVersionId
+        - approverUserId
+        - status
+        properties:
+          documentVersionId:
+            "$ref": "./common.yml#/UUID"
+          approverUserId:
+            "$ref": "./common.yml#/UUID"
+          status:
+            "$ref": "./enums.yml#/ApprovalDecision"
+          decision:
+            allOf:
+            - "$ref": "./enums.yml#/ApprovalDecision"
+            nullable: true
+          rationale:
+            type: string
+            nullable: true
+          decidedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+    CreateDocumentApprovalRequest:
+      type: object
+      required:
+      - approverUserId
+      - status
+      properties:
+        approverUserId:
+          "$ref": "./common.yml#/UUID"
+        status:
+          "$ref": "./enums.yml#/ApprovalDecision"
+        decision:
+          allOf:
+          - "$ref": "./enums.yml#/ApprovalDecision"
+          nullable: true
+        rationale:
+          type: string
+          nullable: true
+        decidedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    UpdateDocumentApprovalRequest:
+      type: object
+      properties:
+        status:
+          "$ref": "./enums.yml#/ApprovalDecision"
+        decision:
+          allOf:
+          - "$ref": "./enums.yml#/ApprovalDecision"
+          nullable: true
+        rationale:
+          type: string
+          nullable: true
+        decidedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    DocumentComment:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentId
+        - authorUserId
+        - content
+        - resolved
+        properties:
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+          content:
+            type: string
+          resolved:
+            type: boolean
+    CreateDocumentCommentRequest:
+      type: object
+      required:
+      - authorUserId
+      - content
+      properties:
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        content:
+          type: string
+        resolved:
+          type: boolean
+          default: false
+    UpdateDocumentCommentRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        resolved:
+          type: boolean
+    DocumentLink:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - documentId
+        - entityType
+        - entityId
+        properties:
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          entityType:
+            "$ref": "./enums.yml#/DocumentLinkEntityType"
+          entityId:
+            "$ref": "./common.yml#/UUID"
+    CreateDocumentLinkRequest:
+      type: object
+      required:
+      - entityType
+      - entityId
+      properties:
+        entityType:
+          "$ref": "./enums.yml#/DocumentLinkEntityType"
+        entityId:
+          "$ref": "./common.yml#/UUID"
+    UpdateDocumentLinkRequest:
+      type: object
+      properties:
+        entityType:
+          "$ref": "./enums.yml#/DocumentLinkEntityType"
+        entityId:
+          "$ref": "./common.yml#/UUID"
+    Meeting:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - sourceContextType
+        - title
+        - type
+        - status
+        - aiSummaryApproved
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          epochId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          sourceContextType:
+            "$ref": "./enums.yml#/MeetingSourceContextType"
+          sourceContextId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          title:
+            type: string
+          description:
+            type: string
+            nullable: true
+          type:
+            "$ref": "./enums.yml#/MeetingType"
+          status:
+            "$ref": "./enums.yml#/MeetingStatus"
+          startsAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+          endsAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+          recordingUrl:
+            type: string
+            nullable: true
+          recordingDurationSec:
+            type: integer
+            minimum: 0
+            nullable: true
+          aiSummaryApproved:
+            type: boolean
+    CreateMeetingRequest:
+      type: object
+      required:
+      - projectId
+      - sourceContextType
+      - title
+      - type
+      - status
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        epochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        sourceContextType:
+          "$ref": "./enums.yml#/MeetingSourceContextType"
+        sourceContextId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        type:
+          "$ref": "./enums.yml#/MeetingType"
+        status:
+          "$ref": "./enums.yml#/MeetingStatus"
+        startsAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        endsAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        recordingUrl:
+          type: string
+          nullable: true
+        recordingDurationSec:
+          type: integer
+          minimum: 0
+          nullable: true
+        aiSummaryApproved:
+          type: boolean
+          default: false
+    UpdateMeetingRequest:
+      type: object
+      properties:
+        epochId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        sourceContextType:
+          "$ref": "./enums.yml#/MeetingSourceContextType"
+        sourceContextId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        type:
+          "$ref": "./enums.yml#/MeetingType"
+        status:
+          "$ref": "./enums.yml#/MeetingStatus"
+        startsAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        endsAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        recordingUrl:
+          type: string
+          nullable: true
+        recordingDurationSec:
+          type: integer
+          minimum: 0
+          nullable: true
+        aiSummaryApproved:
+          type: boolean
+    MeetingParticipant:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - userId
+        - roleLabel
+        - attended
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          userId:
+            "$ref": "./common.yml#/UUID"
+          roleLabel:
+            type: string
+          attended:
+            type: boolean
+    CreateMeetingParticipantRequest:
+      type: object
+      required:
+      - userId
+      - roleLabel
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        roleLabel:
+          type: string
+        attended:
+          type: boolean
+          default: false
+    UpdateMeetingParticipantRequest:
+      type: object
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        roleLabel:
+          type: string
+        attended:
+          type: boolean
+    MeetingAvailabilitySlot:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - startsAt
+        - endsAt
+        - score
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          startsAt:
+            "$ref": "./common.yml#/ISODateTime"
+          endsAt:
+            "$ref": "./common.yml#/ISODateTime"
+          score:
+            type: integer
+            minimum: 0
+    CreateMeetingAvailabilitySlotRequest:
+      type: object
+      required:
+      - startsAt
+      - endsAt
+      properties:
+        startsAt:
+          "$ref": "./common.yml#/ISODateTime"
+        endsAt:
+          "$ref": "./common.yml#/ISODateTime"
+        score:
+          type: integer
+          minimum: 0
+          default: 0
+    UpdateMeetingAvailabilitySlotRequest:
+      type: object
+      properties:
+        startsAt:
+          "$ref": "./common.yml#/ISODateTime"
+        endsAt:
+          "$ref": "./common.yml#/ISODateTime"
+        score:
+          type: integer
+          minimum: 0
+    MeetingAvailabilityVote:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - slotId
+        - participantUserId
+        - status
+        properties:
+          slotId:
+            "$ref": "./common.yml#/UUID"
+          participantUserId:
+            "$ref": "./common.yml#/UUID"
+          status:
+            "$ref": "./enums.yml#/VoteStatus"
+    CreateMeetingAvailabilityVoteRequest:
+      type: object
+      required:
+      - participantUserId
+      - status
+      properties:
+        participantUserId:
+          "$ref": "./common.yml#/UUID"
+        status:
+          "$ref": "./enums.yml#/VoteStatus"
+    UpdateMeetingAvailabilityVoteRequest:
+      type: object
+      properties:
+        participantUserId:
+          "$ref": "./common.yml#/UUID"
+        status:
+          "$ref": "./enums.yml#/VoteStatus"
+    MeetingTranscriptEntry:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - speakerName
+        - startsAtSec
+        - text
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          speakerUserId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          speakerName:
+            type: string
+          startsAtSec:
+            type: integer
+            minimum: 0
+          text:
+            type: string
+    CreateMeetingTranscriptEntryRequest:
+      type: object
+      required:
+      - speakerName
+      - startsAtSec
+      - text
+      properties:
+        speakerUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        speakerName:
+          type: string
+        startsAtSec:
+          type: integer
+          minimum: 0
+        text:
+          type: string
+    UpdateMeetingTranscriptEntryRequest:
+      type: object
+      properties:
+        speakerUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        speakerName:
+          type: string
+        startsAtSec:
+          type: integer
+          minimum: 0
+        text:
+          type: string
+    MeetingDecision:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - decision
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          decision:
+            type: string
+          userId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+    CreateMeetingDecisionRequest:
+      type: object
+      required:
+      - decision
+      properties:
+        decision:
+          type: string
+        userId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+    UpdateMeetingDecisionRequest:
+      type: object
+      properties:
+        decision:
+          type: string
+        userId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+    MeetingActionItem:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - taskText
+        - priority
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          taskId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          taskText:
+            type: string
+          assigneeUserId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          dueDate:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          priority:
+            "$ref": "./enums.yml#/TaskPriority"
+    CreateMeetingActionItemRequest:
+      type: object
+      required:
+      - taskText
+      - priority
+      properties:
+        taskId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        taskText:
+          type: string
+        assigneeUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        priority:
+          "$ref": "./enums.yml#/TaskPriority"
+    UpdateMeetingActionItemRequest:
+      type: object
+      properties:
+        taskId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        taskText:
+          type: string
+        assigneeUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        dueDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        priority:
+          "$ref": "./enums.yml#/TaskPriority"
+    MeetingLinkedDocument:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - meetingId
+        - documentId
+        - updateSuggestion
+        properties:
+          meetingId:
+            "$ref": "./common.yml#/UUID"
+          documentId:
+            "$ref": "./common.yml#/UUID"
+          updateSuggestion:
+            type: string
+    CreateMeetingLinkedDocumentRequest:
+      type: object
+      required:
+      - documentId
+      - updateSuggestion
+      properties:
+        documentId:
+          "$ref": "./common.yml#/UUID"
+        updateSuggestion:
+          type: string
+    UpdateMeetingLinkedDocumentRequest:
+      type: object
+      properties:
+        documentId:
+          "$ref": "./common.yml#/UUID"
+        updateSuggestion:
+          type: string
+    Release:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - version
+        - title
+        - status
+        - commitsCount
+        - authorUserId
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          version:
+            type: string
+          title:
+            type: string
+          status:
+            "$ref": "./enums.yml#/ReleaseStatus"
+          targetDate:
+            allOf:
+            - "$ref": "./common.yml#/ISODate"
+            nullable: true
+          deployedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+          commitsCount:
+            type: integer
+            minimum: 0
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+    CreateReleaseRequest:
+      type: object
+      required:
+      - projectId
+      - version
+      - title
+      - status
+      - authorUserId
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        version:
+          type: string
+        title:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ReleaseStatus"
+        targetDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        deployedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        commitsCount:
+          type: integer
+          minimum: 0
+          default: 0
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+    UpdateReleaseRequest:
+      type: object
+      properties:
+        version:
+          type: string
+        title:
+          type: string
+        status:
+          "$ref": "./enums.yml#/ReleaseStatus"
+        targetDate:
+          allOf:
+          - "$ref": "./common.yml#/ISODate"
+          nullable: true
+        deployedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+        commitsCount:
+          type: integer
+          minimum: 0
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+    PullRequest:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - projectId
+        - number
+        - title
+        - branch
+        - status
+        - authorUserId
+        - commitsCount
+        properties:
+          projectId:
+            "$ref": "./common.yml#/UUID"
+          releaseId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          number:
+            type: integer
+            minimum: 1
+          title:
+            type: string
+          branch:
+            type: string
+          status:
+            "$ref": "./enums.yml#/PullRequestStatus"
+          authorUserId:
+            "$ref": "./common.yml#/UUID"
+          commitsCount:
+            type: integer
+            minimum: 0
+          externalUrl:
+            type: string
+            nullable: true
+          mergedAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+    CreatePullRequestRequest:
+      type: object
+      required:
+      - projectId
+      - number
+      - title
+      - branch
+      - status
+      - authorUserId
+      properties:
+        projectId:
+          "$ref": "./common.yml#/UUID"
+        releaseId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        number:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        branch:
+          type: string
+        status:
+          "$ref": "./enums.yml#/PullRequestStatus"
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        commitsCount:
+          type: integer
+          minimum: 0
+          default: 0
+        externalUrl:
+          type: string
+          nullable: true
+        mergedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    UpdatePullRequestRequest:
+      type: object
+      properties:
+        releaseId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        number:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        branch:
+          type: string
+        status:
+          "$ref": "./enums.yml#/PullRequestStatus"
+        authorUserId:
+          "$ref": "./common.yml#/UUID"
+        commitsCount:
+          type: integer
+          minimum: 0
+        externalUrl:
+          type: string
+          nullable: true
+        mergedAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    Notification:
+      allOf:
+      - "$ref": "#/AuditFields"
+      - type: object
+        required:
+        - userId
+        - title
+        - description
+        properties:
+          userId:
+            "$ref": "./common.yml#/UUID"
+          actorUserId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          title:
+            type: string
+          description:
+            type: string
+          entityType:
+            type: string
+            nullable: true
+          entityId:
+            allOf:
+            - "$ref": "./common.yml#/UUID"
+            nullable: true
+          readAt:
+            allOf:
+            - "$ref": "./common.yml#/ISODateTime"
+            nullable: true
+    CreateNotificationRequest:
+      type: object
+      required:
+      - userId
+      - title
+      - description
+      properties:
+        userId:
+          "$ref": "./common.yml#/UUID"
+        actorUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        entityType:
+          type: string
+          nullable: true
+        entityId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        readAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true
+    UpdateNotificationRequest:
+      type: object
+      properties:
+        actorUserId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        entityType:
+          type: string
+          nullable: true
+        entityId:
+          allOf:
+          - "$ref": "./common.yml#/UUID"
+          nullable: true
+        readAt:
+          allOf:
+          - "$ref": "./common.yml#/ISODateTime"
+          nullable: true

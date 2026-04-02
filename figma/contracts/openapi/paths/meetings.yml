@@ -1,0 +1,805 @@
+paths:
+  /meetings:
+    get:
+      tags: [Meetings]
+      summary: List meetings
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: epochId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: sourceContextType
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/MeetingSourceContextType
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/MeetingStatus
+        - name: type
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/MeetingType
+      responses:
+        '200':
+          description: Meetings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Meeting
+    post:
+      tags: [Meetings]
+      summary: Create meeting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingRequest
+      responses:
+        '201':
+          description: Meeting created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Meeting
+
+  /meetings/{meetingId}:
+    get:
+      tags: [Meetings]
+      summary: Get meeting
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Meeting
+    patch:
+      tags: [Meetings]
+      summary: Update meeting
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingRequest
+      responses:
+        '200':
+          description: Meeting updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Meeting
+    delete:
+      tags: [Meetings]
+      summary: Delete meeting
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/participants:
+    get:
+      tags: [Meetings]
+      summary: List meeting participants
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: attended
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Meeting participants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingParticipant
+    post:
+      tags: [Meetings]
+      summary: Create meeting participant
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingParticipantRequest
+      responses:
+        '201':
+          description: Meeting participant created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingParticipant
+
+  /meeting-participants/{meetingParticipantId}:
+    get:
+      tags: [Meetings]
+      summary: Get meeting participant
+      parameters:
+        - name: meetingParticipantId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting participant
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingParticipant
+    patch:
+      tags: [Meetings]
+      summary: Update meeting participant
+      parameters:
+        - name: meetingParticipantId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingParticipantRequest
+      responses:
+        '200':
+          description: Meeting participant updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingParticipant
+    delete:
+      tags: [Meetings]
+      summary: Delete meeting participant
+      parameters:
+        - name: meetingParticipantId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting participant deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/availability-slots:
+    get:
+      tags: [Meetings]
+      summary: List availability slots
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Availability slots
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingAvailabilitySlot
+    post:
+      tags: [Meetings]
+      summary: Create availability slot
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingAvailabilitySlotRequest
+      responses:
+        '201':
+          description: Availability slot created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilitySlot
+
+  /meeting-availability-slots/{slotId}:
+    get:
+      tags: [Meetings]
+      summary: Get availability slot
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Availability slot
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilitySlot
+    patch:
+      tags: [Meetings]
+      summary: Update availability slot
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingAvailabilitySlotRequest
+      responses:
+        '200':
+          description: Availability slot updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilitySlot
+    delete:
+      tags: [Meetings]
+      summary: Delete availability slot
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Availability slot deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meeting-availability-slots/{slotId}/votes:
+    get:
+      tags: [Meetings]
+      summary: List votes for availability slot
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/VoteStatus
+      responses:
+        '200':
+          description: Availability votes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingAvailabilityVote
+    post:
+      tags: [Meetings]
+      summary: Create availability vote
+      parameters:
+        - name: slotId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingAvailabilityVoteRequest
+      responses:
+        '201':
+          description: Availability vote created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilityVote
+
+  /meeting-availability-votes/{voteId}:
+    get:
+      tags: [Meetings]
+      summary: Get availability vote
+      parameters:
+        - name: voteId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Availability vote
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilityVote
+    patch:
+      tags: [Meetings]
+      summary: Update availability vote
+      parameters:
+        - name: voteId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingAvailabilityVoteRequest
+      responses:
+        '200':
+          description: Availability vote updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingAvailabilityVote
+    delete:
+      tags: [Meetings]
+      summary: Delete availability vote
+      parameters:
+        - name: voteId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Availability vote deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/transcript-entries:
+    get:
+      tags: [Meetings]
+      summary: List transcript entries
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: speakerUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Transcript entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingTranscriptEntry
+    post:
+      tags: [Meetings]
+      summary: Create transcript entry
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingTranscriptEntryRequest
+      responses:
+        '201':
+          description: Transcript entry created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingTranscriptEntry
+
+  /meeting-transcript-entries/{entryId}:
+    get:
+      tags: [Meetings]
+      summary: Get transcript entry
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Transcript entry
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingTranscriptEntry
+    patch:
+      tags: [Meetings]
+      summary: Update transcript entry
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingTranscriptEntryRequest
+      responses:
+        '200':
+          description: Transcript entry updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingTranscriptEntry
+    delete:
+      tags: [Meetings]
+      summary: Delete transcript entry
+      parameters:
+        - name: entryId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Transcript entry deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/decisions:
+    get:
+      tags: [Meetings]
+      summary: List meeting decisions
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting decisions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingDecision
+    post:
+      tags: [Meetings]
+      summary: Create meeting decision
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingDecisionRequest
+      responses:
+        '201':
+          description: Meeting decision created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingDecision
+
+  /meeting-decisions/{decisionId}:
+    get:
+      tags: [Meetings]
+      summary: Get meeting decision
+      parameters:
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting decision
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingDecision
+    patch:
+      tags: [Meetings]
+      summary: Update meeting decision
+      parameters:
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingDecisionRequest
+      responses:
+        '200':
+          description: Meeting decision updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingDecision
+    delete:
+      tags: [Meetings]
+      summary: Delete meeting decision
+      parameters:
+        - name: decisionId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting decision deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/action-items:
+    get:
+      tags: [Meetings]
+      summary: List meeting action items
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting action items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingActionItem
+    post:
+      tags: [Meetings]
+      summary: Create meeting action item
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingActionItemRequest
+      responses:
+        '201':
+          description: Meeting action item created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingActionItem
+
+  /meeting-action-items/{actionItemId}:
+    get:
+      tags: [Meetings]
+      summary: Get meeting action item
+      parameters:
+        - name: actionItemId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting action item
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingActionItem
+    patch:
+      tags: [Meetings]
+      summary: Update meeting action item
+      parameters:
+        - name: actionItemId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingActionItemRequest
+      responses:
+        '200':
+          description: Meeting action item updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingActionItem
+    delete:
+      tags: [Meetings]
+      summary: Delete meeting action item
+      parameters:
+        - name: actionItemId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting action item deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /meetings/{meetingId}/linked-documents:
+    get:
+      tags: [Meetings]
+      summary: List meeting linked documents
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting linked documents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/MeetingLinkedDocument
+    post:
+      tags: [Meetings]
+      summary: Create meeting linked document
+      parameters:
+        - name: meetingId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateMeetingLinkedDocumentRequest
+      responses:
+        '201':
+          description: Meeting linked document created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingLinkedDocument
+
+  /meeting-linked-documents/{meetingLinkedDocumentId}:
+    get:
+      tags: [Meetings]
+      summary: Get meeting linked document
+      parameters:
+        - name: meetingLinkedDocumentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting linked document
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingLinkedDocument
+    patch:
+      tags: [Meetings]
+      summary: Update meeting linked document
+      parameters:
+        - name: meetingLinkedDocumentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateMeetingLinkedDocumentRequest
+      responses:
+        '200':
+          description: Meeting linked document updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/MeetingLinkedDocument
+    delete:
+      tags: [Meetings]
+      summary: Delete meeting linked document
+      parameters:
+        - name: meetingLinkedDocumentId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Meeting linked document deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

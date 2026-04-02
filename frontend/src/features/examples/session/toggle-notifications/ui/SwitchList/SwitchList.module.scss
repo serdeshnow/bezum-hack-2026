@@ -1,0 +1,14 @@
+.list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 50%;
+  padding-block: 4px;
+}

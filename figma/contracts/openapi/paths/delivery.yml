@@ -1,0 +1,202 @@
+paths:
+  /releases:
+    get:
+      tags: [Delivery]
+      summary: List releases
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/ReleaseStatus
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Releases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Release
+    post:
+      tags: [Delivery]
+      summary: Create release
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateReleaseRequest
+      responses:
+        '201':
+          description: Release created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Release
+
+  /releases/{releaseId}:
+    get:
+      tags: [Delivery]
+      summary: Get release
+      parameters:
+        - name: releaseId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Release
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Release
+    patch:
+      tags: [Delivery]
+      summary: Update release
+      parameters:
+        - name: releaseId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateReleaseRequest
+      responses:
+        '200':
+          description: Release updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Release
+    delete:
+      tags: [Delivery]
+      summary: Delete release
+      parameters:
+        - name: releaseId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Release deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /pull-requests:
+    get:
+      tags: [Delivery]
+      summary: List pull requests
+      parameters:
+        - name: projectId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: releaseId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/PullRequestStatus
+        - name: authorUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Pull requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/PullRequest
+    post:
+      tags: [Delivery]
+      summary: Create pull request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreatePullRequestRequest
+      responses:
+        '201':
+          description: Pull request created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/PullRequest
+
+  /pull-requests/{pullRequestId}:
+    get:
+      tags: [Delivery]
+      summary: Get pull request
+      parameters:
+        - name: pullRequestId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Pull request
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/PullRequest
+    patch:
+      tags: [Delivery]
+      summary: Update pull request
+      parameters:
+        - name: pullRequestId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdatePullRequestRequest
+      responses:
+        '200':
+          description: Pull request updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/PullRequest
+    delete:
+      tags: [Delivery]
+      summary: Delete pull request
+      parameters:
+        - name: pullRequestId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Pull request deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

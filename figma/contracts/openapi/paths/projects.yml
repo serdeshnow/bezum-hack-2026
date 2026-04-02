@@ -1,0 +1,217 @@
+paths:
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/ProjectStatus
+        - name: visibilityMode
+          in: query
+          schema:
+            $ref: ../schemas/enums.yml#/VisibilityMode
+        - name: ownerUserId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: query
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/Project
+    post:
+      tags: [Projects]
+      summary: Create project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateProjectRequest
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Project
+
+  /projects/{projectId}:
+    get:
+      tags: [Projects]
+      summary: Get project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Project
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Project
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/ErrorResponse
+    patch:
+      tags: [Projects]
+      summary: Update project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateProjectRequest
+      responses:
+        '200':
+          description: Project updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/Project
+    delete:
+      tags: [Projects]
+      summary: Delete project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Project deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse
+
+  /projects/{projectId}/members:
+    get:
+      tags: [Projects]
+      summary: List project members
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+        - name: userId
+          in: query
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Project members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ../schemas/resources.yml#/ProjectMember
+    post:
+      tags: [Projects]
+      summary: Add project member
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/CreateProjectMemberRequest
+      responses:
+        '201':
+          description: Project member created
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/ProjectMember
+
+  /project-members/{projectMemberId}:
+    get:
+      tags: [Projects]
+      summary: Get project member
+      parameters:
+        - name: projectMemberId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Project member
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/ProjectMember
+        '404':
+          description: Project member not found
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/ErrorResponse
+    patch:
+      tags: [Projects]
+      summary: Update project member
+      parameters:
+        - name: projectMemberId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/resources.yml#/UpdateProjectMemberRequest
+      responses:
+        '200':
+          description: Project member updated
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/resources.yml#/ProjectMember
+    delete:
+      tags: [Projects]
+      summary: Remove project member
+      parameters:
+        - name: projectMemberId
+          in: path
+          required: true
+          schema:
+            $ref: ../schemas/common.yml#/UUID
+      responses:
+        '200':
+          description: Project member deleted
+          content:
+            application/json:
+              schema:
+                $ref: ../schemas/common.yml#/DeleteResponse

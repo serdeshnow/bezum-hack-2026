@@ -1,0 +1,1650 @@
+AuditFields:
+  type: object
+  required: [id, createdAt, updatedAt]
+  properties:
+    id:
+      $ref: ./common.yml#/UUID
+    createdAt:
+      $ref: ./common.yml#/ISODateTime
+    updatedAt:
+      $ref: ./common.yml#/ISODateTime
+
+User:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [email, firstName, lastName, role, isActive]
+      properties:
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        role:
+          $ref: ./enums.yml#/WorkspaceRole
+        isActive:
+          type: boolean
+        passwordHash:
+          type: string
+          nullable: true
+        lastLoginAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+
+CreateUserRequest:
+  type: object
+  required: [email, firstName, lastName, role]
+  properties:
+    email:
+      type: string
+      format: email
+    firstName:
+      type: string
+    lastName:
+      type: string
+    avatarUrl:
+      type: string
+      nullable: true
+    role:
+      $ref: ./enums.yml#/WorkspaceRole
+    isActive:
+      type: boolean
+      default: true
+    passwordHash:
+      type: string
+      nullable: true
+
+UpdateUserRequest:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+    firstName:
+      type: string
+    lastName:
+      type: string
+    avatarUrl:
+      type: string
+      nullable: true
+    role:
+      $ref: ./enums.yml#/WorkspaceRole
+    isActive:
+      type: boolean
+    passwordHash:
+      type: string
+      nullable: true
+    lastLoginAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+UserPreferences:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [userId, theme, emailNotifications, taskAssignmentsEnabled, meetingRemindersEnabled, releaseNotificationsEnabled, mentionNotificationsEnabled]
+      properties:
+        userId:
+          $ref: ./common.yml#/UUID
+        theme:
+          $ref: ./enums.yml#/ThemePreference
+        emailNotifications:
+          type: boolean
+        taskAssignmentsEnabled:
+          type: boolean
+        meetingRemindersEnabled:
+          type: boolean
+        releaseNotificationsEnabled:
+          type: boolean
+        mentionNotificationsEnabled:
+          type: boolean
+
+CreateUserPreferencesRequest:
+  type: object
+  required: [userId, theme]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    theme:
+      $ref: ./enums.yml#/ThemePreference
+    emailNotifications:
+      type: boolean
+      default: true
+    taskAssignmentsEnabled:
+      type: boolean
+      default: true
+    meetingRemindersEnabled:
+      type: boolean
+      default: true
+    releaseNotificationsEnabled:
+      type: boolean
+      default: true
+    mentionNotificationsEnabled:
+      type: boolean
+      default: true
+
+UpdateUserPreferencesRequest:
+  type: object
+  properties:
+    theme:
+      $ref: ./enums.yml#/ThemePreference
+    emailNotifications:
+      type: boolean
+    taskAssignmentsEnabled:
+      type: boolean
+    meetingRemindersEnabled:
+      type: boolean
+    releaseNotificationsEnabled:
+      type: boolean
+    mentionNotificationsEnabled:
+      type: boolean
+
+Project:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [key, name, description, status, visibilityMode, ownerUserId, progressPercent]
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: ./enums.yml#/ProjectStatus
+        visibilityMode:
+          $ref: ./enums.yml#/VisibilityMode
+        ownerUserId:
+          $ref: ./common.yml#/UUID
+        activeEpochId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        dueDate:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        startedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        completedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+CreateProjectRequest:
+  type: object
+  required: [key, name, description, status, visibilityMode, ownerUserId]
+  properties:
+    key:
+      type: string
+    name:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/ProjectStatus
+    visibilityMode:
+      $ref: ./enums.yml#/VisibilityMode
+    ownerUserId:
+      $ref: ./common.yml#/UUID
+    activeEpochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    startedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    completedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    progressPercent:
+      type: integer
+      minimum: 0
+      maximum: 100
+      default: 0
+
+UpdateProjectRequest:
+  type: object
+  properties:
+    key:
+      type: string
+    name:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/ProjectStatus
+    visibilityMode:
+      $ref: ./enums.yml#/VisibilityMode
+    ownerUserId:
+      $ref: ./common.yml#/UUID
+    activeEpochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    startedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    completedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    progressPercent:
+      type: integer
+      minimum: 0
+      maximum: 100
+
+ProjectMember:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, userId]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        userId:
+          $ref: ./common.yml#/UUID
+
+CreateProjectMemberRequest:
+  type: object
+  required: [userId]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+
+UpdateProjectMemberRequest:
+  type: object
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    projectId:
+      $ref: ./common.yml#/UUID
+
+Epoch:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, name, status, startDate, endDate]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        name:
+          type: string
+        status:
+          $ref: ./enums.yml#/ProjectStatus
+        startDate:
+          $ref: ./common.yml#/ISODate
+        endDate:
+          $ref: ./common.yml#/ISODate
+
+CreateEpochRequest:
+  type: object
+  required: [projectId, name, status, startDate, endDate]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    name:
+      type: string
+    status:
+      $ref: ./enums.yml#/ProjectStatus
+    startDate:
+      $ref: ./common.yml#/ISODate
+    endDate:
+      $ref: ./common.yml#/ISODate
+
+UpdateEpochRequest:
+  type: object
+  properties:
+    name:
+      type: string
+    status:
+      $ref: ./enums.yml#/ProjectStatus
+    startDate:
+      $ref: ./common.yml#/ISODate
+    endDate:
+      $ref: ./common.yml#/ISODate
+
+Goal:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [epochId, title, description, status, progressPercent, ownerUserId]
+      properties:
+        epochId:
+          $ref: ./common.yml#/UUID
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: ./enums.yml#/GoalStatus
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+        ownerUserId:
+          $ref: ./common.yml#/UUID
+
+CreateGoalRequest:
+  type: object
+  required: [epochId, title, description, status, ownerUserId]
+  properties:
+    epochId:
+      $ref: ./common.yml#/UUID
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/GoalStatus
+    progressPercent:
+      type: integer
+      minimum: 0
+      maximum: 100
+      default: 0
+    ownerUserId:
+      $ref: ./common.yml#/UUID
+
+UpdateGoalRequest:
+  type: object
+  properties:
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/GoalStatus
+    progressPercent:
+      type: integer
+      minimum: 0
+      maximum: 100
+    ownerUserId:
+      $ref: ./common.yml#/UUID
+
+Task:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, key, title, description, status, priority]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        epochId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        key:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: ./enums.yml#/TaskStatus
+        priority:
+          $ref: ./enums.yml#/TaskPriority
+        assigneeUserId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        reporterUserId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        dueDate:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        createdDate:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        releaseId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+
+CreateTaskRequest:
+  type: object
+  required: [projectId, key, title, description, status, priority]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    epochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    key:
+      type: string
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/TaskStatus
+    priority:
+      $ref: ./enums.yml#/TaskPriority
+    assigneeUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    reporterUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    createdDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    releaseId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+
+UpdateTaskRequest:
+  type: object
+  properties:
+    epochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    key:
+      type: string
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/TaskStatus
+    priority:
+      $ref: ./enums.yml#/TaskPriority
+    assigneeUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    reporterUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    createdDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    releaseId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+
+TaskTag:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [taskId, value]
+      properties:
+        taskId:
+          $ref: ./common.yml#/UUID
+        value:
+          type: string
+
+CreateTaskTagRequest:
+  type: object
+  required: [value]
+  properties:
+    value:
+      type: string
+
+UpdateTaskTagRequest:
+  type: object
+  properties:
+    value:
+      type: string
+
+TaskComment:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [taskId, authorUserId, content]
+      properties:
+        taskId:
+          $ref: ./common.yml#/UUID
+        authorUserId:
+          $ref: ./common.yml#/UUID
+        content:
+          type: string
+
+CreateTaskCommentRequest:
+  type: object
+  required: [authorUserId, content]
+  properties:
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    content:
+      type: string
+
+UpdateTaskCommentRequest:
+  type: object
+  properties:
+    content:
+      type: string
+
+DocumentFolder:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, children, name, sortOrder]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        children:
+          type: array
+          items:
+            $ref: ./common.yml#/UUID
+        name:
+          type: string
+        sortOrder:
+          type: integer
+
+CreateDocumentFolderRequest:
+  type: object
+  required: [projectId, name]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    children:
+      type: array
+      items:
+        $ref: ./common.yml#/UUID
+      default: []
+    name:
+      type: string
+    sortOrder:
+      type: integer
+      default: 0
+
+UpdateDocumentFolderRequest:
+  type: object
+  properties:
+    children:
+      type: array
+      items:
+        $ref: ./common.yml#/UUID
+    name:
+      type: string
+    sortOrder:
+      type: integer
+
+Document:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, title, description, status, accessScope, authorUserId, awaitingApproval, isStarred]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        folderId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: ./enums.yml#/DocumentStatus
+        accessScope:
+          $ref: ./enums.yml#/DocumentAccessScope
+        authorUserId:
+          $ref: ./common.yml#/UUID
+        currentVersionId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        awaitingApproval:
+          type: boolean
+        isStarred:
+          type: boolean
+        archivedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+
+CreateDocumentRequest:
+  type: object
+  required: [projectId, title, description, status, accessScope, authorUserId]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    folderId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/DocumentStatus
+    accessScope:
+      $ref: ./enums.yml#/DocumentAccessScope
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    currentVersionId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    awaitingApproval:
+      type: boolean
+      default: false
+    isStarred:
+      type: boolean
+      default: false
+    archivedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+UpdateDocumentRequest:
+  type: object
+  properties:
+    folderId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+    status:
+      $ref: ./enums.yml#/DocumentStatus
+    accessScope:
+      $ref: ./enums.yml#/DocumentAccessScope
+    currentVersionId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    awaitingApproval:
+      type: boolean
+    isStarred:
+      type: boolean
+    archivedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+DocumentOwner:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentId, userId]
+      properties:
+        documentId:
+          $ref: ./common.yml#/UUID
+        userId:
+          $ref: ./common.yml#/UUID
+
+CreateDocumentOwnerRequest:
+  type: object
+  required: [userId]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+
+UpdateDocumentOwnerRequest:
+  type: object
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+
+DocumentApprover:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentId, userId, approved]
+      properties:
+        documentId:
+          $ref: ./common.yml#/UUID
+        userId:
+          $ref: ./common.yml#/UUID
+        approved:
+          type: boolean
+
+CreateDocumentApproverRequest:
+  type: object
+  required: [userId]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    approved:
+      type: boolean
+      default: false
+
+UpdateDocumentApproverRequest:
+  type: object
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    approved:
+      type: boolean
+
+DocumentVersion:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentId, versionLabel, contentMarkdown, changeSource, authorUserId, additions, deletions, modifications, status]
+      properties:
+        documentId:
+          $ref: ./common.yml#/UUID
+        versionLabel:
+          type: string
+        contentMarkdown:
+          type: string
+        changeSource:
+          $ref: ./enums.yml#/ChangeSource
+        sourceDetail:
+          type: string
+          nullable: true
+        authorUserId:
+          $ref: ./common.yml#/UUID
+        additions:
+          type: integer
+          minimum: 0
+        deletions:
+          type: integer
+          minimum: 0
+        modifications:
+          type: integer
+          minimum: 0
+        status:
+          oneOf:
+            - $ref: ./enums.yml#/DocumentStatus
+            - type: string
+              const: pending-approval
+
+CreateDocumentVersionRequest:
+  type: object
+  required: [versionLabel, contentMarkdown, changeSource, authorUserId, status]
+  properties:
+    versionLabel:
+      type: string
+    contentMarkdown:
+      type: string
+    changeSource:
+      $ref: ./enums.yml#/ChangeSource
+    sourceDetail:
+      type: string
+      nullable: true
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    additions:
+      type: integer
+      minimum: 0
+      default: 0
+    deletions:
+      type: integer
+      minimum: 0
+      default: 0
+    modifications:
+      type: integer
+      minimum: 0
+      default: 0
+    status:
+      oneOf:
+        - $ref: ./enums.yml#/DocumentStatus
+        - type: string
+          const: pending-approval
+
+UpdateDocumentVersionRequest:
+  type: object
+  properties:
+    versionLabel:
+      type: string
+    contentMarkdown:
+      type: string
+    changeSource:
+      $ref: ./enums.yml#/ChangeSource
+    sourceDetail:
+      type: string
+      nullable: true
+    additions:
+      type: integer
+      minimum: 0
+    deletions:
+      type: integer
+      minimum: 0
+    modifications:
+      type: integer
+      minimum: 0
+    status:
+      oneOf:
+        - $ref: ./enums.yml#/DocumentStatus
+        - type: string
+          const: pending-approval
+
+DocumentApproval:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentVersionId, approverUserId, status]
+      properties:
+        documentVersionId:
+          $ref: ./common.yml#/UUID
+        approverUserId:
+          $ref: ./common.yml#/UUID
+        status:
+          $ref: ./enums.yml#/ApprovalDecision
+        decision:
+          allOf:
+            - $ref: ./enums.yml#/ApprovalDecision
+          nullable: true
+        rationale:
+          type: string
+          nullable: true
+        decidedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+
+CreateDocumentApprovalRequest:
+  type: object
+  required: [approverUserId, status]
+  properties:
+    approverUserId:
+      $ref: ./common.yml#/UUID
+    status:
+      $ref: ./enums.yml#/ApprovalDecision
+    decision:
+      allOf:
+        - $ref: ./enums.yml#/ApprovalDecision
+      nullable: true
+    rationale:
+      type: string
+      nullable: true
+    decidedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+UpdateDocumentApprovalRequest:
+  type: object
+  properties:
+    status:
+      $ref: ./enums.yml#/ApprovalDecision
+    decision:
+      allOf:
+        - $ref: ./enums.yml#/ApprovalDecision
+      nullable: true
+    rationale:
+      type: string
+      nullable: true
+    decidedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+DocumentComment:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentId, authorUserId, content, resolved]
+      properties:
+        documentId:
+          $ref: ./common.yml#/UUID
+        authorUserId:
+          $ref: ./common.yml#/UUID
+        content:
+          type: string
+        resolved:
+          type: boolean
+
+CreateDocumentCommentRequest:
+  type: object
+  required: [authorUserId, content]
+  properties:
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    content:
+      type: string
+    resolved:
+      type: boolean
+      default: false
+
+UpdateDocumentCommentRequest:
+  type: object
+  properties:
+    content:
+      type: string
+    resolved:
+      type: boolean
+
+DocumentLink:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [documentId, entityType, entityId]
+      properties:
+        documentId:
+          $ref: ./common.yml#/UUID
+        entityType:
+          $ref: ./enums.yml#/DocumentLinkEntityType
+        entityId:
+          $ref: ./common.yml#/UUID
+
+CreateDocumentLinkRequest:
+  type: object
+  required: [entityType, entityId]
+  properties:
+    entityType:
+      $ref: ./enums.yml#/DocumentLinkEntityType
+    entityId:
+      $ref: ./common.yml#/UUID
+
+UpdateDocumentLinkRequest:
+  type: object
+  properties:
+    entityType:
+      $ref: ./enums.yml#/DocumentLinkEntityType
+    entityId:
+      $ref: ./common.yml#/UUID
+
+Meeting:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, sourceContextType, title, type, status, aiSummaryApproved]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        epochId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        sourceContextType:
+          $ref: ./enums.yml#/MeetingSourceContextType
+        sourceContextId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        type:
+          $ref: ./enums.yml#/MeetingType
+        status:
+          $ref: ./enums.yml#/MeetingStatus
+        startsAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+        endsAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+        recordingUrl:
+          type: string
+          nullable: true
+        recordingDurationSec:
+          type: integer
+          minimum: 0
+          nullable: true
+        aiSummaryApproved:
+          type: boolean
+
+CreateMeetingRequest:
+  type: object
+  required: [projectId, sourceContextType, title, type, status]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    epochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    sourceContextType:
+      $ref: ./enums.yml#/MeetingSourceContextType
+    sourceContextId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+      nullable: true
+    type:
+      $ref: ./enums.yml#/MeetingType
+    status:
+      $ref: ./enums.yml#/MeetingStatus
+    startsAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    endsAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    recordingUrl:
+      type: string
+      nullable: true
+    recordingDurationSec:
+      type: integer
+      minimum: 0
+      nullable: true
+    aiSummaryApproved:
+      type: boolean
+      default: false
+
+UpdateMeetingRequest:
+  type: object
+  properties:
+    epochId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    sourceContextType:
+      $ref: ./enums.yml#/MeetingSourceContextType
+    sourceContextId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+      nullable: true
+    type:
+      $ref: ./enums.yml#/MeetingType
+    status:
+      $ref: ./enums.yml#/MeetingStatus
+    startsAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    endsAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    recordingUrl:
+      type: string
+      nullable: true
+    recordingDurationSec:
+      type: integer
+      minimum: 0
+      nullable: true
+    aiSummaryApproved:
+      type: boolean
+
+MeetingParticipant:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, userId, roleLabel, attended]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        userId:
+          $ref: ./common.yml#/UUID
+        roleLabel:
+          type: string
+        attended:
+          type: boolean
+
+CreateMeetingParticipantRequest:
+  type: object
+  required: [userId, roleLabel]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    roleLabel:
+      type: string
+    attended:
+      type: boolean
+      default: false
+
+UpdateMeetingParticipantRequest:
+  type: object
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    roleLabel:
+      type: string
+    attended:
+      type: boolean
+
+MeetingAvailabilitySlot:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, startsAt, endsAt, score]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        startsAt:
+          $ref: ./common.yml#/ISODateTime
+        endsAt:
+          $ref: ./common.yml#/ISODateTime
+        score:
+          type: integer
+          minimum: 0
+
+CreateMeetingAvailabilitySlotRequest:
+  type: object
+  required: [startsAt, endsAt]
+  properties:
+    startsAt:
+      $ref: ./common.yml#/ISODateTime
+    endsAt:
+      $ref: ./common.yml#/ISODateTime
+    score:
+      type: integer
+      minimum: 0
+      default: 0
+
+UpdateMeetingAvailabilitySlotRequest:
+  type: object
+  properties:
+    startsAt:
+      $ref: ./common.yml#/ISODateTime
+    endsAt:
+      $ref: ./common.yml#/ISODateTime
+    score:
+      type: integer
+      minimum: 0
+
+MeetingAvailabilityVote:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [slotId, participantUserId, status]
+      properties:
+        slotId:
+          $ref: ./common.yml#/UUID
+        participantUserId:
+          $ref: ./common.yml#/UUID
+        status:
+          $ref: ./enums.yml#/VoteStatus
+
+CreateMeetingAvailabilityVoteRequest:
+  type: object
+  required: [participantUserId, status]
+  properties:
+    participantUserId:
+      $ref: ./common.yml#/UUID
+    status:
+      $ref: ./enums.yml#/VoteStatus
+
+UpdateMeetingAvailabilityVoteRequest:
+  type: object
+  properties:
+    participantUserId:
+      $ref: ./common.yml#/UUID
+    status:
+      $ref: ./enums.yml#/VoteStatus
+
+MeetingTranscriptEntry:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, speakerName, startsAtSec, text]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        speakerUserId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        speakerName:
+          type: string
+        startsAtSec:
+          type: integer
+          minimum: 0
+        text:
+          type: string
+
+CreateMeetingTranscriptEntryRequest:
+  type: object
+  required: [speakerName, startsAtSec, text]
+  properties:
+    speakerUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    speakerName:
+      type: string
+    startsAtSec:
+      type: integer
+      minimum: 0
+    text:
+      type: string
+
+UpdateMeetingTranscriptEntryRequest:
+  type: object
+  properties:
+    speakerUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    speakerName:
+      type: string
+    startsAtSec:
+      type: integer
+      minimum: 0
+    text:
+      type: string
+
+MeetingDecision:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, decision]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        decision:
+          type: string
+        userId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+
+CreateMeetingDecisionRequest:
+  type: object
+  required: [decision]
+  properties:
+    decision:
+      type: string
+    userId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+
+UpdateMeetingDecisionRequest:
+  type: object
+  properties:
+    decision:
+      type: string
+    userId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+
+MeetingActionItem:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, taskText, priority]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        taskId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        taskText:
+          type: string
+        assigneeUserId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        dueDate:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        priority:
+          $ref: ./enums.yml#/TaskPriority
+
+CreateMeetingActionItemRequest:
+  type: object
+  required: [taskText, priority]
+  properties:
+    taskId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    taskText:
+      type: string
+    assigneeUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    priority:
+      $ref: ./enums.yml#/TaskPriority
+
+UpdateMeetingActionItemRequest:
+  type: object
+  properties:
+    taskId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    taskText:
+      type: string
+    assigneeUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    dueDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    priority:
+      $ref: ./enums.yml#/TaskPriority
+
+MeetingLinkedDocument:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [meetingId, documentId, updateSuggestion]
+      properties:
+        meetingId:
+          $ref: ./common.yml#/UUID
+        documentId:
+          $ref: ./common.yml#/UUID
+        updateSuggestion:
+          type: string
+
+CreateMeetingLinkedDocumentRequest:
+  type: object
+  required: [documentId, updateSuggestion]
+  properties:
+    documentId:
+      $ref: ./common.yml#/UUID
+    updateSuggestion:
+      type: string
+
+UpdateMeetingLinkedDocumentRequest:
+  type: object
+  properties:
+    documentId:
+      $ref: ./common.yml#/UUID
+    updateSuggestion:
+      type: string
+
+Release:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, version, title, status, commitsCount, authorUserId]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        version:
+          type: string
+        title:
+          type: string
+        status:
+          $ref: ./enums.yml#/ReleaseStatus
+        targetDate:
+          allOf:
+            - $ref: ./common.yml#/ISODate
+          nullable: true
+        deployedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+        commitsCount:
+          type: integer
+          minimum: 0
+        authorUserId:
+          $ref: ./common.yml#/UUID
+
+CreateReleaseRequest:
+  type: object
+  required: [projectId, version, title, status, authorUserId]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    version:
+      type: string
+    title:
+      type: string
+    status:
+      $ref: ./enums.yml#/ReleaseStatus
+    targetDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    deployedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    commitsCount:
+      type: integer
+      minimum: 0
+      default: 0
+    authorUserId:
+      $ref: ./common.yml#/UUID
+
+UpdateReleaseRequest:
+  type: object
+  properties:
+    version:
+      type: string
+    title:
+      type: string
+    status:
+      $ref: ./enums.yml#/ReleaseStatus
+    targetDate:
+      allOf:
+        - $ref: ./common.yml#/ISODate
+      nullable: true
+    deployedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+    commitsCount:
+      type: integer
+      minimum: 0
+    authorUserId:
+      $ref: ./common.yml#/UUID
+
+PullRequest:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [projectId, number, title, branch, status, authorUserId, commitsCount]
+      properties:
+        projectId:
+          $ref: ./common.yml#/UUID
+        releaseId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        number:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        branch:
+          type: string
+        status:
+          $ref: ./enums.yml#/PullRequestStatus
+        authorUserId:
+          $ref: ./common.yml#/UUID
+        commitsCount:
+          type: integer
+          minimum: 0
+        externalUrl:
+          type: string
+          nullable: true
+        mergedAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+
+CreatePullRequestRequest:
+  type: object
+  required: [projectId, number, title, branch, status, authorUserId]
+  properties:
+    projectId:
+      $ref: ./common.yml#/UUID
+    releaseId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    number:
+      type: integer
+      minimum: 1
+    title:
+      type: string
+    branch:
+      type: string
+    status:
+      $ref: ./enums.yml#/PullRequestStatus
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    commitsCount:
+      type: integer
+      minimum: 0
+      default: 0
+    externalUrl:
+      type: string
+      nullable: true
+    mergedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+UpdatePullRequestRequest:
+  type: object
+  properties:
+    releaseId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    number:
+      type: integer
+      minimum: 1
+    title:
+      type: string
+    branch:
+      type: string
+    status:
+      $ref: ./enums.yml#/PullRequestStatus
+    authorUserId:
+      $ref: ./common.yml#/UUID
+    commitsCount:
+      type: integer
+      minimum: 0
+    externalUrl:
+      type: string
+      nullable: true
+    mergedAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+Notification:
+  allOf:
+    - $ref: '#/AuditFields'
+    - type: object
+      required: [userId, title, description]
+      properties:
+        userId:
+          $ref: ./common.yml#/UUID
+        actorUserId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        entityType:
+          type: string
+          nullable: true
+        entityId:
+          allOf:
+            - $ref: ./common.yml#/UUID
+          nullable: true
+        readAt:
+          allOf:
+            - $ref: ./common.yml#/ISODateTime
+          nullable: true
+
+CreateNotificationRequest:
+  type: object
+  required: [userId, title, description]
+  properties:
+    userId:
+      $ref: ./common.yml#/UUID
+    actorUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+    entityType:
+      type: string
+      nullable: true
+    entityId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    readAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
+
+UpdateNotificationRequest:
+  type: object
+  properties:
+    actorUserId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    title:
+      type: string
+    description:
+      type: string
+    entityType:
+      type: string
+      nullable: true
+    entityId:
+      allOf:
+        - $ref: ./common.yml#/UUID
+      nullable: true
+    readAt:
+      allOf:
+        - $ref: ./common.yml#/ISODateTime
+      nullable: true
