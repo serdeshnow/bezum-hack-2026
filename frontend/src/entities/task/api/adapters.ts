@@ -1,4 +1,8 @@
-import type { TaskDetails } from '@/shared/mocks/seamless.ts'
+import type { TaskCard, TaskDetails } from '@/shared/mocks/seamless.ts'
+
+export type TaskCardViewModel = TaskCard & {
+  epochLabel: string | null
+}
 
 export type TaskDetailsViewModel = TaskDetails & {
   linkedSummary: {
@@ -9,6 +13,13 @@ export type TaskDetailsViewModel = TaskDetails & {
     quotedFragments: number
   }
   meetingContextLabel: string
+}
+
+export function adaptTaskCardViewModel(task: TaskCard): TaskCardViewModel {
+  return {
+    ...task,
+    epochLabel: task.epoch?.title ?? null
+  }
 }
 
 export function adaptTaskDetailsViewModel(task: TaskDetails): TaskDetailsViewModel {

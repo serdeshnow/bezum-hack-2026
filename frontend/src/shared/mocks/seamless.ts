@@ -105,6 +105,7 @@ export type TaskCard = {
   assignee: UserSummary | null
   dueDate: string | null
   tags: string[]
+  epoch: { id: string; title: string } | null
 }
 
 export type TaskCommentView = {
@@ -141,6 +142,7 @@ export type DocumentListItem = {
   linkedTo: { epochs?: number; tasks?: number; meetings?: number; releases?: number }
   awaitingApproval: boolean
   folderId: string | null
+  epoch: { id: string; title: string } | null
 }
 
 export type DocumentFolder = {
@@ -249,6 +251,7 @@ export type ReleaseDashboardData = {
     changes: { features: number; fixes: number; breaking: number }
     linkedTaskIds?: string[]
     linkedPullRequestIds?: string[]
+    epoch?: { id: string; title: string } | null
   }>
   pullRequests: Array<{
     id: string
@@ -261,6 +264,7 @@ export type ReleaseDashboardData = {
     date: string
     linkedTaskIds?: string[]
     releaseId?: string | null
+    epoch?: { id: string; title: string } | null
   }>
 }
 
@@ -404,7 +408,8 @@ const db: Database = {
       priority: TaskPriority.High,
       assignee: findUser('user-dev'),
       dueDate: '2026-04-05',
-      tags: ['backend', 'security']
+      tags: ['backend', 'security'],
+      epoch: { id: epochId, title: 'Q2 2026 Delivery' }
     },
     {
       id: 'task-docs',
@@ -415,7 +420,8 @@ const db: Database = {
       priority: TaskPriority.Critical,
       assignee: findUser('user-manager'),
       dueDate: '2026-04-04',
-      tags: ['docs', 'ux']
+      tags: ['docs', 'ux'],
+      epoch: { id: epochId, title: 'Q2 2026 Delivery' }
     },
     {
       id: 'task-meeting',
@@ -426,7 +432,8 @@ const db: Database = {
       priority: TaskPriority.Medium,
       assignee: findUser('user-admin'),
       dueDate: '2026-04-12',
-      tags: ['meeting', 'automation']
+      tags: ['meeting', 'automation'],
+      epoch: { id: epochId, title: 'Q2 2026 Delivery' }
     },
     {
       id: 'task-release',
@@ -437,7 +444,8 @@ const db: Database = {
       priority: TaskPriority.High,
       assignee: findUser('user-dev'),
       dueDate: '2026-04-18',
-      tags: ['release', 'github']
+      tags: ['release', 'github'],
+      epoch: { id: epochId, title: 'Q2 2026 Delivery' }
     }
   ],
   taskDetails: {},
@@ -524,7 +532,8 @@ const db: Database = {
         author: findUser('user-admin'),
         changes: { features: 6, fixes: 4, breaking: 0 },
         linkedTaskIds: ['task-docs', 'task-meeting', 'task-release'],
-        linkedPullRequestIds: ['pr-1', 'pr-2']
+        linkedPullRequestIds: ['pr-1', 'pr-2'],
+        epoch: { id: epochId, title: 'Q2 2026 Delivery' }
       }
     ],
     pullRequests: [
@@ -538,7 +547,8 @@ const db: Database = {
         commits: 8,
         date: '1 hour ago',
         linkedTaskIds: ['task-docs', 'task-release'],
-        releaseId
+        releaseId,
+        epoch: { id: epochId, title: 'Q2 2026 Delivery' }
       },
       {
         id: 'pr-2',
@@ -550,7 +560,8 @@ const db: Database = {
         commits: 5,
         date: '3 hours ago',
         linkedTaskIds: ['task-meeting', 'task-docs'],
-        releaseId
+        releaseId,
+        epoch: { id: epochId, title: 'Q2 2026 Delivery' }
       }
     ]
   },
@@ -585,7 +596,8 @@ db.documents = [
     lastUpdated: '2 hours ago',
     linkedTo: { epochs: 1, tasks: 2, meetings: 1 },
     awaitingApproval: true,
-    folderId: 'folder-arch'
+    folderId: 'folder-arch',
+    epoch: { id: epochId, title: 'Q2 2026 Delivery' }
   },
   {
     id: 'doc-meeting',
@@ -597,7 +609,8 @@ db.documents = [
     lastUpdated: '1 day ago',
     linkedTo: { tasks: 1, meetings: 1 },
     awaitingApproval: false,
-    folderId: 'folder-planning'
+    folderId: 'folder-planning',
+    epoch: { id: epochId, title: 'Q2 2026 Delivery' }
   }
 ]
 
@@ -1011,7 +1024,8 @@ export function createTaskFromMeetingActionItem(meetingId: string, actionItemId:
     priority: actionItem.priority,
     assignee: actionItem.assignee,
     dueDate: actionItem.dueDate,
-    tags: ['meeting', 'action-item']
+    tags: ['meeting', 'action-item'],
+    epoch: { id: epochId, title: 'Q2 2026 Delivery' }
   }
 
   db.tasks = [task, ...db.tasks]

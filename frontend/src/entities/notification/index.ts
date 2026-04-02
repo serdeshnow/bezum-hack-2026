@@ -1,2 +1,5 @@
 export { notificationQueries, notificationQueryKeys } from './api/queries.ts'
 export { useMarkAllNotificationsRead, useMarkNotificationRead } from './api/mutations.ts'
+export { adaptNotificationCollection, adaptNotificationViewModel } from './api/adapters.ts'
+export { filterNotifications, getNotificationFilterCount, getUnreadNotifications } from './model/selectors.ts'
+export type { NotificationCollectionViewModel, NotificationFilter, NotificationViewModel } from './api/adapters.ts'

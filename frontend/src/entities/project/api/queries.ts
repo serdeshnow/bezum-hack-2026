@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 
 import { getProjectOverview, listProjects } from '@/shared/mocks/seamless.ts'
+import { adaptProjectOverviewViewModel } from './adapters.ts'
 
 export const projectQueryKeys = {
   all: ['projects'] as const,
@@ -16,6 +17,6 @@ export const projectQueries = {
   detail: (projectId: string) =>
     queryOptions({
       queryKey: projectQueryKeys.detail(projectId),
-      queryFn: async () => getProjectOverview(projectId)
+      queryFn: async () => adaptProjectOverviewViewModel(getProjectOverview(projectId))
     })
 }

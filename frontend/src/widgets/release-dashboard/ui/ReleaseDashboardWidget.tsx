@@ -70,6 +70,7 @@ export function ReleaseDashboardWidget() {
                   <Badge variant={release.readinessTone === 'destructive' ? 'destructive' : release.readinessTone === 'secondary' ? 'secondary' : 'default'}>
                     {release.status}
                   </Badge>
+                  {release.epochLabel && <Badge variant='outline'>{release.epochLabel}</Badge>}
                   <span>{release.title}</span>
                   <span className='text-muted-foreground'>{release.commits} commits</span>
                 </div>
@@ -97,6 +98,7 @@ export function ReleaseDashboardWidget() {
               <CardContent className='space-y-3 text-sm'>
                 <div className='flex flex-wrap items-center gap-3'>
                   <Badge variant={pr.statusTone === 'destructive' ? 'destructive' : pr.statusTone === 'secondary' ? 'secondary' : 'default'}>{pr.statusLabel}</Badge>
+                  {pr.epochLabel && <Badge variant='outline'>{pr.epochLabel}</Badge>}
                   <span className='flex items-center gap-2'><GitBranch className='size-4' /> {pr.branch}</span>
                   <span className='text-muted-foreground'>{pr.commits} commits</span>
                 </div>

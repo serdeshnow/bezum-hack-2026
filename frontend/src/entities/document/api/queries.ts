@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 
 import { getDocumentEditor, getDocumentHistory, listDocumentFolders, listDocuments } from '@/shared/mocks/seamless.ts'
-import { adaptDocumentEditorViewModel, adaptDocumentHistoryViewModel } from './adapters.ts'
+import { adaptDocumentEditorViewModel, adaptDocumentHistoryViewModel, adaptDocumentListItemViewModel } from './adapters.ts'
 
 export const documentQueryKeys = {
   folders: ['documents', 'folders'] as const,
@@ -19,7 +19,7 @@ export const documentQueries = {
   list: () =>
     queryOptions({
       queryKey: documentQueryKeys.all,
-      queryFn: async () => listDocuments()
+      queryFn: async () => listDocuments().map(adaptDocumentListItemViewModel)
     }),
   detail: (docId: string) =>
     queryOptions({

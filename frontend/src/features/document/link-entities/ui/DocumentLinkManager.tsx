@@ -56,7 +56,7 @@ export function DocumentLinkManager({ docId, linkedEntities }: Props) {
         key: `epoch:${epoch.id}`,
         id: epoch.id,
         type: 'epoch' as const,
-        title: epoch.name,
+        title: epoch.title,
         status: epoch.status
       }))
     ].filter((option) => !linkedEntities.some((entity) => entity.type === option.type && entity.id === option.id))

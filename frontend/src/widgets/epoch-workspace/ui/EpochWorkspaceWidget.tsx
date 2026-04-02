@@ -22,9 +22,36 @@ export function EpochWorkspaceWidget() {
       <div className='flex items-start justify-between gap-4'>
         <div>
           <h1 className='text-2xl font-semibold'>{data.name}</h1>
-          <p className='text-muted-foreground text-sm'>Sprint projection across goals, docs, meetings, and release readiness.</p>
+          <p className='text-muted-foreground text-sm'>Sprint projection across goals, docs, meetings, and release readiness. {data.summary.windowLabel}</p>
         </div>
         <Badge>{data.status}</Badge>
+      </div>
+
+      <div className='grid gap-4 md:grid-cols-4'>
+        <Card>
+          <CardHeader>
+            <CardDescription>Epoch progress</CardDescription>
+            <CardTitle>{data.summary.progress}%</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>Goals in scope</CardDescription>
+            <CardTitle>{data.linkedEntityTotals.goals}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>Linked documents</CardDescription>
+            <CardTitle>{data.linkedEntityTotals.documents}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>Linked meetings</CardDescription>
+            <CardTitle>{data.linkedEntityTotals.meetings}</CardTitle>
+          </CardHeader>
+        </Card>
       </div>
 
       <div className='grid gap-4 lg:grid-cols-3'>

@@ -9,9 +9,10 @@ import { useNotificationReadActions } from '../model/useNotificationReadActions.
 
 export function NotificationInboxPopover() {
   const navigate = useNavigate()
-  const { data: notifications = [] } = useQuery(notificationQueries.list())
+  const { data } = useQuery(notificationQueries.list())
   const { markAllRead, markNotificationRead } = useNotificationReadActions()
-  const unreadCount = notifications.filter((item) => !item.read).length
+  const notifications = data?.items ?? []
+  const unreadCount = data?.unreadCount ?? 0
 
   return (
     <Popover>
@@ -45,14 +46,14 @@ export function NotificationInboxPopover() {
                 className={`w-full rounded-lg border p-3 text-left ${notification.read ? 'bg-background' : 'bg-accent/20'}`}
                 onClick={() => {
                   markNotificationRead.mutate(notification.id)
-                  if (notification.entityId?.startsWith('doc')) navigate(`/docs/${notification.entityId}`)
-                  if (notification.entityId?.startsWith('meeting')) navigate(`/meetings/${notification.entityId}`)
+                  if (notification.deeplink) navigate(notification.deeplink)
                 }}
               >
                 <div className='flex items-start justify-between gap-3'>
                   <div>
                     <p className='text-sm font-medium'>{notification.title}</p>
                     <p className='text-muted-foreground text-xs'>{notification.description}</p>
+                    <p className='text-muted-foreground mt-1 text-[11px]'>{notification.channelLabel}</p>
                   </div>
                   {!notification.read && <Badge className='rounded-[5px]'>New</Badge>}
                 </div>

@@ -38,7 +38,7 @@ export function ProjectsListWidget() {
   const { data: documents = [] } = useQuery(documentQueries.list())
   const { data: scheduler } = useQuery(meetingQueries.scheduler())
   const { data: releases } = useQuery(releaseQueries.dashboard())
-  const { data: notifications = [] } = useQuery(notificationQueries.list())
+  const { data: notifications } = useQuery(notificationQueries.list())
 
   const activeProjects = useMemo(() => (projects ?? []).filter((project) => project.status === 'active'), [projects])
   const openTasks = useMemo(
@@ -262,7 +262,7 @@ export function ProjectsListWidget() {
                     <CardDescription className='text-sm'>Latest updates across all projects</CardDescription>
                   </CardHeader>
                   <CardContent className='space-y-4 p-5'>
-                    {notifications.slice(0, 4).map((notification) => (
+                    {(notifications?.items ?? []).slice(0, 4).map((notification) => (
                       <div key={notification.id} className='border-border flex items-start gap-4 border-b pb-4 last:border-b-0 last:pb-0'>
                         <div className='bg-muted flex size-10 shrink-0 items-center justify-center rounded-[7px]'>
                           {notification.type === 'task' && <CheckSquare className='size-5 text-primary' />}

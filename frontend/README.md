@@ -1,4 +1,6 @@
-# Frontend Workspace
+# Seamless Frontend
+
+Production-oriented frontend workspace for Seamless, implemented inside `/frontend` with FSD architecture.
 
 ## Commands
 
@@ -9,26 +11,50 @@ npm run typecheck
 npm run test:unit
 npm run build
 npm run generate-api
+npm run check
 ```
 
-## Quality
+## Stack
 
-- `eslint` enforces import direction between FSD layers
-- `vitest` covers unit and component smoke cases
+- React + Vite
+- Tailwind + theme variables from `src/shared/styles/theme.css`
+- `@tanstack/react-query` for server state
+- `zustand` for client/session state
+- `next-themes` for `light / dark / system`
+- generated transport types from `figma/contracts/openapi.yml`
 
-## Template Defaults
+## Architecture
 
-- the default app is a generic shell, not the preserved example business app
-- optional reference implementation lives in `src/examples/grass-admin`
-- generated DTOs live in `src/examples/grass-admin/api/generated`
-- route-level pages stay lazy loaded to reduce initial bundle cost
-- auth is disabled by default and should be enabled only when the target project actually needs it
-- core shell and shared primitives now prefer Tailwind-first styling; remaining SCSS belongs to the preserved example surface
+- `src/app`: providers, router, bootstrap
+- `src/shared`: API client, generated contracts, primitives, config
+- `src/entities`: domain adapters, queries, mutations, selectors
+- `src/features`: user actions and focused interaction flows
+- `src/widgets`: composed delivery surfaces
+- `src/pages`: route-level entries
 
-## Recommended Bootstrap Order
+## Scope
 
-1. rename app metadata in `.env`
-2. adjust `src/shared/config/templateConfig.ts`
-3. delete or keep `src/examples/grass-admin` depending on whether you want the reference pack
-4. replace auth and API contracts before adding new business routes
-5. keep `shared/ui` as the only entrypoint for reusable UI
+Implemented routes:
+
+- `/auth/sign-in`
+- `/auth/verify`
+- `/projects`
+- `/projects/:id`
+- `/epochs/:epochId`
+- `/tasks`
+- `/tasks/:taskId`
+- `/docs`
+- `/docs/:docId`
+- `/docs/:docId/history`
+- `/meetings`
+- `/meetings/:meetingId`
+- `/releases`
+- `/notifications`
+- `/settings`
+- `* -> 404`
+
+## Verification
+
+- unit tests only
+- no e2e or integration test requirement
+- use `npm run check` before handoff to run lint, typecheck, unit tests, and production build

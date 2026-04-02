@@ -92,7 +92,7 @@ export function ProjectOverviewWidget() {
             </div>
             <div className='bg-muted rounded-lg p-4'>
               <p className='text-muted-foreground'>Epoch cadence</p>
-              <p className='mt-1 flex items-center gap-2 font-medium'><Clock className='size-4' /> {data.stats.activeEpoch?.name}</p>
+              <p className='mt-1 flex items-center gap-2 font-medium'><Clock className='size-4' /> {data.activeEpochLabel}</p>
             </div>
           </CardContent>
         </Card>

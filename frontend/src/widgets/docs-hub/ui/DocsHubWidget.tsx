@@ -4,16 +4,24 @@ import { FileText, Search } from 'lucide-react'
 import { Link } from 'react-router'
 
 import { documentQueries } from '@/entities/document'
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, PageState } from '@/shared/ui'
+import { epochQueries } from '@/entities/epoch'
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, PageState, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui'
 
 export function DocsHubWidget() {
   const { data: documents = [], isLoading, error } = useQuery(documentQueries.list())
   const { data: folders = [] } = useQuery(documentQueries.folders())
+  const { data: epochs = [] } = useQuery(epochQueries.list())
   const [query, setQuery] = useState('')
+  const [selectedEpochId, setSelectedEpochId] = useState<string>('all')
 
   const filtered = useMemo(
-    () => documents.filter((document) => document.title.toLowerCase().includes(query.toLowerCase()) || document.description.toLowerCase().includes(query.toLowerCase())),
-    [documents, query]
+    () =>
+      documents.filter((document) => {
+        const matchesQuery = document.title.toLowerCase().includes(query.toLowerCase()) || document.description.toLowerCase().includes(query.toLowerCase())
+        const matchesEpoch = selectedEpochId === 'all' || document.epoch?.id === selectedEpochId
+        return matchesQuery && matchesEpoch
+      }),
+    [documents, query, selectedEpochId]
   )
 
   if (isLoading) {
@@ -63,9 +71,28 @@ export function DocsHubWidget() {
         </Card>
 
         <div className='space-y-4'>
-          <div className='relative'>
-            <Search className='text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2' />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} className='pl-10' placeholder='Search docs, links, or descriptions' />
+          <div className='grid gap-3 md:grid-cols-[1fr_220px]'>
+            <div className='relative'>
+              <Search className='text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2' />
+              <Input value={query} onChange={(event) => setQuery(event.target.value)} className='pl-10' placeholder='Search docs, links, or descriptions' />
+            </div>
+            <Select value={selectedEpochId} onValueChange={setSelectedEpochId}>
+              <SelectTrigger>
+                <SelectValue placeholder='Filter by epoch' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='all'>All epochs</SelectItem>
+                {epochs.map((epoch) => (
+                  <SelectItem key={epoch.id} value={epoch.id}>
+                    {epoch.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className='text-muted-foreground rounded-lg border p-3 text-sm'>
+            {filtered.length} documents in scope.
+            {selectedEpochId !== 'all' && ` Filtered to ${epochs.find((epoch) => epoch.id === selectedEpochId)?.title ?? 'selected epoch'}.`}
           </div>
           <div className='grid gap-4 md:grid-cols-2'>
             {filtered.map((document) => (
@@ -83,9 +110,10 @@ export function DocsHubWidget() {
                     <div className='flex flex-wrap gap-2'>
                       <Badge variant='outline'>{document.status}</Badge>
                       <Badge variant='secondary'>{document.accessScope}</Badge>
+                      {document.epochLabel && <Badge variant='outline'>{document.epochLabel}</Badge>}
                     </div>
                     <p className='text-muted-foreground text-xs'>
-                      Linked: {document.linkedTo.tasks ?? 0} tasks, {document.linkedTo.meetings ?? 0} meetings
+                      Linked: {document.linkedTotal} entities total, including {document.linkedTo.tasks ?? 0} tasks and {document.linkedTo.meetings ?? 0} meetings
                     </p>
                   </CardContent>
                 </Card>

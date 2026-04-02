@@ -19,6 +19,7 @@ import {
   User,
   Users
 } from 'lucide-react'
+import { notificationQueries } from '@/entities/notification'
 import { sessionService, useSessionStore } from '@/entities/session'
 import { taskQueries } from '@/entities/task'
 import { NotificationInboxPopover } from '@/features/notification/mark-read'
@@ -35,6 +36,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  Input,
   ScrollArea,
   Separator,
   Tooltip,
@@ -115,13 +117,27 @@ export function AppShell() {
   const navigate = useNavigate()
   const location = useLocation()
   const [commandOpen, setCommandOpen] = useState(false)
+  const [commandQuery, setCommandQuery] = useState('')
   const currentUser = useSessionStore((state) => state.currentUser)
   const { data: tasks = [] } = useQuery(taskQueries.list())
+  const { data: notifications } = useQuery(notificationQueries.list())
 
   const openTaskCount = tasks.filter((task) => task.status !== TaskStatus.Done && task.status !== TaskStatus.Cancelled).length
+  const unreadNotificationCount = notifications?.unreadCount ?? 0
   const breadcrumbs = useMemo(() => buildBreadcrumbs(location.pathname), [location.pathname])
   const roleLabel = formatRoleLabel(currentUser?.role)
   const RoleIcon = getRoleIcon(currentUser?.role)
+  const commandItems = useMemo(() => [...primaryNavItems, ...secondaryNavItems], [])
+  const filteredCommandItems = useMemo(
+    () => commandItems.filter((item) => item.label.toLowerCase().includes(commandQuery.toLowerCase())),
+    [commandItems, commandQuery]
+  )
+
+  function goToRoute(path: string) {
+    navigate(path)
+    setCommandOpen(false)
+    setCommandQuery('')
+  }
 
   return (
     <div className='bg-background text-foreground flex min-h-screen items-stretch'>
@@ -162,7 +178,9 @@ export function AppShell() {
                   key={item.to}
                   item={item}
                   badge={
-                    undefined
+                    item.to === appRoutes.notifications && unreadNotificationCount > 0 ? (
+                      <Badge className='rounded-[5px] px-2 py-0.5 text-[12px]'>{unreadNotificationCount}</Badge>
+                    ) : undefined
                   }
                 />
               ))}
@@ -191,7 +209,15 @@ export function AppShell() {
 
             <div className='flex items-center gap-2'>
               <HeaderAction tooltip='Search (⌘K)'>
-                <Button variant='ghost' size='icon' className='size-8 rounded-[5px]' onClick={() => setCommandOpen((value) => !value)}>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='size-8 rounded-[5px]'
+                  onClick={() => {
+                    setCommandOpen((value) => !value)
+                    setCommandQuery('')
+                  }}
+                >
                   <Search className='size-[18px]' />
                 </Button>
               </HeaderAction>
@@ -250,12 +276,35 @@ export function AppShell() {
 
           {commandOpen && (
             <div className='border-b border-border px-5 py-3'>
-              <div className='flex flex-wrap gap-2'>
-                {primaryNavItems.map((item) => (
-                  <Button key={item.to} variant='outline' size='sm' onClick={() => navigate(item.to)}>
-                    {item.label}
+              <div className='space-y-3'>
+                <Input
+                  value={commandQuery}
+                  onChange={(event) => setCommandQuery(event.target.value)}
+                  placeholder='Search destinations, inbox, settings, releases...'
+                  autoFocus
+                />
+                <div className='flex flex-wrap gap-2'>
+                  {filteredCommandItems.map((item) => (
+                    <Button key={item.to} variant='outline' size='sm' onClick={() => goToRoute(item.to)}>
+                      {item.label}
+                    </Button>
+                  ))}
+                  {!filteredCommandItems.length && (
+                    <span className='text-muted-foreground text-sm'>No matching destinations.</span>
+                  )}
+                </div>
+                <div className='flex flex-wrap gap-2'>
+                  <Button size='sm' onClick={() => goToRoute(appRoutes.projects)}>
+                    <Plus className='size-4' />
+                    Open project hub
                   </Button>
-                ))}
+                  <Button variant='outline' size='sm' onClick={() => goToRoute(appRoutes.docs)}>
+                    Review docs
+                  </Button>
+                  <Button variant='outline' size='sm' onClick={() => goToRoute(appRoutes.notifications)}>
+                    Unified inbox
+                  </Button>
+                </div>
               </div>
             </div>
           )}

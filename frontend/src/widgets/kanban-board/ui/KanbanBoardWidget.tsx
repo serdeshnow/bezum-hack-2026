@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Calendar, User } from 'lucide-react'
 import { Link } from 'react-router'
 
+import { epochQueries } from '@/entities/epoch'
 import { TaskStatus } from '@/shared/api'
 import { taskQueries } from '@/entities/task'
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState } from '@/shared/ui'
@@ -11,6 +12,7 @@ const columns: TaskStatus[] = [TaskStatus.Backlog, TaskStatus.Todo, TaskStatus.I
 
 export function KanbanBoardWidget() {
   const { data, isLoading, error } = useQuery(taskQueries.list())
+  const { data: epochs = [] } = useQuery(epochQueries.list())
 
   const grouped = useMemo(
     () =>
@@ -40,6 +42,12 @@ export function KanbanBoardWidget() {
         <p className='text-muted-foreground text-sm'>Docs, meetings, PRs, and releases all project back into task execution state here.</p>
       </div>
 
+      {epochs[0] && (
+        <div className='text-muted-foreground rounded-lg border p-3 text-sm'>
+          Active epoch: {epochs[0].title}. {epochs[0].progress}% of scheduled task capacity is complete.
+        </div>
+      )}
+
       <div className='grid gap-4 xl:grid-cols-5'>
         {grouped.map((column) => (
           <div key={column.status} className='space-y-3'>
@@ -61,6 +69,7 @@ export function KanbanBoardWidget() {
                         {task.tags.map((tag) => (
                           <Badge key={tag} variant='outline'>{tag}</Badge>
                         ))}
+                        {task.epochLabel && <Badge variant='secondary'>{task.epochLabel}</Badge>}
                       </div>
                       <div className='text-muted-foreground flex items-center justify-between text-xs'>
                         <span className='flex items-center gap-1'><User className='size-3' /> {task.assignee?.initials ?? 'NA'}</span>

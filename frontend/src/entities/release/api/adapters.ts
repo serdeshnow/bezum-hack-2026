@@ -15,6 +15,7 @@ export type ReleaseDashboardViewModel = Omit<ReleaseDashboardData, 'releases' | 
       linkedPullRequestCount: number
       readinessLabel: string
       readinessTone: 'default' | 'secondary' | 'destructive'
+      epochLabel: string | null
     }
   >
   pullRequests: Array<
@@ -23,6 +24,7 @@ export type ReleaseDashboardViewModel = Omit<ReleaseDashboardData, 'releases' | 
       statusLabel: string
       statusTone: 'default' | 'secondary' | 'destructive'
       syncLabel: string
+      epochLabel: string | null
     }
   >
 }
@@ -85,12 +87,14 @@ export function adaptReleaseDashboardViewModel(data: ReleaseDashboardData): Rele
     ...release,
     linkedTaskCount: release.linkedTaskIds?.length ?? 0,
     linkedPullRequestCount: release.linkedPullRequestIds?.length ?? 0,
+    epochLabel: release.epoch?.title ?? null,
     ...mapReleaseReadiness(release.status)
   }))
 
   const pullRequests = data.pullRequests.map((pr) => ({
     ...pr,
     linkedTaskCount: pr.linkedTaskIds?.length ?? 0,
+    epochLabel: pr.epoch?.title ?? null,
     ...mapPullRequestStatus(pr.status)
   }))
 

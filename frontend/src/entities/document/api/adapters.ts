@@ -1,4 +1,9 @@
-import type { DocumentEditorData, DocumentHistoryVersion, LinkedEntity } from '@/shared/mocks/seamless.ts'
+import type { DocumentEditorData, DocumentHistoryVersion, DocumentListItem, LinkedEntity } from '@/shared/mocks/seamless.ts'
+
+export type DocumentListItemViewModel = DocumentListItem & {
+  linkedTotal: number
+  epochLabel: string | null
+}
 
 export type DocumentEditorViewModel = DocumentEditorData & {
   linkedEntitySummary: {
@@ -39,6 +44,14 @@ export function adaptDocumentEditorViewModel(data: DocumentEditorData): Document
     ...data,
     linkedEntitySummary: summarizeLinkedEntities(data.linkedEntities),
     quoteTargetTaskId: linkedTask?.id ?? 'task-docs'
+  }
+}
+
+export function adaptDocumentListItemViewModel(document: DocumentListItem): DocumentListItemViewModel {
+  return {
+    ...document,
+    linkedTotal: (document.linkedTo.epochs ?? 0) + (document.linkedTo.tasks ?? 0) + (document.linkedTo.meetings ?? 0) + (document.linkedTo.releases ?? 0),
+    epochLabel: document.epoch?.title ?? null
   }
 }
 
