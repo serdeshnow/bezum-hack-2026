@@ -2,7 +2,6 @@
 .idea
 .vscode
 tmp
-docs
 *.log
 coverage.out
 bin
