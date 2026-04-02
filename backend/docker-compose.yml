@@ -100,7 +100,9 @@ services:
       - -c
       - |
         go install github.com/pressly/goose/v3/cmd/goose@latest
-        /go/bin/goose -dir /workspace/migrations postgres "postgres://$$PG_USER:$$PG_PASSWORD@$$PG_HOST:$$PG_PORT/$$PG_NAME?sslmode=$$PG_SSL_MODE" up
+        export GOOSE_DRIVER=postgres
+        export GOOSE_DBSTRING="postgres://$$PG_USER:$$PG_PASSWORD@$$PG_HOST:$$PG_PORT/$$PG_NAME?sslmode=$$PG_SSL_MODE"
+        /go/bin/goose -dir /workspace/migrations up
     restart: "no"
 
   postgres:
