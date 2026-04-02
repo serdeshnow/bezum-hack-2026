@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router'
 
 import { TaskStatus } from '@/shared/api'
 import { taskQueries, useAddTaskComment, useUpdateTaskStatus } from '@/entities/task'
+import { TaskPullRequestSyncBanner } from '@/features/release/pr-sync'
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Textarea } from '@/shared/ui'
 
 export function TaskDetailsWidget() {
@@ -49,6 +50,8 @@ export function TaskDetailsWidget() {
 
       <div className='grid gap-4 xl:grid-cols-[2fr_1fr]'>
         <div className='space-y-4'>
+          <TaskPullRequestSyncBanner pullRequests={data.linkedPRs} />
+
           <Card>
             <CardHeader>
               <CardTitle>Linked context</CardTitle>

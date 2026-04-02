@@ -1,12 +1,18 @@
 import { queryOptions } from '@tanstack/react-query'
 
-import { getEpochWorkspace } from '@/shared/mocks/seamless.ts'
+import { getEpochWorkspace, listEpochs } from '@/shared/mocks/seamless.ts'
 
 export const epochQueryKeys = {
+  all: ['epochs'] as const,
   detail: (epochId: string) => ['epochs', epochId] as const
 }
 
 export const epochQueries = {
+  list: () =>
+    queryOptions({
+      queryKey: epochQueryKeys.all,
+      queryFn: async () => listEpochs()
+    }),
   detail: (epochId: string) =>
     queryOptions({
       queryKey: epochQueryKeys.detail(epochId),

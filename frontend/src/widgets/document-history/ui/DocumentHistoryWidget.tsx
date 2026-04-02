@@ -3,6 +3,7 @@ import { History } from 'lucide-react'
 import { useParams } from 'react-router'
 
 import { documentQueries } from '@/entities/document'
+import { DocumentVersionReviewPanel } from '@/features/document/review-version'
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState } from '@/shared/ui'
 
 export function DocumentHistoryWidget() {
@@ -60,6 +61,7 @@ export function DocumentHistoryWidget() {
                   </div>
                 ))}
               </div>
+              {version.status === 'pending-approval' && <DocumentVersionReviewPanel docId={docId} versionId={version.id} />}
             </CardContent>
           </Card>
         ))}

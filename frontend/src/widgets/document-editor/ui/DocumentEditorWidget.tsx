@@ -4,7 +4,9 @@ import { CheckSquare, Send } from 'lucide-react'
 import { useParams } from 'react-router'
 
 import { documentQueries, useAddDocumentComment, useUpdateDocument } from '@/entities/document'
+import { DocumentLinkManager } from '@/features/document/link-entities'
 import { useQuoteDocumentSelectionToTask } from '@/features/document/quote'
+import { DocumentReviewActions } from '@/features/document/review-version'
 import { DocumentShortcodePreview, parseDocumentShortcodes } from '@/features/document/shortcodes'
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from '@/shared/ui'
 
@@ -99,6 +101,10 @@ export function DocumentEditorWidget() {
               ))}
             </CardContent>
           </Card>
+
+          <DocumentLinkManager docId={docId} linkedEntities={data.linkedEntities} />
+
+          <DocumentReviewActions docId={docId} awaitingApproval={data.status === 'in-review'} />
 
           <Card>
             <CardHeader>

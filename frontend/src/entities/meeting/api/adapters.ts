@@ -16,6 +16,7 @@ export type MeetingRecapViewModel = MeetingRecapData & {
   publishLabel: string
   actionItemsToCreate: number
   decisionCount: number
+  appliedDocumentCount: number
 }
 
 function getSlotSummary(slot: MeetingSchedulerData['timeSlots'][number]) {
@@ -48,7 +49,8 @@ export function adaptMeetingRecapViewModel(data: MeetingRecapData): MeetingRecap
   return {
     ...data,
     publishLabel: data.approved ? 'Unpublish recap' : 'Publish recap',
-    actionItemsToCreate: data.actionItems.filter((item) => !item.alreadyTask).length,
-    decisionCount: data.decisions.length
+    actionItemsToCreate: data.actionItems.filter((item) => !item.alreadyTask && !item.taskId).length,
+    decisionCount: data.decisions.length,
+    appliedDocumentCount: data.linkedDocuments.filter((document) => document.applied).length
   }
 }

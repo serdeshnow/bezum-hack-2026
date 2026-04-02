@@ -170,6 +170,7 @@ export type DocumentEditorData = {
   title: string
   version: string
   status: DocumentStatus
+  awaitingApproval: boolean
   owners: UserSummary[]
   approvers: Array<UserSummary & { approved: boolean }>
   content: string
@@ -231,8 +232,8 @@ export type MeetingRecapData = {
   transcript: Array<{ speaker: string; time: string; text: string }>
   aiSummary: { overview: string; keyPoints: string[] }
   decisions: Array<{ id: string; decision: string; owner?: string | null }>
-  actionItems: Array<{ id: string; task: string; assignee: UserSummary; dueDate: string | null; priority: TaskPriority; alreadyTask?: boolean }>
-  linkedDocuments: Array<{ id: string; title: string; updateSuggestion: string }>
+  actionItems: Array<{ id: string; task: string; assignee: UserSummary; dueDate: string | null; priority: TaskPriority; alreadyTask?: boolean; taskId?: string | null }>
+  linkedDocuments: Array<{ id: string; title: string; updateSuggestion: string; applied?: boolean; appliedVersion?: string | null; reviewRequested?: boolean }>
   approved: boolean
 }
 
@@ -246,6 +247,8 @@ export type ReleaseDashboardData = {
     commits: number
     author: UserSummary
     changes: { features: number; fixes: number; breaking: number }
+    linkedTaskIds?: string[]
+    linkedPullRequestIds?: string[]
   }>
   pullRequests: Array<{
     id: string
@@ -256,6 +259,8 @@ export type ReleaseDashboardData = {
     branch: string
     commits: number
     date: string
+    linkedTaskIds?: string[]
+    releaseId?: string | null
   }>
 }
 
@@ -498,11 +503,11 @@ const db: Database = {
         { id: 'decision-1', decision: 'Use markdown shortcodes for inline widgets', owner: 'Sarah Chen' }
       ],
       actionItems: [
-        { id: 'action-1', task: 'Implement shortcode renderer', assignee: findUser('user-dev'), dueDate: '2026-04-05', priority: TaskPriority.High, alreadyTask: true },
+        { id: 'action-1', task: 'Implement shortcode renderer', assignee: findUser('user-dev'), dueDate: '2026-04-05', priority: TaskPriority.High, alreadyTask: true, taskId: 'task-docs' },
         { id: 'action-2', task: 'Draft meeting summary import for docs', assignee: findUser('user-admin'), dueDate: '2026-04-10', priority: TaskPriority.Medium }
       ],
       linkedDocuments: [
-        { id: 'doc-architecture', title: 'System Architecture Overview', updateSuggestion: 'Add inline task widget and meeting summary block' }
+        { id: 'doc-architecture', title: 'System Architecture Overview', updateSuggestion: 'Add inline task widget and meeting summary block', applied: false, appliedVersion: null, reviewRequested: false }
       ],
       approved: false
     }
@@ -517,7 +522,9 @@ const db: Database = {
         status: ReleaseStatus.InProgress,
         commits: 28,
         author: findUser('user-admin'),
-        changes: { features: 6, fixes: 4, breaking: 0 }
+        changes: { features: 6, fixes: 4, breaking: 0 },
+        linkedTaskIds: ['task-docs', 'task-meeting', 'task-release'],
+        linkedPullRequestIds: ['pr-1', 'pr-2']
       }
     ],
     pullRequests: [
@@ -529,7 +536,9 @@ const db: Database = {
         author: findUser('user-dev'),
         branch: 'feature/docs-quote-sync',
         commits: 8,
-        date: '1 hour ago'
+        date: '1 hour ago',
+        linkedTaskIds: ['task-docs', 'task-release'],
+        releaseId
       },
       {
         id: 'pr-2',
@@ -539,7 +548,9 @@ const db: Database = {
         author: findUser('user-manager'),
         branch: 'feature/meeting-recap-publish',
         commits: 5,
-        date: '3 hours ago'
+        date: '3 hours ago',
+        linkedTaskIds: ['task-meeting', 'task-docs'],
+        releaseId
       }
     ]
   },
@@ -596,6 +607,7 @@ db.documentEditors = {
     title: 'System Architecture Overview',
     version: '2.1',
     status: DocumentStatus.InReview,
+    awaitingApproval: true,
     owners: [findUser('user-manager'), findUser('user-admin')],
     approvers: [{ ...findUser('user-admin'), approved: true }, { ...findUser('user-customer'), approved: false }],
     content: `# System Architecture Overview
@@ -634,6 +646,7 @@ Core delivery primitives:
     title: 'Meeting Automation Brief',
     version: '1.4',
     status: DocumentStatus.Draft,
+    awaitingApproval: false,
     owners: [findUser('user-admin')],
     approvers: [{ ...findUser('user-manager'), approved: false }],
     content: `# Meeting Automation Brief
@@ -757,6 +770,10 @@ export function getEpochWorkspace(epochIdValue: string) {
   return clone(db.epochs[epochIdValue])
 }
 
+export function listEpochs() {
+  return clone(Object.values(db.epochs))
+}
+
 export function listTasks() {
   return clone(db.tasks)
 }
@@ -803,6 +820,22 @@ export function updateDocument(docId: string, content: string) {
   return clone(db.documentEditors[docId])
 }
 
+export function addDocumentLink(docId: string, entity: LinkedEntity) {
+  const editor = db.documentEditors[docId]
+  const alreadyLinked = editor.linkedEntities.some((item) => item.type === entity.type && item.id === entity.id)
+
+  if (alreadyLinked) {
+    return clone(editor)
+  }
+
+  db.documentEditors[docId] = {
+    ...editor,
+    linkedEntities: [...editor.linkedEntities, entity]
+  }
+
+  return clone(db.documentEditors[docId])
+}
+
 export function addDocumentComment(docId: string, content: string, userId: string) {
   const comment: DocumentComment = {
     id: `doc-comment-${Date.now()}`,
@@ -822,8 +855,110 @@ export function getDocumentHistory(docId: string) {
   return clone(db.documentHistory[docId] ?? [])
 }
 
+export function requestDocumentReview(docId: string, userId: string) {
+  const editor = db.documentEditors[docId]
+  const history = db.documentHistory[docId] ?? []
+  const latestVersion = history[0]
+
+  db.documentEditors[docId] = {
+    ...editor,
+    status: DocumentStatus.InReview,
+    awaitingApproval: true
+  }
+
+  if (latestVersion) {
+    history[0] = {
+      ...latestVersion,
+      status: 'pending-approval',
+      changeSource: 'manual',
+      approvals: latestVersion.approvals.length
+        ? latestVersion.approvals
+        : editor.approvers.map((approver) => ({
+            approver: findUser(approver.id),
+            status: ApprovalDecision.Pending
+          }))
+    }
+  } else {
+    history.unshift({
+      id: `history-${Date.now()}`,
+      version: editor.version,
+      timestamp: 'just now',
+      author: findUser(userId),
+      changeSource: 'manual',
+      changes: { additions: 0, deletions: 0, modifications: 1 },
+      status: 'pending-approval',
+      approvals: editor.approvers.map((approver) => ({
+        approver: findUser(approver.id),
+        status: ApprovalDecision.Pending
+      }))
+    })
+  }
+
+  db.documentHistory[docId] = history
+  return clone(db.documentEditors[docId])
+}
+
+export function reviewDocumentVersion(
+  docId: string,
+  versionId: string,
+  decision: ApprovalDecision,
+  rationale: string | undefined,
+  userId: string
+) {
+  const versions = db.documentHistory[docId] ?? []
+  const targetVersion = versions.find((version) => version.id === versionId)
+
+  if (!targetVersion) {
+    return clone(versions)
+  }
+
+  const reviewer = findUser(userId)
+
+  targetVersion.approvals = targetVersion.approvals.some((approval) => approval.approver.id === reviewer.id)
+    ? targetVersion.approvals.map((approval) =>
+        approval.approver.id === reviewer.id
+          ? {
+              ...approval,
+              status: decision,
+              decision,
+              rationale,
+              timestamp: 'just now'
+            }
+          : approval
+      )
+    : [
+        {
+          approver: reviewer,
+          status: decision,
+          decision,
+          rationale,
+          timestamp: 'just now'
+        },
+        ...targetVersion.approvals
+      ]
+
+  const hasRejected = targetVersion.approvals.some(
+    (approval) => approval.status === ApprovalDecision.Rejected || approval.status === ApprovalDecision.RequestedChanges
+  )
+  const allApproved = targetVersion.approvals.length > 0 && targetVersion.approvals.every((approval) => approval.status === ApprovalDecision.Approved)
+
+  targetVersion.status = hasRejected ? 'rejected' : allApproved ? 'approved' : 'pending-approval'
+
+  db.documentEditors[docId] = {
+    ...db.documentEditors[docId],
+    status: allApproved ? DocumentStatus.Approved : hasRejected ? DocumentStatus.Draft : DocumentStatus.InReview,
+    awaitingApproval: !allApproved
+  }
+
+  return clone(versions)
+}
+
 export function getMeetingScheduler() {
   return clone(db.meetingScheduler)
+}
+
+export function listMeetingRecaps() {
+  return clone(Object.values(db.meetingRecaps))
 }
 
 export function voteMeetingSlot(slotId: string, userId: string, status: VoteStatus) {
@@ -850,6 +985,187 @@ export function publishMeetingRecap(meetingId: string, approved: boolean) {
     ...db.meetingRecaps[meetingId],
     approved
   }
+  return clone(db.meetingRecaps[meetingId])
+}
+
+export function createTaskFromMeetingActionItem(meetingId: string, actionItemId: string): MeetingRecapData | undefined {
+  const recap = db.meetingRecaps[meetingId]
+  const actionItem = recap?.actionItems.find((item) => item.id === actionItemId)
+
+  if (!recap || !actionItem) {
+    return recap ? clone(recap) : undefined
+  }
+
+  if (actionItem.alreadyTask && actionItem.taskId) {
+    return clone(recap)
+  }
+
+  const numericKey = 101 + db.tasks.length
+  const taskId = `task-generated-${Date.now()}`
+  const task: TaskCard = {
+    id: taskId,
+    key: `SEA-${numericKey}`,
+    title: actionItem.task,
+    description: `Created from action item in ${recap.title}.`,
+    status: TaskStatus.Todo,
+    priority: actionItem.priority,
+    assignee: actionItem.assignee,
+    dueDate: actionItem.dueDate,
+    tags: ['meeting', 'action-item']
+  }
+
+  db.tasks = [task, ...db.tasks]
+  db.taskDetails[taskId] = {
+    ...task,
+    reporter: findUser('user-manager'),
+    createdDate: '2026-04-02',
+    epoch: { id: epochId, title: 'Q2 2026 Delivery' },
+    linkedDocs: recap.linkedDocuments.map((document) => ({
+      id: document.id,
+      title: document.title,
+      preview: document.updateSuggestion,
+      quotes: [],
+      lastUpdated: 'just now'
+    })),
+    linkedMeetings: [
+      {
+        id: recap.id,
+        title: recap.title,
+        date: recap.date,
+        summary: recap.aiSummary.overview,
+        hasRecording: Boolean(recap.recording?.url),
+        attendees: recap.attendees.length,
+        keyPoints: recap.aiSummary.keyPoints
+      }
+    ],
+    linkedPRs: [],
+    linkedRelease: null,
+    comments: [
+      {
+        id: `task-comment-${Date.now()}`,
+        user: findUser('user-manager'),
+        content: `Created from meeting action item: ${actionItem.task}`,
+        timestamp: 'just now'
+      }
+    ]
+  }
+
+  db.meetingRecaps[meetingId] = {
+    ...recap,
+    actionItems: recap.actionItems.map((item) =>
+      item.id === actionItemId
+        ? {
+            ...item,
+            alreadyTask: true,
+            taskId
+          }
+        : item
+    )
+  }
+
+  recap.linkedDocuments.forEach((document) => {
+    const editor = db.documentEditors[document.id]
+    if (!editor) return
+    const alreadyLinked = editor.linkedEntities.some((entity) => entity.type === 'task' && entity.id === taskId)
+    if (!alreadyLinked) {
+      editor.linkedEntities = [...editor.linkedEntities, { id: taskId, type: 'task', title: task.title, status: task.status }]
+    }
+  })
+
+  return clone(db.meetingRecaps[meetingId])
+}
+
+export function applyMeetingSummaryToDocument(
+  meetingId: string,
+  docId: string,
+  mode: 'draft' | 'review',
+  userId: string
+): MeetingRecapData | undefined {
+  const recap = db.meetingRecaps[meetingId]
+  const editor = db.documentEditors[docId]
+
+  if (!recap || !editor) {
+    return recap ? clone(recap) : undefined
+  }
+
+  const meetingBlock = [
+    '',
+    `## Meeting Summary: ${recap.title}`,
+    '',
+    recap.aiSummary.overview,
+    '',
+    ...recap.aiSummary.keyPoints.map((point) => `- ${point}`),
+    '',
+    ...recap.decisions.map((decision) => `- Decision: ${decision.decision}${decision.owner ? ` (${decision.owner})` : ''}`)
+  ].join('\n')
+
+  const versionSegments = editor.version.split('.')
+  const nextVersion = editor.version.includes('.')
+    ? `${versionSegments.slice(0, -1).join('.')}.${Number(versionSegments[versionSegments.length - 1] ?? '0') + 1}`
+    : `${editor.version}.1`
+
+  const linkedEntities = editor.linkedEntities.some((entity) => entity.type === 'meeting' && entity.id === meetingId)
+    ? editor.linkedEntities
+    : [...editor.linkedEntities, { id: meetingId, type: 'meeting' as const, title: recap.title, status: recap.status }]
+
+  db.documentEditors[docId] = {
+    ...editor,
+    version: nextVersion,
+    content: `${editor.content}${meetingBlock}`,
+    linkedEntities,
+    status: mode === 'review' ? DocumentStatus.InReview : DocumentStatus.Draft,
+    awaitingApproval: mode === 'review'
+  }
+
+  const historyEntry: DocumentHistoryVersion = {
+    id: `history-${Date.now()}`,
+    version: nextVersion,
+    timestamp: 'just now',
+    author: findUser(userId),
+    changeSource: 'meeting',
+    sourceDetail: recap.title,
+    changes: {
+      additions: recap.aiSummary.keyPoints.length + recap.decisions.length + 2,
+      deletions: 0,
+      modifications: 1
+    },
+    status: mode === 'review' ? 'pending-approval' : 'draft',
+    approvals:
+      mode === 'review'
+        ? editor.approvers.map((approver) => ({
+            approver: findUser(approver.id),
+            status: ApprovalDecision.Pending
+          }))
+        : []
+  }
+
+  db.documentHistory[docId] = [historyEntry, ...(db.documentHistory[docId] ?? [])]
+
+  db.documents = db.documents.map((document) =>
+    document.id === docId
+      ? {
+          ...document,
+          lastUpdated: 'just now',
+          status: mode === 'review' ? DocumentStatus.InReview : DocumentStatus.Draft,
+          awaitingApproval: mode === 'review'
+        }
+      : document
+  )
+
+  db.meetingRecaps[meetingId] = {
+    ...recap,
+    linkedDocuments: recap.linkedDocuments.map((document) =>
+      document.id === docId
+        ? {
+            ...document,
+            applied: true,
+            appliedVersion: nextVersion,
+            reviewRequested: mode === 'review'
+          }
+        : document
+    )
+  }
+
   return clone(db.meetingRecaps[meetingId])
 }
 

@@ -9,6 +9,7 @@ describe('document flow adapters', () => {
       title: 'Architecture',
       version: '1.0',
       status: DocumentStatus.Draft,
+      awaitingApproval: false,
       owners: [],
       approvers: [],
       content: '# Title\n[TASK_WIDGET:task-docs]',

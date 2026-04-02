@@ -3,6 +3,8 @@ import { CheckSquare, FileText, Sparkles, Video } from 'lucide-react'
 import { useParams } from 'react-router'
 
 import { meetingQueries, usePublishMeetingRecap } from '@/entities/meeting'
+import { ApplyMeetingSummaryToDocumentActions } from '@/features/meeting/apply-summary-to-document'
+import { CreateTaskFromActionItemButton } from '@/features/meeting/create-task-from-action-item'
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState } from '@/shared/ui'
 
 export function MeetingRecapWidget() {
@@ -74,9 +76,14 @@ export function MeetingRecapWidget() {
               </div>
               {data.actionItems.map((item) => (
                 <div key={item.id} className='rounded-lg border p-3 text-sm'>
-                  <p className='font-medium'>{item.task}</p>
-                  <p className='text-muted-foreground mt-1'>{item.assignee.name} · {item.dueDate}</p>
-                  <Badge className='mt-2'>{item.priority}</Badge>
+                  <div className='flex items-start justify-between gap-3'>
+                    <div>
+                      <p className='font-medium'>{item.task}</p>
+                      <p className='text-muted-foreground mt-1'>{item.assignee.name} · {item.dueDate}</p>
+                      <Badge className='mt-2'>{item.priority}</Badge>
+                    </div>
+                    <CreateTaskFromActionItemButton meetingId={meetingId} actionItemId={item.id} alreadyTask={item.alreadyTask} taskId={item.taskId} />
+                  </div>
                 </div>
               ))}
             </CardContent>
@@ -87,10 +94,28 @@ export function MeetingRecapWidget() {
               <CardTitle className='flex items-center gap-2'><FileText className='size-4' /> Linked documents</CardTitle>
             </CardHeader>
             <CardContent className='space-y-3'>
+              <div className='text-muted-foreground rounded-lg border p-3 text-sm'>
+                {data.appliedDocumentCount} linked documents already updated from this recap.
+              </div>
               {data.linkedDocuments.map((document) => (
                 <div key={document.id} className='rounded-lg border p-3 text-sm'>
                   <p className='font-medium'>{document.title}</p>
                   <p className='text-muted-foreground mt-1'>{document.updateSuggestion}</p>
+                  {document.applied && (
+                    <p className='text-muted-foreground mt-2 text-xs'>
+                      Applied in version {document.appliedVersion}
+                      {document.reviewRequested ? ' and sent to review.' : '.'}
+                    </p>
+                  )}
+                  <div className='mt-3'>
+                    <ApplyMeetingSummaryToDocumentActions
+                      meetingId={meetingId}
+                      docId={document.id}
+                      applied={document.applied}
+                      appliedVersion={document.appliedVersion}
+                      reviewRequested={document.reviewRequested}
+                    />
+                  </div>
                 </div>
               ))}
             </CardContent>
