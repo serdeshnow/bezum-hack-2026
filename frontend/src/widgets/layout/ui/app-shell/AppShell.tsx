@@ -23,12 +23,12 @@ import {
   User,
   Users
 } from 'lucide-react'
-import { useTheme } from 'next-themes'
-
-import { notificationQueries, useMarkAllNotificationsRead, useMarkNotificationRead } from '@/entities/notification'
-import { projectQueries } from '@/entities/project'
 import { sessionService, useSessionStore } from '@/entities/session'
 import { taskQueries } from '@/entities/task'
+import { notificationQueries } from '@/entities/notification'
+import { useNotificationReadActions } from '@/features/notification/mark-read'
+import { useProjectSwitcher } from '@/features/project/switcher'
+import { useThemePreference } from '@/features/theme/toggle'
 import { TaskStatus } from '@/shared/api'
 import { appRoutes } from '@/shared/model'
 import {
@@ -122,21 +122,17 @@ function getRoleIcon(role?: string) {
 export function AppShell() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { theme, setTheme } = useTheme()
+  const { toggleTheme } = useThemePreference()
   const [commandOpen, setCommandOpen] = useState(false)
   const currentUser = useSessionStore((state) => state.currentUser)
-  const currentProjectId = useSessionStore((state) => state.currentProjectId)
-  const setCurrentProjectId = useSessionStore((state) => state.setCurrentProjectId)
-  const { data: projects = [] } = useQuery(projectQueries.list())
+  const { projects, currentProject, selectProject } = useProjectSwitcher()
   const { data: tasks = [] } = useQuery(taskQueries.list())
   const { data: notifications = [] } = useQuery(notificationQueries.list())
-  const markAllRead = useMarkAllNotificationsRead()
-  const markOneRead = useMarkNotificationRead()
+  const { markAllRead, markNotificationRead } = useNotificationReadActions()
 
   const unreadCount = notifications.filter((item) => !item.read).length
   const openTaskCount = tasks.filter((task) => task.status !== TaskStatus.Done && task.status !== TaskStatus.Cancelled).length
   const breadcrumbs = useMemo(() => buildBreadcrumbs(location.pathname), [location.pathname])
-  const currentProject = projects.find((project) => project.id === currentProjectId) ?? projects[0] ?? null
   const roleLabel = formatRoleLabel(currentUser?.role)
   const RoleIcon = getRoleIcon(currentUser?.role)
 
@@ -257,7 +253,7 @@ export function AppShell() {
                           type='button'
                           className={`w-full rounded-lg border p-3 text-left ${notification.read ? 'bg-background' : 'bg-accent/20'}`}
                           onClick={() => {
-                            markOneRead.mutate(notification.id)
+                            markNotificationRead.mutate(notification.id)
                             if (notification.entityId?.startsWith('doc')) navigate(`/docs/${notification.entityId}`)
                             if (notification.entityId?.startsWith('meeting')) navigate(`/meetings/${notification.entityId}`)
                           }}
@@ -282,9 +278,12 @@ export function AppShell() {
                   variant='ghost'
                   size='icon'
                   className='size-8 rounded-[5px]'
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  onClick={() => {
+                    void toggleTheme()
+                  }}
                 >
-                  {theme === 'dark' ? <Sun className='size-[18px]' /> : <Moon className='size-[18px]' />}
+                  <Sun className='size-[18px] dark:hidden' />
+                  <Moon className='hidden size-[18px] dark:block' />
                 </Button>
               </HeaderAction>
 
@@ -339,7 +338,7 @@ export function AppShell() {
                   <DropdownMenuItem
                     key={project.id}
                     onSelect={() => {
-                      setCurrentProjectId(project.id)
+                      selectProject(project.id)
                       navigate(`/projects/${project.id}`)
                     }}
                   >

@@ -1,28 +1,9 @@
-import { useNavigate } from 'react-router'
-import { useMutation } from '@tanstack/react-query'
-
-import { sessionService } from '@/entities/session'
-import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui'
+import { VerifySessionCard } from '@/features/auth/verify'
 
 export function AuthVerifyPage() {
-  const navigate = useNavigate()
-  const verify = useMutation({
-    mutationFn: () => sessionService.verify(),
-    onSuccess: () => navigate('/projects')
-  })
-
   return (
     <div className='flex min-h-screen items-center justify-center px-6 py-12'>
-      <Card className='w-full max-w-md'>
-        <CardHeader>
-          <CardTitle>Verify sign in</CardTitle>
-          <CardDescription>This is a temporary frontend-only verification step.</CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          <p className='text-muted-foreground text-sm'>Your session is ready. Continue into the protected workspace.</p>
-          <Button className='w-full' onClick={() => verify.mutate()}>Enter workspace</Button>
-        </CardContent>
-      </Card>
+      <VerifySessionCard />
     </div>
   )
 }

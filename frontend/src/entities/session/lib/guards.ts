@@ -1,12 +1,16 @@
-import { WorkspaceRole } from '@/shared/api'
+import { DocumentAccessScope, WorkspaceRole } from '@/shared/api'
 
-import { useSessionStore } from '@/entities/session/model/session.ts'
+import { canAccessDocumentScope, selectCurrentRole, selectIsAuthenticated } from '@/entities/session/model/selectors.ts'
 
 export function isAuthenticated() {
-  return useSessionStore.getState().status === 'authenticated'
+  return selectIsAuthenticated()
 }
 
 export function hasRole(allowedRoles: WorkspaceRole[]) {
-  const role = useSessionStore.getState().currentUser?.role
+  const role = selectCurrentRole()
   return role ? allowedRoles.includes(role) : false
+}
+
+export function hasDocumentAccess(scope: DocumentAccessScope) {
+  return canAccessDocumentScope(scope)
 }

@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTheme } from 'next-themes'
 
 import { ThemePreference } from '@/shared/api'
-import { updateNotificationSettings, updateThemePreference } from '@/shared/mocks/seamless.ts'
+import { updateNotificationSettings } from '@/shared/mocks/seamless.ts'
 import { queryClient } from '@/shared/api'
 import { sessionService, useSessionStore } from '@/entities/session'
+import { useThemePreference } from '@/features/theme/toggle'
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, PageState, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui'
 
 export function SettingsWidget() {
   const user = useSessionStore((state) => state.currentUser)
-  const { setTheme } = useTheme()
+  const { applyThemePreference } = useThemePreference()
   const { data, isLoading, error } = useQuery({
     queryKey: ['settings', user?.id],
     queryFn: () => sessionService.getSettings()
@@ -52,9 +52,7 @@ export function SettingsWidget() {
             <Select
               value={data.appearance.theme}
               onValueChange={(value) => {
-                updateThemePreference(user?.id ?? 'user-manager', value as ThemePreference)
-                useSessionStore.getState().setThemePreference(value as ThemePreference)
-                setTheme(value)
+                void applyThemePreference(value as ThemePreference)
                 queryClient.invalidateQueries({ queryKey: ['settings', user?.id] })
               }}
             >

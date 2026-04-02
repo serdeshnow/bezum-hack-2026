@@ -34,6 +34,7 @@ describe('route guards', () => {
 
   it('redirects authenticated users away from guest routes', async () => {
     useSessionStore.getState().signIn('sarah@seamless.dev')
+    useSessionStore.getState().verify()
 
     const router = createMemoryRouter(
       [

@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { Bell } from 'lucide-react'
 
-import { notificationQueries, useMarkAllNotificationsRead, useMarkNotificationRead } from '@/entities/notification'
+import { notificationQueries } from '@/entities/notification'
+import { useNotificationReadActions } from '@/features/notification/mark-read'
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, PageState, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
 export function UnifiedInboxWidget() {
   const { data, isLoading, error } = useQuery(notificationQueries.list())
-  const markAll = useMarkAllNotificationsRead()
-  const markOne = useMarkNotificationRead()
+  const { markAllRead, markNotificationRead } = useNotificationReadActions()
 
   if (isLoading) {
     return <PageState state='loading' title='Loading notifications' description='Collecting mentions, task updates, releases, and PR events.' />
@@ -26,7 +26,7 @@ export function UnifiedInboxWidget() {
           <h1 className='text-2xl font-semibold'>Unified inbox</h1>
           <p className='text-muted-foreground text-sm'>{unread.length} unread notifications across docs, tasks, meetings, PRs, and releases.</p>
         </div>
-        <Button variant='outline' onClick={() => markAll.mutate()}>Mark all read</Button>
+        <Button variant='outline' onClick={() => markAllRead.mutate()}>Mark all read</Button>
       </div>
 
       <Tabs defaultValue='all'>
@@ -47,7 +47,7 @@ export function UnifiedInboxWidget() {
                 </div>
                 <div className='flex items-center gap-2'>
                   {!notification.read && <Badge>Unread</Badge>}
-                  <Button variant='outline' size='sm' onClick={() => markOne.mutate(notification.id)}>Mark read</Button>
+                  <Button variant='outline' size='sm' onClick={() => markNotificationRead.mutate(notification.id)}>Mark read</Button>
                 </div>
               </CardContent>
             </Card>
@@ -62,7 +62,7 @@ export function UnifiedInboxWidget() {
                 </CardHeader>
                 <CardContent className='flex items-center justify-between gap-4 text-sm'>
                   <p>{notification.description}</p>
-                  <Button variant='outline' size='sm' onClick={() => markOne.mutate(notification.id)}>Mark read</Button>
+                  <Button variant='outline' size='sm' onClick={() => markNotificationRead.mutate(notification.id)}>Mark read</Button>
                 </CardContent>
               </Card>
             ))
