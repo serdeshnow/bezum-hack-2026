@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/serdeshnow/bezum-hack-2026/backend/docs"
 	"github.com/serdeshnow/bezum-hack-2026/backend/internal/communication"
 	"github.com/serdeshnow/bezum-hack-2026/backend/internal/delivery"
 	"github.com/serdeshnow/bezum-hack-2026/backend/internal/document"
-	_ "github.com/serdeshnow/bezum-hack-2026/backend/internal/http/docs"
 	"github.com/serdeshnow/bezum-hack-2026/backend/internal/http/middleware"
 	"github.com/serdeshnow/bezum-hack-2026/backend/internal/infra/logger"
 	githubintegration "github.com/serdeshnow/bezum-hack-2026/backend/internal/integrations/github"
