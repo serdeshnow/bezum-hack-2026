@@ -17,10 +17,21 @@ import type {
   Task
 } from '@/shared/api'
 import { ApprovalDecision, DocumentAccessScope, DocumentStatus, http, withBackendFallback } from '@/shared/api'
-import { appConfig } from '@/shared/config'
 import { buildUserSummary, fetchUsersMap, formatDateLabel, resolveLinkedEntityTitle } from '@/shared/api/seamlessBackend.ts'
 import { getDocumentEditor, getDocumentHistory, listDocumentFolders, listDocuments } from '@/shared/mocks/seamless.ts'
+import { useSessionStore } from '@/entities/session'
 import { adaptDocumentEditorViewModel, adaptDocumentHistoryViewModel, adaptDocumentListItemViewModel } from './adapters.ts'
+
+function getCurrentProjectParams() {
+  const currentProjectId = useSessionStore.getState().currentProjectId
+  const numericProjectId = Number(currentProjectId)
+
+  if (Number.isFinite(numericProjectId)) {
+    return { projectId: numericProjectId }
+  }
+
+  return {}
+}
 
 export const documentQueryKeys = {
   folders: ['documents', 'folders'] as const,
@@ -37,7 +48,7 @@ export const documentQueries = {
         withBackendFallback(
           async () => {
             const { data } = await http.get<Array<ApiEntity<DocumentFolder>>>('/document-folders', {
-              params: { projectId: appConfig.defaultProjectId }
+              params: getCurrentProjectParams()
             })
 
             return data.map((folder) => ({
@@ -58,8 +69,8 @@ export const documentQueries = {
           async () => {
             const usersMap = await fetchUsersMap()
             const [documentsResponse, epochsResponse] = await Promise.all([
-              http.get<Array<ApiEntity<Document>>>('/documents', { params: { projectId: appConfig.defaultProjectId } }),
-              http.get<Array<ApiEntity<Epoch>>>('/epochs', { params: { projectId: appConfig.defaultProjectId } })
+              http.get<Array<ApiEntity<Document>>>('/documents', { params: getCurrentProjectParams() }),
+              http.get<Array<ApiEntity<Epoch>>>('/epochs', { params: getCurrentProjectParams() })
             ])
 
             const epochMap = new Map(epochsResponse.data.map((epoch) => [String(epoch.id), epoch]))
@@ -110,10 +121,10 @@ export const documentQueries = {
                 http.get<Array<ApiEntity<DocumentVersion>>>(`/documents/${docId}/versions`),
                 http.get<Array<ApiEntity<DocumentComment>>>(`/documents/${docId}/comments`),
                 http.get<Array<ApiEntity<DocumentLink>>>(`/documents/${docId}/links`),
-                http.get<Array<ApiEntity<Task>>>('/tasks', { params: { projectId: appConfig.defaultProjectId } }),
-                http.get<Array<ApiEntity<Meeting>>>('/meetings', { params: { projectId: appConfig.defaultProjectId } }),
-                http.get<Array<ApiEntity<Release>>>('/releases', { params: { projectId: appConfig.defaultProjectId } }),
-                http.get<Array<ApiEntity<Epoch>>>('/epochs', { params: { projectId: appConfig.defaultProjectId } }),
+                http.get<Array<ApiEntity<Task>>>('/tasks', { params: getCurrentProjectParams() }),
+                http.get<Array<ApiEntity<Meeting>>>('/meetings', { params: getCurrentProjectParams() }),
+                http.get<Array<ApiEntity<Release>>>('/releases', { params: getCurrentProjectParams() }),
+                http.get<Array<ApiEntity<Epoch>>>('/epochs', { params: getCurrentProjectParams() }),
                 http.get<Array<ApiEntity<Project>>>('/projects')
               ])
 

@@ -1,12 +1,60 @@
 import { useMutation } from '@tanstack/react-query'
 
-import type { UpdateDocumentApprovalRequest, UpdateDocumentRequest } from '@/shared/api'
-import { ApprovalDecision, DocumentStatus } from '@/shared/api'
+import type { ApiEntity, CreateDocumentRequest, Document, UpdateDocumentApprovalRequest, UpdateDocumentRequest } from '@/shared/api'
+import { ApprovalDecision, DocumentAccessScope, DocumentStatus } from '@/shared/api'
 import { http, queryClient, withBackendFallback } from '@/shared/api'
 import { addDocumentComment, addDocumentLink, requestDocumentReview, reviewDocumentVersion, updateDocument, type LinkedEntity } from '@/shared/mocks/seamless.ts'
 
 import { useSessionStore } from '@/entities/session'
 import { documentQueryKeys } from '@/entities/document/api/queries.ts'
+
+function getNumericSessionUserId() {
+  const userId = Number(useSessionStore.getState().currentUser?.id)
+
+  if (!Number.isFinite(userId)) {
+    throw new Error('Document creation requires a backend-authenticated user session.')
+  }
+
+  return userId
+}
+
+function getNumericCurrentProjectId() {
+  const projectId = Number(useSessionStore.getState().currentProjectId)
+
+  if (!Number.isFinite(projectId)) {
+    throw new Error('Select a backend project before creating a document.')
+  }
+
+  return projectId
+}
+
+export function useCreateDocument() {
+  return useMutation({
+    mutationFn: async ({ title, description }: { title: string; description: string }) => {
+      const payload: CreateDocumentRequest = {
+        projectId: getNumericCurrentProjectId(),
+        folderId: null,
+        title,
+        description,
+        status: DocumentStatus.Draft,
+        accessScope: DocumentAccessScope.Internal,
+        authorUserId: getNumericSessionUserId(),
+        currentVersionId: null,
+        awaitingApproval: false,
+        isStarred: false,
+        archivedAt: null
+      }
+
+      const { data } = await http.post<ApiEntity<Document>>('/documents', payload)
+      return data
+    },
+    onSuccess: (document) => {
+      queryClient.invalidateQueries({ queryKey: documentQueryKeys.all })
+      queryClient.invalidateQueries({ queryKey: documentQueryKeys.folders })
+      queryClient.invalidateQueries({ queryKey: documentQueryKeys.detail(String(document.id)) })
+    }
+  })
+}
 
 export function useUpdateDocument(docId: string) {
   return useMutation({

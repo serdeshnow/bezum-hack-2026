@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
   AlertCircle,
@@ -13,15 +13,37 @@ import {
   Users
 } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
 import { documentQueries } from '@/entities/document'
 import { meetingQueries } from '@/entities/meeting'
 import { notificationQueries } from '@/entities/notification'
-import { projectQueries } from '@/entities/project'
+import { projectQueries, useCreateProject } from '@/entities/project'
 import { releaseQueries } from '@/entities/release'
 import { taskQueries } from '@/entities/task'
 import { TaskStatus } from '@/shared/api'
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, PageState, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  PageState,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea
+} from '@/shared/ui'
 
 function ProjectProgress({ value }: { value: number }) {
   return (
@@ -33,12 +55,16 @@ function ProjectProgress({ value }: { value: number }) {
 
 export function ProjectsListWidget() {
   const navigate = useNavigate()
+  const createProject = useCreateProject()
   const { data: projects, isLoading, error } = useQuery(projectQueries.list())
   const { data: tasks = [] } = useQuery(taskQueries.list())
   const { data: documents = [] } = useQuery(documentQueries.list())
   const { data: scheduler } = useQuery(meetingQueries.scheduler())
   const { data: releases } = useQuery(releaseQueries.dashboard())
   const { data: notifications } = useQuery(notificationQueries.list())
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [draftName, setDraftName] = useState('')
+  const [draftDescription, setDraftDescription] = useState('')
 
   const activeProjects = useMemo(() => (projects ?? []).filter((project) => project.status === 'active'), [projects])
   const openTasks = useMemo(
@@ -50,6 +76,27 @@ export function ProjectsListWidget() {
     [activeProjects]
   )
 
+  const handleCreateProject = () => {
+    createProject.mutate(
+      {
+        name: draftName.trim() || 'Untitled project',
+        description: draftDescription.trim() || 'New delivery workspace'
+      },
+      {
+        onSuccess: (project) => {
+          setIsCreateOpen(false)
+          setDraftName('')
+          setDraftDescription('')
+          toast.success('Project created')
+          navigate(`/projects/${project.id}`)
+        },
+        onError: (mutationError) => {
+          toast.error(mutationError instanceof Error ? mutationError.message : 'Failed to create project')
+        }
+      }
+    )
+  }
+
   if (isLoading) {
     return <PageState state='loading' title='Loading projects' description='Preparing project workspace overview.' />
   }
@@ -59,7 +106,40 @@ export function ProjectsListWidget() {
   }
 
   if (!projects?.length) {
-    return <PageState state='empty' title='No projects yet' description='Create a project to start delivery planning.' action={{ label: 'Create project', onClick: () => {} }} />
+    return (
+      <>
+        <PageState
+          state='empty'
+          title='No projects yet'
+          description='Create a project to start delivery planning.'
+          action={{ label: 'Create project', onClick: () => setIsCreateOpen(true) }}
+        />
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create project</DialogTitle>
+              <DialogDescription>Create a backend project and open its workspace immediately.</DialogDescription>
+            </DialogHeader>
+            <div className='space-y-4'>
+              <Input value={draftName} onChange={(event) => setDraftName(event.target.value)} placeholder='Seamless Platform' />
+              <Textarea
+                value={draftDescription}
+                onChange={(event) => setDraftDescription(event.target.value)}
+                placeholder='What the project is delivering and why it matters.'
+              />
+            </div>
+            <DialogFooter>
+              <Button variant='outline' onClick={() => setIsCreateOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateProject} disabled={createProject.isPending}>
+                Create
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    )
   }
 
   const quickAccessCards = [
@@ -131,7 +211,7 @@ export function ProjectsListWidget() {
               <h1 className='text-2xl font-bold md:text-[30px] md:leading-10'>Projects Hub</h1>
               <p className='text-muted-foreground text-sm'>Central navigation for all development activities</p>
             </div>
-            <Button className='h-8 rounded-[5px] px-4 text-sm font-medium'>
+            <Button className='h-8 rounded-[5px] px-4 text-sm font-medium' onClick={() => setIsCreateOpen(true)}>
               <Plus className='size-4' />
               New Project
             </Button>
@@ -143,6 +223,31 @@ export function ProjectsListWidget() {
           </div>
         </div>
       </div>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create project</DialogTitle>
+            <DialogDescription>Create a backend project and open its workspace immediately.</DialogDescription>
+          </DialogHeader>
+          <div className='space-y-4'>
+            <Input value={draftName} onChange={(event) => setDraftName(event.target.value)} placeholder='Seamless Platform' />
+            <Textarea
+              value={draftDescription}
+              onChange={(event) => setDraftDescription(event.target.value)}
+              placeholder='What the project is delivering and why it matters.'
+            />
+          </div>
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setIsCreateOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateProject} disabled={createProject.isPending}>
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className='px-6 py-6'>
         <div className='space-y-7'>

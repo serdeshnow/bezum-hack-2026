@@ -1,18 +1,47 @@
 import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { FileText, Search } from 'lucide-react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { toast } from 'sonner'
 
-import { documentQueries } from '@/entities/document'
+import { documentQueries, useCreateDocument } from '@/entities/document'
 import { epochQueries } from '@/entities/epoch'
-import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, PageState, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui'
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  PageState,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Textarea
+} from '@/shared/ui'
 
 export function DocsHubWidget() {
+  const navigate = useNavigate()
   const { data: documents = [], isLoading, error } = useQuery(documentQueries.list())
   const { data: folders = [] } = useQuery(documentQueries.folders())
   const { data: epochs = [] } = useQuery(epochQueries.list())
+  const createDocument = useCreateDocument()
   const [query, setQuery] = useState('')
   const [selectedEpochId, setSelectedEpochId] = useState<string>('all')
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [draftTitle, setDraftTitle] = useState('')
+  const [draftDescription, setDraftDescription] = useState('')
 
   const filtered = useMemo(
     () =>
@@ -32,8 +61,62 @@ export function DocsHubWidget() {
     return <PageState state='error' title='Docs hub unavailable' description='Document data could not be loaded.' />
   }
 
+  const handleCreateDocument = () => {
+    createDocument.mutate(
+      {
+        title: draftTitle.trim() || 'Untitled document',
+        description: draftDescription.trim() || 'New delivery document'
+      },
+      {
+        onSuccess: (document) => {
+          setIsCreateOpen(false)
+          setDraftTitle('')
+          setDraftDescription('')
+          toast.success('Document created')
+          navigate(`/docs/${document.id}`)
+        },
+        onError: (mutationError) => {
+          toast.error(mutationError instanceof Error ? mutationError.message : 'Failed to create document')
+        }
+      }
+    )
+  }
+
   if (!documents.length) {
-    return <PageState state='empty' title='No documents available' description='Start by drafting a delivery document or importing an existing brief.' />
+    return (
+      <>
+        <PageState
+          state='empty'
+          title='No documents available'
+          description='Start by drafting a delivery document or importing an existing brief.'
+          action={{ label: 'Create document', onClick: () => setIsCreateOpen(true) }}
+        />
+        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create document</DialogTitle>
+              <DialogDescription>Create a new document in the currently selected backend project.</DialogDescription>
+            </DialogHeader>
+            <div className='space-y-4'>
+              <Input value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)} placeholder='Architecture overview' />
+              <Textarea
+                value={draftDescription}
+                onChange={(event) => setDraftDescription(event.target.value)}
+                placeholder='What this document is for and who it should help.'
+              />
+            </div>
+            <DialogFooter>
+              <Button variant='outline' onClick={() => setIsCreateOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateDocument} disabled={createDocument.isPending}>
+                Create
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
+    )
   }
 
   return (
@@ -43,8 +126,33 @@ export function DocsHubWidget() {
           <h1 className='text-2xl font-semibold'>Docs hub</h1>
           <p className='text-muted-foreground text-sm'>Hierarchical documents with linked tasks, meetings, releases, and approval state.</p>
         </div>
-        <Button>New document</Button>
+        <Button onClick={() => setIsCreateOpen(true)}>New document</Button>
       </div>
+
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create document</DialogTitle>
+            <DialogDescription>Create a new document in the currently selected backend project.</DialogDescription>
+          </DialogHeader>
+          <div className='space-y-4'>
+            <Input value={draftTitle} onChange={(event) => setDraftTitle(event.target.value)} placeholder='Architecture overview' />
+            <Textarea
+              value={draftDescription}
+              onChange={(event) => setDraftDescription(event.target.value)}
+              placeholder='What this document is for and who it should help.'
+            />
+          </div>
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setIsCreateOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateDocument} disabled={createDocument.isPending}>
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className='grid gap-4 xl:grid-cols-[280px_1fr]'>
         <Card>
@@ -116,6 +224,7 @@ export function DocsHubWidget() {
                       Linked: {document.linkedTotal} entities total, including {document.linkedTo.tasks ?? 0} tasks and {document.linkedTo.meetings ?? 0} meetings
                     </p>
                   </CardContent>
+                  <CardFooter className='text-muted-foreground text-xs'>{document.lastUpdated}</CardFooter>
                 </Card>
               </Link>
             ))}
