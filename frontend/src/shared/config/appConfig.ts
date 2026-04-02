@@ -2,6 +2,7 @@ import { env } from './env.ts'
 
 export const appConfig = {
   apiBaseUrl: env.VITE_API_BASEURL,
+  apiToken: env.VITE_API_TOKEN,
   appName: env.VITE_APP_NAME,
   appDescription: env.VITE_APP_DESCRIPTION,
   locale: env.VITE_APP_LOCALE,

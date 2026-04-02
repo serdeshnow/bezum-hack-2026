@@ -1,3 +1,6 @@
 export { queryClient } from './queryClient.ts'
 export { http } from './http.ts'
+export { canUseBackend, normalizeApiBaseUrl, withBackendFallback } from './backend.ts'
+export type { ApiEntity } from './backend.ts'
+export { clearStoredApiToken, getApiToken, getStoredApiToken, setStoredApiToken } from './authToken.ts'
 export * from './generated/schema.ts'

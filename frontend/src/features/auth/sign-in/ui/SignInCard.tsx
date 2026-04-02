@@ -14,10 +14,11 @@ const quickUsers = [
 export function SignInCard() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('sarah@seamless.dev')
+  const [apiToken, setApiToken] = useState('')
   const signIn = useStubSignIn()
 
   const submit = (value: string) => {
-    signIn.mutate(value, {
+    signIn.mutate({ email: value, apiToken: apiToken.trim() || undefined }, {
       onSuccess: () => navigate(appRoutes.auth.verify)
     })
   }
@@ -26,10 +27,11 @@ export function SignInCard() {
     <Card className='w-full max-w-md'>
       <CardHeader>
         <CardTitle>Sign in</CardTitle>
-        <CardDescription>Frontend auth shell is backed by env + localStorage until backend auth endpoints are introduced.</CardDescription>
+        <CardDescription>Frontend auth shell uses env + localStorage. If backend auth is required, provide a bearer token below.</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <Input value={email} onChange={(event) => setEmail(event.target.value)} placeholder='sarah@seamless.dev' />
+        <Input value={apiToken} onChange={(event) => setApiToken(event.target.value)} placeholder='Optional bearer token for backend API' />
         <Button className='w-full' onClick={() => submit(email)} disabled={signIn.isPending}>
           Continue
         </Button>

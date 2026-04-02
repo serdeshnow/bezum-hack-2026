@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { ThemePreference, WorkspaceRole } from '@/shared/api'
+import { clearStoredApiToken, setStoredApiToken } from '@/shared/api'
 import { appConfig } from '@/shared/config'
 import { getSettings, getUserById, signInByEmail } from '@/shared/mocks/seamless.ts'
 
@@ -16,10 +17,11 @@ type SessionState = {
   pendingUserId: string | null
   currentUser: SessionUser | null
   role: WorkspaceRole | null
+  apiToken: string | null
   themePreference: ThemePreference
   isAuthenticated: boolean
   currentProjectId: string
-  signIn: (email: string) => SessionUser
+  signIn: (email: string, apiToken?: string) => SessionUser
   verify: () => SessionUser | null
   signOut: () => void
   setThemePreference: (themePreference: ThemePreference) => void
@@ -46,6 +48,7 @@ function createSessionSnapshot(
     pendingUserId,
     currentUser: user,
     role: user?.role ?? null,
+    apiToken: appConfig.apiToken || null,
     themePreference: resolveThemePreference(user?.id ?? null),
     isAuthenticated: status === 'authenticated',
     currentProjectId
@@ -59,10 +62,16 @@ export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({
       ...createSessionSnapshot(initialSessionUser, 'authenticated', appConfig.defaultProjectId),
-      signIn: (email) => {
+      signIn: (email, apiToken) => {
         const summary = signInByEmail(email)
         const user = adaptUserToSessionUser(adaptUserSummaryToUser(summary), summary.id)
-        set((state) => createSessionSnapshot(user, 'pending-verification', state.currentProjectId, user.id))
+        if (apiToken?.trim()) {
+          setStoredApiToken(apiToken.trim())
+        }
+        set((state) => ({
+          ...createSessionSnapshot(user, 'pending-verification', state.currentProjectId, user.id),
+          apiToken: apiToken?.trim() || state.apiToken || appConfig.apiToken || null
+        }))
         return user
       },
       verify: () => {
@@ -78,6 +87,7 @@ export const useSessionStore = create<SessionState>()(
         return verifiedUser
       },
       signOut: () => {
+        clearStoredApiToken()
         set((state) => createSessionSnapshot(null, 'anonymous', state.currentProjectId))
       },
       setThemePreference: (themePreference) => {
@@ -95,6 +105,7 @@ export const useSessionStore = create<SessionState>()(
               ...state,
               currentUser: user,
               role: user.role,
+              apiToken: state.apiToken || appConfig.apiToken || null,
               themePreference: resolveThemePreference(user.id),
               isAuthenticated: state.status === 'authenticated'
             }
@@ -109,12 +120,16 @@ export const useSessionStore = create<SessionState>()(
               currentUserId: user.id,
               currentUser: user,
               role: user.role,
+              apiToken: state.apiToken || appConfig.apiToken || null,
               themePreference: resolveThemePreference(user.id),
               isAuthenticated: false
             }
           }
 
-          return createSessionSnapshot(initialSessionUser, 'authenticated', state.currentProjectId)
+          return {
+            ...createSessionSnapshot(initialSessionUser, 'authenticated', state.currentProjectId),
+            apiToken: state.apiToken || appConfig.apiToken || null
+          }
         })
       }
     }),

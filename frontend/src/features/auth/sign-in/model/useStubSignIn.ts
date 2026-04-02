@@ -4,6 +4,6 @@ import { sessionService } from '@/entities/session'
 
 export function useStubSignIn() {
   return useMutation({
-    mutationFn: (email: string) => sessionService.signIn(email)
+    mutationFn: ({ email, apiToken }: { email: string; apiToken?: string }) => sessionService.signIn(email, apiToken)
   })
 }

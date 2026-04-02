@@ -13,7 +13,7 @@ export function VerifySessionCard() {
     <Card className='w-full max-w-md'>
       <CardHeader>
         <CardTitle>Verify sign in</CardTitle>
-        <CardDescription>This is a temporary frontend-only verification step.</CardDescription>
+        <CardDescription>This step finalizes the frontend session and reuses any stored bearer token for backend requests.</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <p className='text-muted-foreground text-sm'>Your session is ready. Continue into the protected workspace.</p>

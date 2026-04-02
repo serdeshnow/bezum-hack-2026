@@ -10,8 +10,8 @@ export const sessionService = {
   getStatus() {
     return useSessionStore.getState().status
   },
-  signIn(email: string) {
-    return Promise.resolve(useSessionStore.getState().signIn(email))
+  signIn(email: string, apiToken?: string) {
+    return Promise.resolve(useSessionStore.getState().signIn(email, apiToken))
   },
   verify() {
     useSessionStore.getState().verify()
