@@ -1,0 +1,6431 @@
+basePath: /api
+definitions:
+  communication.Notification:
+    properties:
+      actorUserId:
+        type: integer
+      channel:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      entityId:
+        type: integer
+      entityType:
+        type: string
+      id:
+        type: integer
+      readAt:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  communication.activityFeedRequest:
+    properties:
+      action:
+        type: string
+      actorUserId:
+        type: integer
+      metadataJson:
+        additionalProperties: true
+        type: object
+      projectId:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  communication.activityFeedResponse:
+    properties:
+      action:
+        type: string
+      actorUserId:
+        type: integer
+      createdAt:
+        type: string
+      id:
+        type: integer
+      metadataJson:
+        additionalProperties: true
+        type: object
+      projectId:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  communication.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  communication.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  communication.notificationRequest:
+    properties:
+      actorUserId:
+        type: integer
+      channel:
+        type: string
+      description:
+        type: string
+      entityId:
+        type: integer
+      entityType:
+        type: string
+      readAt:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      userId:
+        type: integer
+    type: object
+  delivery.PullRequest:
+    properties:
+      additions:
+        type: integer
+      authorUserId:
+        type: integer
+      branch:
+        type: string
+      commitsCount:
+        type: integer
+      createdAt:
+        type: string
+      deletions:
+        type: integer
+      externalUrl:
+        type: string
+      id:
+        type: integer
+      mergedAt:
+        type: string
+      number:
+        type: integer
+      projectId:
+        type: integer
+      releaseId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  delivery.Release:
+    properties:
+      authorUserId:
+        type: integer
+      breakingCount:
+        type: integer
+      commitsCount:
+        type: integer
+      createdAt:
+        type: string
+      deployedAt:
+        type: string
+      featuresCount:
+        type: integer
+      fixesCount:
+        type: integer
+      id:
+        type: integer
+      progressPercent:
+        type: integer
+      projectId:
+        type: integer
+      status:
+        type: string
+      targetDate:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      version:
+        type: string
+    type: object
+  delivery.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  delivery.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  delivery.pullRequestRequest:
+    properties:
+      additions:
+        type: integer
+      authorUserId:
+        type: integer
+      branch:
+        type: string
+      commitsCount:
+        type: integer
+      deletions:
+        type: integer
+      externalUrl:
+        type: string
+      mergedAt:
+        type: string
+      number:
+        type: integer
+      projectId:
+        type: integer
+      releaseId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  delivery.releaseRequest:
+    properties:
+      authorUserId:
+        type: integer
+      breakingCount:
+        type: integer
+      commitsCount:
+        type: integer
+      deployedAt:
+        type: string
+      featuresCount:
+        type: integer
+      fixesCount:
+        type: integer
+      progressPercent:
+        type: integer
+      projectId:
+        type: integer
+      status:
+        type: string
+      targetDate:
+        type: string
+      title:
+        type: string
+      version:
+        type: string
+    type: object
+  document.Approval:
+    properties:
+      approverUserId:
+        type: integer
+      createdAt:
+        type: string
+      decidedAt:
+        type: string
+      decision:
+        type: string
+      documentVersionId:
+        type: integer
+      id:
+        type: integer
+      rationale:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  document.Approver:
+    properties:
+      approved:
+        type: boolean
+      createdAt:
+        type: string
+      decisionAt:
+        type: string
+      documentId:
+        type: integer
+      id:
+        type: integer
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  document.Comment:
+    properties:
+      authorUserId:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      documentId:
+        type: integer
+      id:
+        type: integer
+      resolved:
+        type: boolean
+      updatedAt:
+        type: string
+    type: object
+  document.Document:
+    properties:
+      accessScope:
+        type: string
+      archivedAt:
+        type: string
+      authorUserId:
+        type: integer
+      awaitingApproval:
+        type: boolean
+      createdAt:
+        type: string
+      currentVersionId:
+        type: integer
+      description:
+        type: string
+      folderId:
+        type: integer
+      id:
+        type: integer
+      isStarred:
+        type: boolean
+      projectId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  document.Folder:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      parentFolderId:
+        type: integer
+      projectId:
+        type: integer
+      sortOrder:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  document.Link:
+    properties:
+      createdAt:
+        type: string
+      documentId:
+        type: integer
+      entityId:
+        type: integer
+      entityType:
+        type: string
+      id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  document.Owner:
+    properties:
+      createdAt:
+        type: string
+      documentId:
+        type: integer
+      id:
+        type: integer
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  document.Version:
+    properties:
+      additions:
+        type: integer
+      authorUserId:
+        type: integer
+      changeSource:
+        type: string
+      contentMarkdown:
+        type: string
+      createdAt:
+        type: string
+      deletions:
+        type: integer
+      documentId:
+        type: integer
+      id:
+        type: integer
+      modifications:
+        type: integer
+      sourceDetail:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+      versionLabel:
+        type: string
+    type: object
+  document.approvalRequest:
+    properties:
+      approverUserId:
+        type: integer
+      decidedAt:
+        type: string
+      decision:
+        type: string
+      rationale:
+        type: string
+      status:
+        type: string
+    type: object
+  document.approverRequest:
+    properties:
+      approved:
+        type: boolean
+      decisionAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  document.commentRequest:
+    properties:
+      authorUserId:
+        type: integer
+      content:
+        type: string
+      resolved:
+        type: boolean
+    type: object
+  document.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  document.documentRequest:
+    properties:
+      accessScope:
+        type: string
+      archivedAt:
+        type: string
+      authorUserId:
+        type: integer
+      awaitingApproval:
+        type: boolean
+      currentVersionId:
+        type: integer
+      description:
+        type: string
+      folderId:
+        type: integer
+      isStarred:
+        type: boolean
+      projectId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  document.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  document.folderRequest:
+    properties:
+      name:
+        type: string
+      parentFolderId:
+        type: integer
+      projectId:
+        type: integer
+      sortOrder:
+        type: integer
+    type: object
+  document.linkRequest:
+    properties:
+      entityId:
+        type: integer
+      entityType:
+        type: string
+    type: object
+  document.ownerRequest:
+    properties:
+      userId:
+        type: integer
+    type: object
+  document.versionRequest:
+    properties:
+      additions:
+        type: integer
+      authorUserId:
+        type: integer
+      changeSource:
+        type: string
+      contentMarkdown:
+        type: string
+      deletions:
+        type: integer
+      modifications:
+        type: integer
+      sourceDetail:
+        type: string
+      status:
+        type: string
+      versionLabel:
+        type: string
+    type: object
+  github.acceptedResponse:
+    properties:
+      accepted:
+        example: true
+        type: boolean
+      ignored:
+        example: false
+        type: boolean
+    type: object
+  github.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  meeting.ActionItem:
+    properties:
+      alreadyTask:
+        type: boolean
+      assigneeUserId:
+        type: integer
+      createdAt:
+        type: string
+      dueDate:
+        type: string
+      id:
+        type: integer
+      meetingId:
+        type: integer
+      priority:
+        type: string
+      taskId:
+        type: integer
+      taskText:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.AvailabilitySlot:
+    properties:
+      createdAt:
+        type: string
+      endsAt:
+        type: string
+      id:
+        type: integer
+      isRecommended:
+        type: boolean
+      meetingId:
+        type: integer
+      score:
+        type: integer
+      startsAt:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.AvailabilityVote:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      participantUserId:
+        type: integer
+      slotId:
+        type: integer
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.Decision:
+    properties:
+      createdAt:
+        type: string
+      decision:
+        type: string
+      id:
+        type: integer
+      meetingId:
+        type: integer
+      ownerUserId:
+        type: integer
+      rationale:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.LinkedDocument:
+    properties:
+      createdAt:
+        type: string
+      documentId:
+        type: integer
+      id:
+        type: integer
+      meetingId:
+        type: integer
+      updateSuggestion:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.Meeting:
+    properties:
+      aiSummaryApproved:
+        type: boolean
+      createdAt:
+        type: string
+      description:
+        type: string
+      endsAt:
+        type: string
+      epochId:
+        type: integer
+      id:
+        type: integer
+      projectId:
+        type: integer
+      recordingDurationSec:
+        type: integer
+      recordingUrl:
+        type: string
+      sourceContextId:
+        type: integer
+      sourceContextType:
+        type: string
+      startsAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.Participant:
+    properties:
+      attended:
+        type: boolean
+      createdAt:
+        type: string
+      id:
+        type: integer
+      meetingId:
+        type: integer
+      roleLabel:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  meeting.TranscriptEntry:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      meetingId:
+        type: integer
+      speakerName:
+        type: string
+      speakerUserId:
+        type: integer
+      startsAtSec:
+        type: integer
+      text:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  meeting.actionItemRequest:
+    properties:
+      alreadyTask:
+        type: boolean
+      assigneeUserId:
+        type: integer
+      dueDate:
+        type: string
+      priority:
+        type: string
+      taskId:
+        type: integer
+      taskText:
+        type: string
+    type: object
+  meeting.availabilitySlotRequest:
+    properties:
+      endsAt:
+        type: string
+      isRecommended:
+        type: boolean
+      score:
+        type: integer
+      startsAt:
+        type: string
+    type: object
+  meeting.availabilityVoteRequest:
+    properties:
+      participantUserId:
+        type: integer
+      status:
+        type: string
+    type: object
+  meeting.decisionRequest:
+    properties:
+      decision:
+        type: string
+      ownerUserId:
+        type: integer
+      rationale:
+        type: string
+    type: object
+  meeting.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  meeting.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  meeting.linkedDocumentRequest:
+    properties:
+      documentId:
+        type: integer
+      updateSuggestion:
+        type: string
+    type: object
+  meeting.meetingRequest:
+    properties:
+      aiSummaryApproved:
+        type: boolean
+      description:
+        type: string
+      endsAt:
+        type: string
+      epochId:
+        type: integer
+      projectId:
+        type: integer
+      recordingDurationSec:
+        type: integer
+      recordingUrl:
+        type: string
+      sourceContextId:
+        type: integer
+      sourceContextType:
+        type: string
+      startsAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  meeting.participantRequest:
+    properties:
+      attended:
+        type: boolean
+      roleLabel:
+        type: string
+      userId:
+        type: integer
+    type: object
+  meeting.transcriptEntryRequest:
+    properties:
+      speakerName:
+        type: string
+      speakerUserId:
+        type: integer
+      startsAtSec:
+        type: integer
+      text:
+        type: string
+    type: object
+  planning.Epoch:
+    properties:
+      createdAt:
+        type: string
+      daysRemaining:
+        type: integer
+      endDate:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phase:
+        type: string
+      projectId:
+        type: integer
+      startDate:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  planning.Goal:
+    properties:
+      createdAt:
+        type: string
+      description:
+        type: string
+      epochId:
+        type: integer
+      id:
+        type: integer
+      ownerUserId:
+        type: integer
+      progressPercent:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  planning.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  planning.epochRequest:
+    properties:
+      endDate:
+        type: string
+      name:
+        type: string
+      phase:
+        type: string
+      projectId:
+        type: integer
+      startDate:
+        type: string
+      status:
+        type: string
+    type: object
+  planning.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  planning.goalRequest:
+    properties:
+      description:
+        type: string
+      epochId:
+        type: integer
+      ownerUserId:
+        type: integer
+      progressPercent:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  project.Member:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      joinedAt:
+        type: string
+      projectId:
+        type: integer
+      role:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  project.Project:
+    properties:
+      activeEpochId:
+        type: integer
+      completedAt:
+        type: string
+      createdAt:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      id:
+        type: integer
+      key:
+        type: string
+      name:
+        type: string
+      ownerUserId:
+        type: integer
+      progressPercent:
+        type: integer
+      startedAt:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+      visibilityMode:
+        type: string
+    type: object
+  project.createMemberRequest:
+    properties:
+      role:
+        type: string
+      userId:
+        type: integer
+    required:
+    - userId
+    type: object
+  project.createProjectRequest:
+    properties:
+      activeEpochId:
+        type: integer
+      completedAt:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      ownerUserId:
+        type: integer
+      progressPercent:
+        type: integer
+      startedAt:
+        type: string
+      status:
+        type: string
+      visibilityMode:
+        type: string
+    required:
+    - key
+    - name
+    - ownerUserId
+    - status
+    - visibilityMode
+    type: object
+  project.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  project.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  project.updateMemberRequest:
+    properties:
+      projectId:
+        type: integer
+      role:
+        type: string
+      userId:
+        type: integer
+    type: object
+  project.updateProjectRequest:
+    properties:
+      activeEpochId:
+        type: integer
+      completedAt:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      key:
+        type: string
+      name:
+        type: string
+      ownerUserId:
+        type: integer
+      progressPercent:
+        type: integer
+      startedAt:
+        type: string
+      status:
+        type: string
+      visibilityMode:
+        type: string
+    type: object
+  task.Comment:
+    properties:
+      authorUserId:
+        type: integer
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      taskId:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  task.Tag:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      taskId:
+        type: integer
+      updatedAt:
+        type: string
+      value:
+        type: string
+    type: object
+  task.Task:
+    properties:
+      assigneeUserId:
+        type: integer
+      createdAt:
+        type: string
+      createdDate:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      epochId:
+        type: integer
+      id:
+        type: integer
+      key:
+        type: string
+      priority:
+        type: string
+      projectId:
+        type: integer
+      releaseId:
+        type: integer
+      reporterUserId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  task.commentRequest:
+    properties:
+      authorUserId:
+        type: integer
+      content:
+        type: string
+    type: object
+  task.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  task.errorResponse:
+    properties:
+      code:
+        example: bad_request
+        type: string
+      message:
+        example: validation failed
+        type: string
+    type: object
+  task.tagRequest:
+    properties:
+      value:
+        type: string
+    type: object
+  task.taskRequest:
+    properties:
+      assigneeUserId:
+        type: integer
+      createdDate:
+        type: string
+      description:
+        type: string
+      dueDate:
+        type: string
+      epochId:
+        type: integer
+      key:
+        type: string
+      priority:
+        type: string
+      projectId:
+        type: integer
+      releaseId:
+        type: integer
+      reporterUserId:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  user.LoginResult:
+    properties:
+      accessToken:
+        type: string
+      expiresAt:
+        type: string
+      sessionId:
+        type: string
+      user:
+        $ref: '#/definitions/user.User'
+    type: object
+  user.Preferences:
+    properties:
+      compactMode:
+        type: boolean
+      createdAt:
+        type: string
+      emailNotifications:
+        type: boolean
+      id:
+        type: integer
+      meetingRemindersEnabled:
+        type: boolean
+      mentionNotificationsEnabled:
+        type: boolean
+      releaseNotificationsEnabled:
+        type: boolean
+      taskAssignmentsEnabled:
+        type: boolean
+      theme:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  user.User:
+    properties:
+      avatarUrl:
+        type: string
+      createdAt:
+        type: string
+      displayName:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      isActive:
+        type: boolean
+      lastLoginAt:
+        type: string
+      lastName:
+        type: string
+      passwordHash:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  user.authSuccessResponse:
+    properties:
+      success:
+        example: true
+        type: boolean
+    type: object
+  user.createUserRequest:
+    properties:
+      avatarUrl:
+        type: string
+      displayName:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      isActive:
+        type: boolean
+      lastName:
+        type: string
+      password:
+        type: string
+      passwordHash:
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - role
+    type: object
+  user.deleteResponse:
+    properties:
+      deleted:
+        example: true
+        type: boolean
+    type: object
+  user.loginErrorResponse:
+    properties:
+      code:
+        example: invalid_credentials
+        type: string
+      message:
+        example: invalid credentials
+        type: string
+    type: object
+  user.loginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  user.patchPreferencesRequest:
+    properties:
+      compactMode:
+        type: boolean
+      emailNotifications:
+        type: boolean
+      meetingRemindersEnabled:
+        type: boolean
+      mentionNotificationsEnabled:
+        type: boolean
+      releaseNotificationsEnabled:
+        type: boolean
+      taskAssignmentsEnabled:
+        type: boolean
+      theme:
+        type: string
+    type: object
+  user.replacePreferencesRequest:
+    properties:
+      compactMode:
+        type: boolean
+      emailNotifications:
+        type: boolean
+      meetingRemindersEnabled:
+        type: boolean
+      mentionNotificationsEnabled:
+        type: boolean
+      releaseNotificationsEnabled:
+        type: boolean
+      taskAssignmentsEnabled:
+        type: boolean
+      theme:
+        type: string
+    required:
+    - theme
+    type: object
+  user.updateUserRequest:
+    properties:
+      avatarUrl:
+        type: string
+      displayName:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      isActive:
+        type: boolean
+      lastName:
+        type: string
+      password:
+        type: string
+      passwordHash:
+        type: string
+      role:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: API for the Seamless collaboration backend.
+  title: Seamless Service API
+  version: 0.2.0
+paths:
+  /activity-feed:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/communication.activityFeedResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List activity feed entries
+      tags:
+      - Communication
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity feed payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/communication.activityFeedRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/communication.activityFeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create activity feed entry
+      tags:
+      - Communication
+  /activity-feed/{activityFeedId}:
+    delete:
+      parameters:
+      - description: Activity feed ID
+        in: path
+        name: activityFeedId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete activity feed entry
+      tags:
+      - Communication
+    get:
+      parameters:
+      - description: Activity feed ID
+        in: path
+        name: activityFeedId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.activityFeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get activity feed entry
+      tags:
+      - Communication
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Activity feed ID
+        in: path
+        name: activityFeedId
+        required: true
+        type: integer
+      - description: Activity feed payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/communication.activityFeedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.activityFeedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update activity feed entry
+      tags:
+      - Communication
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/user.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.LoginResult'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      summary: Login user
+      tags:
+      - Identity
+  /auth/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.authSuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Logout user
+      tags:
+      - Identity
+  /auth/me:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Current authenticated user
+      tags:
+      - Identity
+  /document-approvals/{documentApprovalId}:
+    delete:
+      parameters:
+      - description: Document approval ID
+        in: path
+        name: documentApprovalId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document approval
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document approval ID
+        in: path
+        name: documentApprovalId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Approval'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document approval
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document approval ID
+        in: path
+        name: documentApprovalId
+        required: true
+        type: integer
+      - description: Approval payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.approvalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Approval'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document approval
+      tags:
+      - Documents
+  /document-approvers/{documentApproverId}:
+    delete:
+      parameters:
+      - description: Document approver ID
+        in: path
+        name: documentApproverId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document approver
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document approver ID
+        in: path
+        name: documentApproverId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Approver'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document approver
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document approver ID
+        in: path
+        name: documentApproverId
+        required: true
+        type: integer
+      - description: Approver payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.approverRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Approver'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document approver
+      tags:
+      - Documents
+  /document-comments/{documentCommentId}:
+    delete:
+      parameters:
+      - description: Document comment ID
+        in: path
+        name: documentCommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document comment
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document comment ID
+        in: path
+        name: documentCommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document comment
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document comment ID
+        in: path
+        name: documentCommentId
+        required: true
+        type: integer
+      - description: Comment payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.commentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document comment
+      tags:
+      - Documents
+  /document-folders:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Folder'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document folders
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Folder payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.folderRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Folder'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document folder
+      tags:
+      - Documents
+  /document-folders/{folderId}:
+    delete:
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document folder
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folderId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Folder'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document folder
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folderId
+        required: true
+        type: integer
+      - description: Folder payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.folderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Folder'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document folder
+      tags:
+      - Documents
+  /document-links/{documentLinkId}:
+    delete:
+      parameters:
+      - description: Document link ID
+        in: path
+        name: documentLinkId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document link
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document link ID
+        in: path
+        name: documentLinkId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Link'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document link
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document link ID
+        in: path
+        name: documentLinkId
+        required: true
+        type: integer
+      - description: Link payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.linkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Link'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document link
+      tags:
+      - Documents
+  /document-owners/{documentOwnerId}:
+    delete:
+      parameters:
+      - description: Document owner ID
+        in: path
+        name: documentOwnerId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document owner
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document owner ID
+        in: path
+        name: documentOwnerId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Owner'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document owner
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document owner ID
+        in: path
+        name: documentOwnerId
+        required: true
+        type: integer
+      - description: Owner payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.ownerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Owner'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document owner
+      tags:
+      - Documents
+  /document-versions/{versionId}:
+    delete:
+      parameters:
+      - description: Version ID
+        in: path
+        name: versionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document version
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Version ID
+        in: path
+        name: versionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Version'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document version
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Version ID
+        in: path
+        name: versionId
+        required: true
+        type: integer
+      - description: Version payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.versionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Version'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document version
+      tags:
+      - Documents
+  /document-versions/{versionId}/approvals:
+    get:
+      parameters:
+      - description: Version ID
+        in: path
+        name: versionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Approval'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document approvals
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Version ID
+        in: path
+        name: versionId
+        required: true
+        type: integer
+      - description: Approval payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.approvalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Approval'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document approval
+      tags:
+      - Documents
+  /documents:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Document'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List documents
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.documentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Document'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document
+      tags:
+      - Documents
+  /documents/{documentId}:
+    delete:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete document
+      tags:
+      - Documents
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Document'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get document
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Document payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.documentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/document.Document'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update document
+      tags:
+      - Documents
+  /documents/{documentId}/approvers:
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Approver'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document approvers
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Approver payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.approverRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Approver'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document approver
+      tags:
+      - Documents
+  /documents/{documentId}/comments:
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document comments
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Comment payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.commentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document comment
+      tags:
+      - Documents
+  /documents/{documentId}/links:
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Link'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document links
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Link payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.linkRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Link'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document link
+      tags:
+      - Documents
+  /documents/{documentId}/owners:
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Owner'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document owners
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Owner payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.ownerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Owner'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document owner
+      tags:
+      - Documents
+  /documents/{documentId}/versions:
+    get:
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/document.Version'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List document versions
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Document ID
+        in: path
+        name: documentId
+        required: true
+        type: integer
+      - description: Version payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/document.versionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/document.Version'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/document.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create document version
+      tags:
+      - Documents
+  /epochs:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/planning.Epoch'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List epochs
+      tags:
+      - Planning
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Epoch payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/planning.epochRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/planning.Epoch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create epoch
+      tags:
+      - Planning
+  /epochs/{epochId}:
+    delete:
+      parameters:
+      - description: Epoch ID
+        in: path
+        name: epochId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete epoch
+      tags:
+      - Planning
+    get:
+      parameters:
+      - description: Epoch ID
+        in: path
+        name: epochId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.Epoch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get epoch
+      tags:
+      - Planning
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Epoch ID
+        in: path
+        name: epochId
+        required: true
+        type: integer
+      - description: Epoch payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/planning.epochRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.Epoch'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update epoch
+      tags:
+      - Planning
+  /goals:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/planning.Goal'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List goals
+      tags:
+      - Planning
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Goal payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/planning.goalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/planning.Goal'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create goal
+      tags:
+      - Planning
+  /goals/{goalId}:
+    delete:
+      parameters:
+      - description: Goal ID
+        in: path
+        name: goalId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete goal
+      tags:
+      - Planning
+    get:
+      parameters:
+      - description: Goal ID
+        in: path
+        name: goalId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.Goal'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get goal
+      tags:
+      - Planning
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Goal ID
+        in: path
+        name: goalId
+        required: true
+        type: integer
+      - description: Goal payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/planning.goalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/planning.Goal'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/planning.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update goal
+      tags:
+      - Planning
+  /meeting-action-items/{actionItemId}:
+    delete:
+      parameters:
+      - description: Action item ID
+        in: path
+        name: actionItemId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting action item
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Action item ID
+        in: path
+        name: actionItemId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.ActionItem'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting action item
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Action item ID
+        in: path
+        name: actionItemId
+        required: true
+        type: integer
+      - description: Action item payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.actionItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.ActionItem'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting action item
+      tags:
+      - Meetings
+  /meeting-availability-slots/{slotId}:
+    delete:
+      parameters:
+      - description: Slot ID
+        in: path
+        name: slotId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting availability slot
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Slot ID
+        in: path
+        name: slotId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.AvailabilitySlot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting availability slot
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Slot ID
+        in: path
+        name: slotId
+        required: true
+        type: integer
+      - description: Availability slot payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.availabilitySlotRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.AvailabilitySlot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting availability slot
+      tags:
+      - Meetings
+  /meeting-availability-slots/{slotId}/votes:
+    get:
+      parameters:
+      - description: Slot ID
+        in: path
+        name: slotId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.AvailabilityVote'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting availability votes
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Slot ID
+        in: path
+        name: slotId
+        required: true
+        type: integer
+      - description: Availability vote payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.availabilityVoteRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.AvailabilityVote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting availability vote
+      tags:
+      - Meetings
+  /meeting-availability-votes/{voteId}:
+    delete:
+      parameters:
+      - description: Vote ID
+        in: path
+        name: voteId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting availability vote
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Vote ID
+        in: path
+        name: voteId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.AvailabilityVote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting availability vote
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Vote ID
+        in: path
+        name: voteId
+        required: true
+        type: integer
+      - description: Availability vote payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.availabilityVoteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.AvailabilityVote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting availability vote
+      tags:
+      - Meetings
+  /meeting-decisions/{decisionId}:
+    delete:
+      parameters:
+      - description: Decision ID
+        in: path
+        name: decisionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting decision
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Decision ID
+        in: path
+        name: decisionId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Decision'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting decision
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Decision ID
+        in: path
+        name: decisionId
+        required: true
+        type: integer
+      - description: Decision payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.decisionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Decision'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting decision
+      tags:
+      - Meetings
+  /meeting-linked-documents/{meetingLinkedDocumentId}:
+    delete:
+      parameters:
+      - description: Linked document ID
+        in: path
+        name: meetingLinkedDocumentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting linked document
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Linked document ID
+        in: path
+        name: meetingLinkedDocumentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.LinkedDocument'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting linked document
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Linked document ID
+        in: path
+        name: meetingLinkedDocumentId
+        required: true
+        type: integer
+      - description: Linked document payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.linkedDocumentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.LinkedDocument'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting linked document
+      tags:
+      - Meetings
+  /meeting-participants/{meetingParticipantId}:
+    delete:
+      parameters:
+      - description: Meeting participant ID
+        in: path
+        name: meetingParticipantId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting participant
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Meeting participant ID
+        in: path
+        name: meetingParticipantId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Participant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting participant
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting participant ID
+        in: path
+        name: meetingParticipantId
+        required: true
+        type: integer
+      - description: Participant payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.participantRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Participant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting participant
+      tags:
+      - Meetings
+  /meeting-transcript-entries/{entryId}:
+    delete:
+      parameters:
+      - description: Transcript entry ID
+        in: path
+        name: entryId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting transcript entry
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Transcript entry ID
+        in: path
+        name: entryId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.TranscriptEntry'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting transcript entry
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Transcript entry ID
+        in: path
+        name: entryId
+        required: true
+        type: integer
+      - description: Transcript entry payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.transcriptEntryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.TranscriptEntry'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting transcript entry
+      tags:
+      - Meetings
+  /meetings:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.Meeting'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meetings
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.meetingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.Meeting'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting
+      tags:
+      - Meetings
+  /meetings/{meetingId}:
+    delete:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete meeting
+      tags:
+      - Meetings
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Meeting'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get meeting
+      tags:
+      - Meetings
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Meeting payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.meetingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/meeting.Meeting'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update meeting
+      tags:
+      - Meetings
+  /meetings/{meetingId}/action-items:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.ActionItem'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting action items
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Action item payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.actionItemRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.ActionItem'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting action item
+      tags:
+      - Meetings
+  /meetings/{meetingId}/availability-slots:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.AvailabilitySlot'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting availability slots
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Availability slot payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.availabilitySlotRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.AvailabilitySlot'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting availability slot
+      tags:
+      - Meetings
+  /meetings/{meetingId}/decisions:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.Decision'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting decisions
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Decision payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.decisionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.Decision'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting decision
+      tags:
+      - Meetings
+  /meetings/{meetingId}/linked-documents:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.LinkedDocument'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting linked documents
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Linked document payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.linkedDocumentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.LinkedDocument'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting linked document
+      tags:
+      - Meetings
+  /meetings/{meetingId}/participants:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.Participant'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting participants
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Participant payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.participantRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.Participant'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting participant
+      tags:
+      - Meetings
+  /meetings/{meetingId}/transcript-entries:
+    get:
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/meeting.TranscriptEntry'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List meeting transcript entries
+      tags:
+      - Meetings
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meeting ID
+        in: path
+        name: meetingId
+        required: true
+        type: integer
+      - description: Transcript entry payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/meeting.transcriptEntryRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/meeting.TranscriptEntry'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/meeting.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create meeting transcript entry
+      tags:
+      - Meetings
+  /notifications:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/communication.Notification'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List notifications
+      tags:
+      - Communication
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Notification payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/communication.notificationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/communication.Notification'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create notification
+      tags:
+      - Communication
+  /notifications/{notificationId}:
+    delete:
+      parameters:
+      - description: Notification ID
+        in: path
+        name: notificationId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete notification
+      tags:
+      - Communication
+    get:
+      parameters:
+      - description: Notification ID
+        in: path
+        name: notificationId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.Notification'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get notification
+      tags:
+      - Communication
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Notification ID
+        in: path
+        name: notificationId
+        required: true
+        type: integer
+      - description: Notification payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/communication.notificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/communication.Notification'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/communication.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update notification
+      tags:
+      - Communication
+  /project-members/{projectMemberId}:
+    delete:
+      parameters:
+      - description: Project member ID
+        in: path
+        name: projectMemberId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete project member
+      tags:
+      - Projects
+    get:
+      parameters:
+      - description: Project member ID
+        in: path
+        name: projectMemberId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Member'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get project member
+      tags:
+      - Projects
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project member ID
+        in: path
+        name: projectMemberId
+        required: true
+        type: integer
+      - description: Project member payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/project.updateMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Member'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update project member
+      tags:
+      - Projects
+  /projects:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/project.Project'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List projects
+      tags:
+      - Projects
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/project.createProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/project.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create project
+      tags:
+      - Projects
+  /projects/{projectId}:
+    delete:
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete project
+      tags:
+      - Projects
+    get:
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get project
+      tags:
+      - Projects
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Project payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/project.updateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/project.Project'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update project
+      tags:
+      - Projects
+  /projects/{projectId}/members:
+    get:
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/project.Member'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List project members
+      tags:
+      - Projects
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project ID
+        in: path
+        name: projectId
+        required: true
+        type: integer
+      - description: Project member payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/project.createMemberRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/project.Member'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/project.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create project member
+      tags:
+      - Projects
+  /pull-requests:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/delivery.PullRequest'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List pull requests
+      tags:
+      - Delivery
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Pull request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/delivery.pullRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/delivery.PullRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create pull request
+      tags:
+      - Delivery
+  /pull-requests/{pullRequestId}:
+    delete:
+      parameters:
+      - description: Pull request ID
+        in: path
+        name: pullRequestId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete pull request
+      tags:
+      - Delivery
+    get:
+      parameters:
+      - description: Pull request ID
+        in: path
+        name: pullRequestId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.PullRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get pull request
+      tags:
+      - Delivery
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Pull request ID
+        in: path
+        name: pullRequestId
+        required: true
+        type: integer
+      - description: Pull request payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/delivery.pullRequestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.PullRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update pull request
+      tags:
+      - Delivery
+  /releases:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/delivery.Release'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List releases
+      tags:
+      - Delivery
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Release payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/delivery.releaseRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/delivery.Release'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create release
+      tags:
+      - Delivery
+  /releases/{releaseId}:
+    delete:
+      parameters:
+      - description: Release ID
+        in: path
+        name: releaseId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete release
+      tags:
+      - Delivery
+    get:
+      parameters:
+      - description: Release ID
+        in: path
+        name: releaseId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.Release'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get release
+      tags:
+      - Delivery
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Release ID
+        in: path
+        name: releaseId
+        required: true
+        type: integer
+      - description: Release payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/delivery.releaseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/delivery.Release'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/delivery.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update release
+      tags:
+      - Delivery
+  /task-comments/{taskCommentId}:
+    delete:
+      parameters:
+      - description: Task comment ID
+        in: path
+        name: taskCommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete task comment
+      tags:
+      - Tasks
+    get:
+      parameters:
+      - description: Task comment ID
+        in: path
+        name: taskCommentId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get task comment
+      tags:
+      - Tasks
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task comment ID
+        in: path
+        name: taskCommentId
+        required: true
+        type: integer
+      - description: Task comment payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.commentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update task comment
+      tags:
+      - Tasks
+  /task-tags/{taskTagId}:
+    delete:
+      parameters:
+      - description: Task tag ID
+        in: path
+        name: taskTagId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete task tag
+      tags:
+      - Tasks
+    get:
+      parameters:
+      - description: Task tag ID
+        in: path
+        name: taskTagId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Tag'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get task tag
+      tags:
+      - Tasks
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task tag ID
+        in: path
+        name: taskTagId
+        required: true
+        type: integer
+      - description: Task tag payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.tagRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Tag'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update task tag
+      tags:
+      - Tasks
+  /tasks:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/task.Task'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List tasks
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.taskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/task.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create task
+      tags:
+      - Tasks
+  /tasks/{taskId}:
+    delete:
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete task
+      tags:
+      - Tasks
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get task
+      tags:
+      - Tasks
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      - description: Task payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.taskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/task.Task'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update task
+      tags:
+      - Tasks
+  /tasks/{taskId}/comments:
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/task.Comment'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List task comments
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      - description: Task comment payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.commentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/task.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create task comment
+      tags:
+      - Tasks
+  /tasks/{taskId}/tags:
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/task.Tag'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: List task tags
+      tags:
+      - Tasks
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskId
+        required: true
+        type: integer
+      - description: Task tag payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/task.tagRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/task.Tag'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/task.errorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create task tag
+      tags:
+      - Tasks
+  /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/user.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: List users
+      tags:
+      - Identity
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/user.createUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Create user
+      tags:
+      - Identity
+  /users/{userId}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Delete user
+      tags:
+      - Identity
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get user
+      tags:
+      - Identity
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: User payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/user.updateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Update user
+      tags:
+      - Identity
+  /users/{userId}/preferences:
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Preferences'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Get user preferences
+      tags:
+      - Identity
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Preferences payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/user.patchPreferencesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Preferences'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Patch user preferences
+      tags:
+      - Identity
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Preferences payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/user.replacePreferencesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Preferences'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user.loginErrorResponse'
+      security:
+      - bearerAuth: []
+      summary: Replace user preferences
+      tags:
+      - Identity
+  /webhooks/github:
+    post:
+      consumes:
+      - application/json
+      description: Accepts GitHub webhook events and synchronizes pull requests into
+        Seamless
+      parameters:
+      - description: GitHub event type
+        in: header
+        name: X-GitHub-Event
+        required: true
+        type: string
+      - description: GitHub HMAC signature
+        in: header
+        name: X-Hub-Signature-256
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/github.acceptedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github.errorResponse'
+      summary: Handle GitHub webhook
+      tags:
+      - Integrations
+schemes:
+- http
+- https
+securityDefinitions:
+  bearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,0 +1,12 @@
+.git
+.idea
+.vscode
+tmp
+docs
+*.log
+coverage.out
+bin
+vendor
+.env
+docker-compose.yml
+

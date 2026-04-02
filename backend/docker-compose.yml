@@ -1,0 +1,190 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_PORT: ${APP_PORT:-8080}
+    container_name: seamless-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      APP_MODE: debug
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8080
+      APP_CONTEXT_DURATION: 5s
+      APP_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
+
+      PG_NAME: seamless
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_SSL_MODE: disable
+      PG_MAX_POOL: 10
+      PG_TIMEOUT: 1s
+      PG_CONN_ATTEMPTS: 10
+
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ""
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      REDIS_SESSION_PREFIX: session
+
+      JWT_SECRET: change-me-super-secret
+      JWT_EXPIRE: 15m
+      JWT_SESSION_EXPIRATION: 24h
+
+      S3_ENDPOINT: minio:9000
+      S3_REGION: us-east-1
+      S3_BUCKET: seamless-docs
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_USE_SSL: "false"
+
+      NEXTCLOUD_BASE_URL: https://cloud.nastyn8.com
+      NEXTCLOUD_USERNAME: nextcloud-user
+      NEXTCLOUD_PASSWORD: nextcloud-password
+      NEXTCLOUD_ROOM_PREFIX: seamless
+      NEXTCLOUD_TIMEOUT: 10s
+      NEXTCLOUD_TALK_BASE_URL: https://cloud.nastyn8.com
+
+      GITHUB_WEBHOOK_SECRET: change-me-github-webhook-secret
+      GITHUB_BASE_URL: https://api.github.com
+      GITHUB_REPOSITORY_OWNER: your-org
+      GITHUB_REPOSITORY_NAME: your-repo
+      GITHUB_PROJECT_ID: 1
+      GITHUB_ACTOR_USER_ID: 1
+      GITHUB_TASK_KEY_PATTERN: ([A-Z][A-Z0-9]+-\d+)
+
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      RABBITMQ_EXCHANGE: seamless
+      RABBITMQ_MEETING_RECORDINGS_QUEUE: meeting.recordings
+      RABBITMQ_ML_RESULTS_QUEUE: meeting.ml.results
+      RABBITMQ_ML_INTAKE_QUEUE: meeting.ml.intake
+      RABBITMQ_DEAD_LETTER_EXCHANGE: seamless.dlx
+      RABBITMQ_PREFETCH_COUNT: 10
+      RABBITMQ_RETRY_DELAY: 1h
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    restart: unless-stopped
+
+  migrate:
+    image: golang:1.26.1-bookworm
+    container_name: seamless-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      GOOSE_DRIVER: postgres
+      PG_NAME: ${PG_NAME:-seamless}
+      PG_USER: ${PG_USER:-postgres}
+      PG_PASSWORD: ${PG_PASSWORD:-postgres}
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_SSL_MODE: ${PG_SSL_MODE:-disable}
+    command:
+      - /bin/sh
+      - -c
+      - |
+        go install github.com/pressly/goose/v3/cmd/goose@latest
+        /go/bin/goose -dir /workspace/migrations postgres "postgres://$$PG_USER:$$PG_PASSWORD@$$PG_HOST:$$PG_PORT/$$PG_NAME?sslmode=$$PG_SSL_MODE" up
+    restart: "no"
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: seamless-postgres
+    environment:
+      POSTGRES_DB: seamless
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d seamless"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  redis:
+    image: redis:8-alpine
+    container_name: seamless-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: seamless-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: seamless-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: seamless-minio-init
+    depends_on:
+      minio:
+        condition: service_started
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until mc alias set local http://minio:9000 minioadmin minioadmin; do
+          echo "waiting for minio..."
+          sleep 2
+        done
+        mc mb --ignore-existing local/seamless-docs
+        mc anonymous set private local/seamless-docs
+    restart: "no"
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
