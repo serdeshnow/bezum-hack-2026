@@ -1,6 +1,10 @@
 import { ThemePreference } from '@/shared/api'
+import { clearStoredApiToken, getStoredApiToken, setStoredApiToken } from '@/shared/api'
+import { appConfig } from '@/shared/config'
 import { getSettings } from '@/shared/mocks/seamless.ts'
 
+import { adaptBackendAuthUserToSessionUser } from '@/entities/session/api/adapters.ts'
+import { getCurrentBackendUser, loginWithPassword, logoutBackend } from '@/entities/session/api/auth.ts'
 import { useSessionStore } from '@/entities/session/model/session.ts'
 
 export const sessionService = {
@@ -10,20 +14,78 @@ export const sessionService = {
   getStatus() {
     return useSessionStore.getState().status
   },
-  signIn(email: string, apiToken?: string) {
-    return Promise.resolve(useSessionStore.getState().signIn(email, apiToken))
+  async signIn(email: string, apiToken?: string, password?: string) {
+    const trimmedToken = apiToken?.trim()
+
+    if (!appConfig.useMockApi && trimmedToken) {
+      const previousToken = getStoredApiToken()
+
+      setStoredApiToken(trimmedToken)
+
+      try {
+        const backendUser = await getCurrentBackendUser()
+        return useSessionStore.getState().setPendingSession(adaptBackendAuthUserToSessionUser(backendUser), trimmedToken)
+      } catch (error) {
+        if (previousToken) {
+          setStoredApiToken(previousToken)
+        } else {
+          clearStoredApiToken()
+        }
+        throw error
+      }
+    }
+
+    if (!appConfig.useMockApi && password?.trim()) {
+      const result = await loginWithPassword({ email, password: password.trim() })
+      return useSessionStore.getState().setPendingSession(adaptBackendAuthUserToSessionUser(result.user), result.accessToken)
+    }
+
+    return useSessionStore.getState().signIn(email, trimmedToken)
   },
-  verify() {
+  async verify() {
+    const token = getStoredApiToken() || appConfig.apiToken
+
+    if (!appConfig.useMockApi && token) {
+      const backendUser = await getCurrentBackendUser()
+      return useSessionStore.getState().setAuthenticatedSession(adaptBackendAuthUserToSessionUser(backendUser), token)
+    }
+
     useSessionStore.getState().verify()
-    return Promise.resolve(useSessionStore.getState().currentUser)
+    return useSessionStore.getState().currentUser
   },
-  signOut() {
+  async signOut() {
+    const token = getStoredApiToken() || appConfig.apiToken
+
+    if (!appConfig.useMockApi && token) {
+      try {
+        await logoutBackend()
+      } catch {
+        // Ignore logout transport errors; local sign-out must still complete.
+      }
+    }
+
     useSessionStore.getState().signOut()
-    return Promise.resolve()
   },
-  bootstrap() {
+  async bootstrap() {
+    const token = getStoredApiToken() || appConfig.apiToken
+
+    if (!appConfig.useMockApi) {
+      if (!token) {
+        useSessionStore.getState().signOut()
+        return null
+      }
+
+      try {
+        const backendUser = await getCurrentBackendUser()
+        return useSessionStore.getState().setAuthenticatedSession(adaptBackendAuthUserToSessionUser(backendUser), token)
+      } catch {
+        useSessionStore.getState().signOut()
+        return null
+      }
+    }
+
     useSessionStore.getState().bootstrap()
-    return Promise.resolve(useSessionStore.getState().currentUser)
+    return useSessionStore.getState().currentUser
   },
   getSettings() {
     const userId = useSessionStore.getState().currentUser?.id ?? 'user-manager'

@@ -13,7 +13,7 @@ export function VerifySessionCard() {
     <Card className='w-full max-w-md'>
       <CardHeader>
         <CardTitle>Verify sign in</CardTitle>
-        <CardDescription>This step finalizes the frontend session and reuses any stored bearer token for backend requests.</CardDescription>
+        <CardDescription>This step confirms the JWT-backed session through `/auth/me` and enters the protected workspace.</CardDescription>
       </CardHeader>
       <CardContent className='space-y-4'>
         <p className='text-muted-foreground text-sm'>Your session is ready. Continue into the protected workspace.</p>
@@ -28,6 +28,7 @@ export function VerifySessionCard() {
         >
           Enter workspace
         </Button>
+        {verify.isError ? <p className='text-destructive text-sm'>{verify.error instanceof Error ? verify.error.message : 'Verification failed.'}</p> : null}
       </CardContent>
     </Card>
   )

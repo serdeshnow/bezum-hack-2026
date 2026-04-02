@@ -1,22 +1,26 @@
 import type { PropsWithChildren } from 'react'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 
-import { useSessionStore } from '@/entities/session'
+import { sessionService, useSessionStore } from '@/entities/session'
 
 export function SessionBootstrapProvider({ children }: PropsWithChildren) {
-  const bootstrap = useSessionStore((state) => state.bootstrap)
   const themePreference = useSessionStore((state) => state.themePreference)
   const { setTheme } = useTheme()
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    bootstrap()
-  }, [bootstrap])
+    sessionService.bootstrap().finally(() => setIsReady(true))
+  }, [])
 
   useEffect(() => {
     setTheme(themePreference)
   }, [setTheme, themePreference])
+
+  if (!isReady) {
+    return null
+  }
 
   return children
 }

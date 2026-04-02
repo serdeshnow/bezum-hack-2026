@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { ThemePreference, WorkspaceRole } from '@/shared/api'
-import { clearStoredApiToken, setStoredApiToken } from '@/shared/api'
+import { clearStoredApiToken, getStoredApiToken, setStoredApiToken } from '@/shared/api'
 import { appConfig } from '@/shared/config'
 import { getSettings, getUserById, signInByEmail } from '@/shared/mocks/seamless.ts'
 
@@ -24,6 +24,8 @@ type SessionState = {
   signIn: (email: string, apiToken?: string) => SessionUser
   verify: () => SessionUser | null
   signOut: () => void
+  setPendingSession: (user: SessionUser, apiToken?: string | null) => SessionUser
+  setAuthenticatedSession: (user: SessionUser, apiToken?: string | null) => SessionUser
   setThemePreference: (themePreference: ThemePreference) => void
   setCurrentProjectId: (projectId: string) => void
   bootstrap: () => void
@@ -40,7 +42,8 @@ function createSessionSnapshot(
   user: SessionUser | null,
   status: SessionStatus,
   currentProjectId: string,
-  pendingUserId: string | null = null
+  pendingUserId: string | null = null,
+  apiToken: string | null = getStoredApiToken() || appConfig.apiToken || null
 ) {
   return {
     status,
@@ -48,7 +51,7 @@ function createSessionSnapshot(
     pendingUserId,
     currentUser: user,
     role: user?.role ?? null,
-    apiToken: appConfig.apiToken || null,
+    apiToken,
     themePreference: resolveThemePreference(user?.id ?? null),
     isAuthenticated: status === 'authenticated',
     currentProjectId
@@ -74,13 +77,39 @@ export const useSessionStore = create<SessionState>()(
         }))
         return user
       },
+      setPendingSession: (user, apiToken) => {
+        const normalizedToken = apiToken?.trim() || getStoredApiToken() || appConfig.apiToken || null
+
+        if (normalizedToken) {
+          setStoredApiToken(normalizedToken)
+        }
+
+        set((state) => createSessionSnapshot(user, 'pending-verification', state.currentProjectId, user.id, normalizedToken))
+        return user
+      },
+      setAuthenticatedSession: (user, apiToken) => {
+        const normalizedToken = apiToken?.trim() || getStoredApiToken() || appConfig.apiToken || null
+
+        if (normalizedToken) {
+          setStoredApiToken(normalizedToken)
+        }
+
+        set((state) => createSessionSnapshot(user, 'authenticated', state.currentProjectId, null, normalizedToken))
+        return user
+      },
       verify: () => {
         let verifiedUser: SessionUser | null = null
         set((state) => {
           verifiedUser = state.currentUser
 
           return state.currentUser
-            ? createSessionSnapshot(state.currentUser, 'authenticated', state.currentProjectId)
+            ? createSessionSnapshot(
+                state.currentUser,
+                'authenticated',
+                state.currentProjectId,
+                null,
+                state.apiToken || getStoredApiToken() || appConfig.apiToken || null
+              )
             : createSessionSnapshot(null, 'anonymous', state.currentProjectId)
         })
 
@@ -105,7 +134,7 @@ export const useSessionStore = create<SessionState>()(
               ...state,
               currentUser: user,
               role: user.role,
-              apiToken: state.apiToken || appConfig.apiToken || null,
+              apiToken: state.apiToken || getStoredApiToken() || appConfig.apiToken || null,
               themePreference: resolveThemePreference(user.id),
               isAuthenticated: state.status === 'authenticated'
             }
@@ -120,7 +149,7 @@ export const useSessionStore = create<SessionState>()(
               currentUserId: user.id,
               currentUser: user,
               role: user.role,
-              apiToken: state.apiToken || appConfig.apiToken || null,
+              apiToken: state.apiToken || getStoredApiToken() || appConfig.apiToken || null,
               themePreference: resolveThemePreference(user.id),
               isAuthenticated: false
             }
@@ -128,7 +157,7 @@ export const useSessionStore = create<SessionState>()(
 
           return {
             ...createSessionSnapshot(initialSessionUser, 'authenticated', state.currentProjectId),
-            apiToken: state.apiToken || appConfig.apiToken || null
+            apiToken: state.apiToken || getStoredApiToken() || appConfig.apiToken || null
           }
         })
       }
