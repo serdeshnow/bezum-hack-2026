@@ -9,20 +9,27 @@ import {
   CheckSquare,
   ChevronDown,
   Clock,
+  Code,
   FileText,
   FolderKanban,
+  FolderOpen,
   LogOut,
   Moon,
+  Plus,
   Rocket,
   Search,
   Settings,
-  Sun
+  Sun,
+  User,
+  Users
 } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { notificationQueries, useMarkAllNotificationsRead, useMarkNotificationRead } from '@/entities/notification'
 import { projectQueries } from '@/entities/project'
 import { sessionService, useSessionStore } from '@/entities/session'
+import { taskQueries } from '@/entities/task'
+import { TaskStatus } from '@/shared/api'
 import { appRoutes } from '@/shared/model'
 import {
   Badge,
@@ -51,14 +58,17 @@ type NavItem = {
 
 const primaryNavItems: NavItem[] = [
   { to: appRoutes.projects, label: 'Projects', icon: FolderKanban },
-  { to: `/epochs/epoch-q2`, label: 'Epochs', icon: Clock },
+  { to: '/epochs/epoch-q2', label: 'Epochs', icon: Clock },
   { to: appRoutes.docs, label: 'Docs', icon: FileText },
   { to: appRoutes.tasks, label: 'Tasks', icon: CheckSquare },
   { to: appRoutes.meetings, label: 'Meetings', icon: Calendar },
   { to: appRoutes.releases, label: 'Releases', icon: Rocket }
 ]
 
-const secondaryNavItems: NavItem[] = [{ to: appRoutes.settings, label: 'Settings', icon: Settings }]
+const secondaryNavItems: NavItem[] = [
+  { to: appRoutes.notifications, label: 'Notifications', icon: Bell },
+  { to: appRoutes.settings, label: 'Settings', icon: Settings }
+]
 
 function ShellLink({ item, badge }: { item: NavItem; badge?: ReactNode }) {
   const Icon = item.icon
@@ -68,12 +78,12 @@ function ShellLink({ item, badge }: { item: NavItem; badge?: ReactNode }) {
       to={item.to}
       className={({ isActive }) =>
         isActive
-          ? 'bg-sidebar-primary text-sidebar-primary-foreground flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium'
-          : 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors'
+          ? 'bg-secondary text-sidebar-foreground flex min-h-8 items-center gap-3 rounded-[5px] px-2.5 py-1.5 text-sm font-medium'
+          : 'text-sidebar-foreground hover:bg-secondary/70 flex min-h-8 items-center gap-3 rounded-[5px] px-2.5 py-1.5 text-sm font-medium transition-colors'
       }
     >
-      <Icon className='size-4' />
-      <span className='flex-1'>{item.label}</span>
+      <Icon className='size-[18px] shrink-0' />
+      <span className='flex-1 truncate'>{item.label}</span>
       {badge}
     </NavLink>
   )
@@ -91,11 +101,22 @@ function HeaderAction({ children, tooltip }: { children: ReactNode; tooltip: str
 function buildBreadcrumbs(pathname: string) {
   const segments = pathname.split('/').filter(Boolean)
 
-  if (segments.length === 0) {
+  if (segments.length === 0 || pathname === appRoutes.projects) {
     return ['Projects']
   }
 
   return segments.map((segment) => segment.replace(/-/g, ' '))
+}
+
+function formatRoleLabel(role?: string) {
+  if (!role) return 'Member'
+  return role.charAt(0).toUpperCase() + role.slice(1)
+}
+
+function getRoleIcon(role?: string) {
+  if (role === 'developer') return Code
+  if (role === 'manager') return Users
+  return User
 }
 
 export function AppShell() {
@@ -107,102 +128,212 @@ export function AppShell() {
   const currentProjectId = useSessionStore((state) => state.currentProjectId)
   const setCurrentProjectId = useSessionStore((state) => state.setCurrentProjectId)
   const { data: projects = [] } = useQuery(projectQueries.list())
+  const { data: tasks = [] } = useQuery(taskQueries.list())
   const { data: notifications = [] } = useQuery(notificationQueries.list())
   const markAllRead = useMarkAllNotificationsRead()
   const markOneRead = useMarkNotificationRead()
 
   const unreadCount = notifications.filter((item) => !item.read).length
+  const openTaskCount = tasks.filter((task) => task.status !== TaskStatus.Done && task.status !== TaskStatus.Cancelled).length
   const breadcrumbs = useMemo(() => buildBreadcrumbs(location.pathname), [location.pathname])
+  const currentProject = projects.find((project) => project.id === currentProjectId) ?? projects[0] ?? null
+  const roleLabel = formatRoleLabel(currentUser?.role)
+  const RoleIcon = getRoleIcon(currentUser?.role)
 
   return (
-    <div className='bg-background text-foreground flex min-h-screen'>
-      <aside className='bg-sidebar text-sidebar-foreground sticky top-0 flex h-screen w-64 flex-col border-r border-sidebar-border'>
-        <div className='flex items-center gap-3 border-b border-sidebar-border px-5 py-5'>
-          <div className='bg-sidebar-primary text-sidebar-primary-foreground flex size-10 items-center justify-center rounded-xl'>
-            <Rocket className='size-5' />
-          </div>
-          <div>
-            <p className='font-heading text-lg leading-none'>Seamless</p>
-            <p className='text-muted-foreground mt-1 text-xs'>Delivery workspace</p>
+    <div className='bg-background text-foreground flex min-h-screen items-stretch'>
+      <aside className='bg-sidebar text-sidebar-foreground flex min-h-screen w-56 shrink-0 flex-col border-r border-sidebar-border'>
+        <div className='flex h-14 items-center border-b border-sidebar-border px-4'>
+          <div className='flex items-center gap-2'>
+            <div className='bg-sidebar-primary text-sidebar-primary-foreground flex size-7 items-center justify-center rounded-md'>
+              <Rocket className='size-[18px]' />
+            </div>
+            <div className='leading-tight'>
+              <p className='text-sm font-semibold'>DevStudio</p>
+              <p className='text-muted-foreground text-xs'>Platform</p>
+            </div>
           </div>
         </div>
 
-        <div className='flex-1 space-y-6 p-4'>
-          <nav className='space-y-1'>
-            {primaryNavItems.map((item) => (
-              <ShellLink
-                key={item.to}
-                item={item}
-                badge={
-                  item.to === appRoutes.tasks && unreadCount > 0 ? (
-                    <Badge variant='secondary'>{unreadCount}</Badge>
-                  ) : undefined
-                }
-              />
-            ))}
-          </nav>
+        <ScrollArea className='flex-1'>
+          <div className='space-y-3.5 p-3.5'>
+            <nav className='space-y-1'>
+              {primaryNavItems.map((item) => (
+                <ShellLink
+                  key={item.to}
+                  item={item}
+                  badge={
+                    item.to === appRoutes.tasks && openTaskCount > 0 ? (
+                      <Badge className='rounded-[5px] px-2 py-0.5 text-[12px]'>{openTaskCount}</Badge>
+                    ) : undefined
+                  }
+                />
+              ))}
+            </nav>
 
-          <Separator />
+            <Separator className='bg-sidebar-border' />
 
-          <nav className='space-y-1'>
-            <ShellLink
-              item={{ to: appRoutes.notifications, label: 'Notifications', icon: Bell }}
-              badge={unreadCount > 0 ? <Badge>{unreadCount}</Badge> : undefined}
-            />
-            {secondaryNavItems.map((item) => (
-              <ShellLink key={item.to} item={item} />
-            ))}
-          </nav>
-        </div>
+            <nav className='space-y-1'>
+              {secondaryNavItems.map((item) => (
+                <ShellLink
+                  key={item.to}
+                  item={item}
+                  badge={
+                    item.to === appRoutes.notifications && unreadCount > 0 ? (
+                      <Badge className='rounded-[5px] px-2 py-0.5 text-[12px]'>{unreadCount}</Badge>
+                    ) : undefined
+                  }
+                />
+              ))}
+            </nav>
+          </div>
+        </ScrollArea>
 
-        <div className='border-t border-sidebar-border p-4'>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant='outline' className='w-full justify-between'>
-                <span className='truncate'>{currentUser?.name ?? 'Anonymous'}</span>
-                <ChevronDown className='size-4' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='end' className='w-56'>
-              <DropdownMenuLabel>{currentUser?.email}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={() => {
-                  sessionService.signOut().then(() => navigate(appRoutes.auth.signIn))
-                }}
-              >
-                <LogOut className='size-4' />
-                Sign out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className='mt-auto border-t border-sidebar-border px-3.5 py-4'>
+          <p className='text-muted-foreground text-xs'>© 2026 DevStudio</p>
         </div>
       </aside>
 
       <div className='flex min-w-0 flex-1 flex-col'>
-        <header className='bg-card/90 sticky top-0 z-20 border-b border-border backdrop-blur'>
-          <div className='flex items-center gap-3 px-6 py-4'>
+        <div className='bg-card sticky top-0 z-20'>
+          <header className='flex h-14 items-center gap-4 border-b border-border px-5'>
             <div className='min-w-0 flex-1'>
-              <p className='text-muted-foreground text-xs uppercase tracking-[0.12em]'>Workspace</p>
-              <div className='mt-1 flex flex-wrap items-center gap-2 text-sm'>
+              <div className='flex flex-wrap items-center gap-2 text-sm'>
                 {breadcrumbs.map((item, index) => (
                   <span key={`${item}-${index}`} className='flex items-center gap-2 capitalize'>
                     {index > 0 && <span className='text-muted-foreground'>/</span>}
-                    <span>{item}</span>
+                    <span className={index === breadcrumbs.length - 1 ? 'text-foreground' : 'text-muted-foreground'}>{item}</span>
                   </span>
                 ))}
               </div>
             </div>
 
+            <div className='flex items-center gap-2'>
+              <HeaderAction tooltip='Search (⌘K)'>
+                <Button variant='ghost' size='icon' className='size-8 rounded-[5px]' onClick={() => setCommandOpen((value) => !value)}>
+                  <Search className='size-[18px]' />
+                </Button>
+              </HeaderAction>
+
+              <Separator orientation='vertical' className='h-6' />
+
+              <HeaderAction tooltip='Create project'>
+                <Button
+                  size='icon'
+                  className='size-8 rounded-[5px]'
+                  onClick={() => navigate(appRoutes.projects)}
+                >
+                  <Plus className='size-[18px]' />
+                </Button>
+              </HeaderAction>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant='ghost' size='icon' className='relative size-8 rounded-[5px]'>
+                    <Bell className='size-[18px]' />
+                    {unreadCount > 0 && (
+                      <span className='bg-destructive text-destructive-foreground absolute -top-1 -right-1 flex size-[18px] items-center justify-center rounded-full text-[10px] font-medium'>
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align='end' className='w-96 p-0'>
+                  <div className='flex items-center justify-between p-4'>
+                    <div>
+                      <p className='font-medium'>Unified inbox</p>
+                      <p className='text-muted-foreground text-xs'>{unreadCount} unread</p>
+                    </div>
+                    <Button variant='ghost' size='sm' onClick={() => markAllRead.mutate()}>
+                      Mark all read
+                    </Button>
+                  </div>
+                  <Separator />
+                  <ScrollArea className='h-[360px]'>
+                    <div className='space-y-2 p-2'>
+                      {notifications.map((notification) => (
+                        <button
+                          key={notification.id}
+                          type='button'
+                          className={`w-full rounded-lg border p-3 text-left ${notification.read ? 'bg-background' : 'bg-accent/20'}`}
+                          onClick={() => {
+                            markOneRead.mutate(notification.id)
+                            if (notification.entityId?.startsWith('doc')) navigate(`/docs/${notification.entityId}`)
+                            if (notification.entityId?.startsWith('meeting')) navigate(`/meetings/${notification.entityId}`)
+                          }}
+                        >
+                          <div className='flex items-start justify-between gap-3'>
+                            <div>
+                              <p className='text-sm font-medium'>{notification.title}</p>
+                              <p className='text-muted-foreground text-xs'>{notification.description}</p>
+                            </div>
+                            {!notification.read && <Badge className='rounded-[5px]'>New</Badge>}
+                          </div>
+                          <p className='text-muted-foreground mt-2 text-xs'>{notification.timestamp}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
+
+              <HeaderAction tooltip='Toggle theme'>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  className='size-8 rounded-[5px]'
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                  {theme === 'dark' ? <Sun className='size-[18px]' /> : <Moon className='size-[18px]' />}
+                </Button>
+              </HeaderAction>
+
+              <Separator orientation='vertical' className='h-6' />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button type='button'>
+                    <Badge className='gap-1.5 rounded-[5px] px-2 py-0.5 text-[12px] font-medium'>
+                      <RoleIcon className='size-3' />
+                      {roleLabel}
+                    </Badge>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align='end' className='w-56'>
+                  <DropdownMenuLabel className='space-y-1'>
+                    <div className='font-medium'>{currentUser?.name ?? 'Anonymous'}</div>
+                    <div className='text-muted-foreground text-xs font-normal'>{currentUser?.email ?? 'No email'}</div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      sessionService.signOut().then(() => navigate(appRoutes.auth.signIn))
+                    }}
+                  >
+                    <LogOut className='size-4' />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </header>
+
+          <div className='border-b border-border px-5 pt-3.5 pb-3'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='outline' className='min-w-56 justify-between'>
-                  <span className='truncate'>{projects.find((project) => project.id === currentProjectId)?.name ?? 'Select project'}</span>
-                  <ChevronDown className='size-4' />
+                <Button
+                  variant='outline'
+                  className='bg-background h-8 w-full justify-between rounded-[5px] px-3 text-sm font-medium'
+                >
+                  <span className='flex min-w-0 items-center gap-2'>
+                    <FolderOpen className='size-[14px] shrink-0' />
+                    <span className='truncate'>{currentProject?.name ?? 'Select project'}</span>
+                  </span>
+                  <ChevronDown className='size-[14px] shrink-0' />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align='end' className='w-72'>
-                <DropdownMenuLabel>Project switcher</DropdownMenuLabel>
+              <DropdownMenuContent align='start' className='w-[var(--radix-dropdown-menu-trigger-width)] min-w-72'>
+                <DropdownMenuLabel>Projects</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {projects.map((project) => (
                   <DropdownMenuItem
@@ -212,82 +343,16 @@ export function AppShell() {
                       navigate(`/projects/${project.id}`)
                     }}
                   >
-                    <FolderKanban className='size-4' />
-                    {project.name}
+                    <FolderOpen className='size-4' />
+                    <span className='truncate'>{project.name}</span>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <HeaderAction tooltip='Command palette'>
-              <Button variant='ghost' size='icon' onClick={() => setCommandOpen((value) => !value)}>
-                <Search className='size-4' />
-              </Button>
-            </HeaderAction>
-
-            <HeaderAction tooltip='Toggle theme'>
-              <Button
-                variant='ghost'
-                size='icon'
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              >
-                {theme === 'dark' ? <Sun className='size-4' /> : <Moon className='size-4' />}
-              </Button>
-            </HeaderAction>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant='ghost' size='icon' className='relative'>
-                  <Bell className='size-4' />
-                  {unreadCount > 0 && (
-                    <span className='bg-destructive text-destructive-foreground absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full text-[10px]'>
-                      {unreadCount}
-                    </span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align='end' className='w-96 p-0'>
-                <div className='flex items-center justify-between p-4'>
-                  <div>
-                    <p className='font-medium'>Unified inbox</p>
-                    <p className='text-muted-foreground text-xs'>{unreadCount} unread</p>
-                  </div>
-                  <Button variant='ghost' size='sm' onClick={() => markAllRead.mutate()}>
-                    Mark all read
-                  </Button>
-                </div>
-                <Separator />
-                <ScrollArea className='h-[360px]'>
-                  <div className='space-y-2 p-2'>
-                    {notifications.map((notification) => (
-                      <button
-                        key={notification.id}
-                        type='button'
-                        className={`w-full rounded-lg border p-3 text-left ${notification.read ? 'bg-background' : 'bg-accent/30'}`}
-                        onClick={() => {
-                          markOneRead.mutate(notification.id)
-                          if (notification.entityId?.startsWith('doc')) navigate(`/docs/${notification.entityId}`)
-                          if (notification.entityId?.startsWith('meeting')) navigate(`/meetings/${notification.entityId}`)
-                        }}
-                      >
-                        <div className='flex items-start justify-between gap-3'>
-                          <div>
-                            <p className='text-sm font-medium'>{notification.title}</p>
-                            <p className='text-muted-foreground text-xs'>{notification.description}</p>
-                          </div>
-                          {!notification.read && <Badge>New</Badge>}
-                        </div>
-                        <p className='text-muted-foreground mt-2 text-xs'>{notification.timestamp}</p>
-                      </button>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </PopoverContent>
-            </Popover>
           </div>
 
           {commandOpen && (
-            <div className='border-t border-border px-6 py-3'>
+            <div className='border-b border-border px-5 py-3'>
               <div className='flex flex-wrap gap-2'>
                 {primaryNavItems.map((item) => (
                   <Button key={item.to} variant='outline' size='sm' onClick={() => navigate(item.to)}>
@@ -297,9 +362,9 @@ export function AppShell() {
               </div>
             </div>
           )}
-        </header>
+        </div>
 
-        <main className='min-w-0 flex-1 px-6 py-6'>
+        <main className='min-w-0 flex-1 overflow-x-hidden px-6 py-6'>
           <Outlet />
         </main>
       </div>
