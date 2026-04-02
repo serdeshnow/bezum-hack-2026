@@ -55,6 +55,9 @@ export function TaskDetailsWidget() {
               <CardDescription>Task is enriched with direct references to docs, meetings, PRs, and releases.</CardDescription>
             </CardHeader>
             <CardContent className='space-y-3'>
+              <div className='text-muted-foreground rounded-lg border p-3 text-sm'>
+                {data.linkedSummary.docs} docs, {data.linkedSummary.meetings} meeting contexts, {data.linkedSummary.pullRequests} PRs, {data.linkedSummary.quotedFragments} quoted fragments.
+              </div>
               {data.linkedDocs.map((doc) => (
                 <Link key={doc.id} to={`/docs/${doc.id}`} className='bg-muted block rounded-lg p-4'>
                   <div className='flex items-center gap-2 font-medium'><FileText className='size-4' /> {doc.title}</div>
@@ -137,6 +140,7 @@ export function TaskDetailsWidget() {
             <CardContent className='space-y-2 text-sm'>
               <p><span className='text-muted-foreground'>Assignee:</span> {data.assignee?.name}</p>
               <p><span className='text-muted-foreground'>Reporter:</span> {data.reporter?.name}</p>
+              <p><span className='text-muted-foreground'>Meeting context:</span> {data.meetingContextLabel}</p>
               <p className='flex items-center gap-2'><Calendar className='size-4 text-muted-foreground' /> {data.dueDate}</p>
             </CardContent>
           </Card>

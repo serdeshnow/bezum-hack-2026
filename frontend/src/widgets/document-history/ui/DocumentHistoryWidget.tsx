@@ -41,6 +41,9 @@ export function DocumentHistoryWidget() {
               </div>
             </CardHeader>
             <CardContent className='space-y-4'>
+              <div className='text-muted-foreground text-sm'>
+                {version.totalChanges} total changes · source: {version.changeSource}
+              </div>
               <div className='grid gap-3 text-sm md:grid-cols-3'>
                 <div className='rounded-lg border p-3'>+{version.changes.additions} additions</div>
                 <div className='rounded-lg border p-3'>-{version.changes.deletions} deletions</div>

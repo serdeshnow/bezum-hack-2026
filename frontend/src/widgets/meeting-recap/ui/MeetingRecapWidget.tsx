@@ -25,7 +25,7 @@ export function MeetingRecapWidget() {
           <h1 className='text-2xl font-semibold'>{data.title}</h1>
           <p className='text-muted-foreground text-sm'>{data.date} · {data.time}</p>
         </div>
-        <Button onClick={() => publishRecap.mutate(!data.approved)}>{data.approved ? 'Unpublish recap' : 'Publish recap'}</Button>
+        <Button onClick={() => publishRecap.mutate(!data.approved)}>{data.publishLabel}</Button>
       </div>
 
       <div className='grid gap-4 xl:grid-cols-[1.5fr_1fr]'>
@@ -69,6 +69,9 @@ export function MeetingRecapWidget() {
               <CardTitle className='flex items-center gap-2'><CheckSquare className='size-4' /> Action items</CardTitle>
             </CardHeader>
             <CardContent className='space-y-3'>
+              <div className='text-muted-foreground rounded-lg border p-3 text-sm'>
+                {data.actionItemsToCreate} action items can be turned into tasks. {data.decisionCount} decisions captured.
+              </div>
               {data.actionItems.map((item) => (
                 <div key={item.id} className='rounded-lg border p-3 text-sm'>
                   <p className='font-medium'>{item.task}</p>

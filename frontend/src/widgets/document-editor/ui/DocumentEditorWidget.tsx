@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { CheckSquare, GitPullRequest, Rocket, Send, Video } from 'lucide-react'
+import { CheckSquare, Send } from 'lucide-react'
 import { useParams } from 'react-router'
 
 import { documentQueries, useAddDocumentComment, useUpdateDocument } from '@/entities/document'
-import { useAddTaskComment } from '@/entities/task'
-import { parseDocumentBlocks } from '@/shared/lib/document-widgets.ts'
+import { useQuoteDocumentSelectionToTask } from '@/features/document/quote'
+import { DocumentShortcodePreview, parseDocumentShortcodes } from '@/features/document/shortcodes'
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from '@/shared/ui'
 
 export function DocumentEditorWidget() {
@@ -13,7 +13,7 @@ export function DocumentEditorWidget() {
   const { data, isLoading, error } = useQuery(documentQueries.detail(docId))
   const updateDocument = useUpdateDocument(docId)
   const addComment = useAddDocumentComment(docId)
-  const quoteToTask = useAddTaskComment('task-docs')
+  const { quoteSelection, isPending: quotePending } = useQuoteDocumentSelectionToTask(data?.quoteTargetTaskId ?? 'task-docs')
   const [content, setContent] = useState('')
   const [comment, setComment] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
@@ -32,7 +32,7 @@ export function DocumentEditorWidget() {
     return <PageState state='error' title='Document unavailable' description='The selected document could not be loaded.' />
   }
 
-  const blocks = parseDocumentBlocks(content)
+  const parsedBlocks = parseDocumentShortcodes(content)
 
   return (
     <section className='space-y-6'>
@@ -66,8 +66,9 @@ export function DocumentEditorWidget() {
                       if (!target) return
                       const text = target.value.slice(target.selectionStart, target.selectionEnd).trim()
                       if (!text) return
-                      quoteToTask.mutate(`Quoted from document: "${text}"`)
+                      quoteSelection(text)
                     }}
+                    disabled={quotePending}
                   >
                     <CheckSquare className='size-4' />
                     Quote selection to linked task
@@ -75,21 +76,7 @@ export function DocumentEditorWidget() {
                 </div>
               </TabsContent>
               <TabsContent value='preview'>
-                <div className='space-y-4 rounded-xl border p-5'>
-                  {blocks.map((block, index) => (
-                    <div key={`${block.type}-${index}`}>
-                      {block.type === 'task-widget' && <div className='border-accent bg-accent/10 flex items-center gap-2 rounded-lg border p-3 text-sm'><CheckSquare className='size-4' /> Linked task widget: {block.entityId}</div>}
-                      {block.type === 'meeting-summary' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><Video className='size-4' /> Meeting summary widget: {block.entityId}</div>}
-                      {block.type === 'release-widget' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><Rocket className='size-4' /> Release widget: {block.entityId}</div>}
-                      {block.type === 'pr-reference' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><GitPullRequest className='size-4' /> Pull request reference: {block.entityId}</div>}
-                      {block.type === 'heading-1' && <h2 className='text-xl font-semibold'>{block.text}</h2>}
-                      {block.type === 'heading-2' && <h3 className='text-lg font-semibold'>{block.text}</h3>}
-                      {block.type === 'list-item' && <li className='ml-5 list-disc'>{block.text}</li>}
-                      {block.type === 'paragraph' && <p>{block.text}</p>}
-                      {block.type === 'spacer' && <div className='h-3' />}
-                    </div>
-                  ))}
-                </div>
+                <DocumentShortcodePreview blocks={parsedBlocks} />
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -101,6 +88,9 @@ export function DocumentEditorWidget() {
               <CardTitle>Linked entities</CardTitle>
             </CardHeader>
             <CardContent className='space-y-3 text-sm'>
+              <div className='text-muted-foreground rounded-lg border p-3 text-xs'>
+                {data.linkedEntitySummary.total} total links: {data.linkedEntitySummary.tasks} tasks, {data.linkedEntitySummary.meetings} meetings, {data.linkedEntitySummary.releases} releases
+              </div>
               {data.linkedEntities.map((entity) => (
                 <div key={`${entity.type}-${entity.id}`} className='rounded-lg border p-3'>
                   <p className='font-medium capitalize'>{entity.type}</p>

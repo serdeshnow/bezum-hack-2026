@@ -1,9 +1,9 @@
-import { parseDocumentBlocks } from '../../src/shared/lib'
+import { parseDocumentShortcodes } from '../../src/features/document/shortcodes'
 
-describe('parseDocumentBlocks', () => {
+describe('parseDocumentShortcodes', () => {
   it('parses markdown headings, list items, and widgets', () => {
     expect(
-      parseDocumentBlocks(`# Title
+      parseDocumentShortcodes(`# Title
 
 - item
 [TASK_WIDGET:task-docs]

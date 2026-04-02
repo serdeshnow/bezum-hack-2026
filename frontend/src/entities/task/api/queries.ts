@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 
 import { getTaskDetails, listTasks } from '@/shared/mocks/seamless.ts'
+import { adaptTaskDetailsViewModel } from './adapters.ts'
 
 export const taskQueryKeys = {
   all: ['tasks'] as const,
@@ -16,6 +17,6 @@ export const taskQueries = {
   detail: (taskId: string) =>
     queryOptions({
       queryKey: taskQueryKeys.detail(taskId),
-      queryFn: async () => getTaskDetails(taskId)
+      queryFn: async () => adaptTaskDetailsViewModel(getTaskDetails(taskId))
     })
 }

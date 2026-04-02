@@ -5,7 +5,7 @@ import { Navigate } from 'react-router'
 import { env } from '@/shared/config'
 
 type Props = {
-  error: Error
+  error: unknown
   resetErrorBoundary?: (...args: any[]) => void
 }
 
@@ -15,6 +15,7 @@ const handleReloadPage = () => {
 
 export function ErrorHandler(props: Props) {
   const { error, resetErrorBoundary } = props
+  const resolvedError = error instanceof Error ? error : new Error('Unknown application error')
 
   if ((error as any)?.response?.status === 404) {
     return <Navigate to='/404' replace />
@@ -35,10 +36,10 @@ export function ErrorHandler(props: Props) {
           {env.__NODE_ENV__ === 'development' && (
             <>
               <ul className='list-disc pl-5 text-sm text-slate-600'>
-                <li key={error.message}>{error.message}</li>
+                <li key={resolvedError.message}>{resolvedError.message}</li>
               </ul>
               <pre className='max-h-64 overflow-auto rounded-xl bg-slate-900 p-4 text-xs leading-5 text-slate-100'>
-                {error.stack}
+                {resolvedError.stack}
               </pre>
             </>
           )}

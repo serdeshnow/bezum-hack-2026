@@ -31,6 +31,11 @@ export function MeetingSchedulerWidget() {
             <CardDescription>Bidirectional agreement flow with visible participant votes.</CardDescription>
           </CardHeader>
           <CardContent className='space-y-4'>
+            {data.closestViableSlotId && (
+              <div className='bg-accent/10 border-accent text-sm rounded-lg border p-3'>
+                Closest viable slot: {data.closestViableSlotId}
+              </div>
+            )}
             {data.timeSlots.map((slot) => (
               <div key={slot.id} className='rounded-xl border p-4'>
                 <div className='flex flex-wrap items-center justify-between gap-3'>
@@ -50,6 +55,13 @@ export function MeetingSchedulerWidget() {
                   </div>
                 </div>
                 <div className='mt-4 flex flex-wrap gap-2 text-xs'>
+                  {data.slotSummaries
+                    .filter((summary) => summary.slotId === slot.id)
+                    .map((summary) => (
+                      <Badge key={summary.slotId} variant='outline'>
+                        {summary.available} available, {summary.unavailable} unavailable, {summary.tentative} tentative
+                      </Badge>
+                    ))}
                   {Object.entries(slot.votes).map(([userId, status]) => (
                     <Badge key={userId} variant={status === VoteStatus.Available ? 'default' : 'secondary'}>
                       {userId.replace('user-', '')}: {status}
