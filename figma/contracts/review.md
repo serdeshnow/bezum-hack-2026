@@ -55,8 +55,6 @@ This document describes the normalized database shape inferred from the Figma pr
 - `id`
 - `project_id`
 - `user_id`
-<!-- - `role` -->
-<!-- - `joined_at` -->
 - `created_at`
 - `updated_at`
 
@@ -122,32 +120,13 @@ This document describes the normalized database shape inferred from the Figma pr
 - `created_at`
 - `updated_at`
 
-<!-- ### `task_comment_mentions`
-
-- `id`
-- `task_comment_id`
-- `mentioned_user_id`
-- `created_at`
-- `updated_at` -->
-
-<!-- ### `task_activities`
-
-- `id`
-- `task_id`
-- `actor_user_id`
-- `type`
-- `action`
-- `metadata_json`
-- `created_at`
-- `updated_at` -->
-
 ## 5. Documents
 
 ### `document_folders`
 
 - `id`
 - `project_id`
-- `children` <!-- - `prev: parent_folder_id` null -->
+- `children`
 - `name`
 - `sort_order`
 - `created_at`
@@ -313,7 +292,6 @@ This document describes the normalized database shape inferred from the Figma pr
 - `assignee_user_id`
 - `due_date`
 - `priority`
-<!-- - `already_task` -->
 - `created_at`
 - `updated_at`
 
@@ -339,10 +317,6 @@ This document describes the normalized database shape inferred from the Figma pr
 - `deployed_at`
 - `commits_count`
 - `author_user_id`
-<!-- - `features_count` -->
-<!-- - `fixes_count` -->
-<!-- - `breaking_count` -->
-<!-- - `progress_percent` -->
 - `created_at`
 - `updated_at`
 
@@ -357,8 +331,6 @@ This document describes the normalized database shape inferred from the Figma pr
 - `status`
 - `author_user_id`
 - `commits_count`
-<!-- - `additions`
-- `deletions` -->
 - `external_url`
 - `merged_at`
 - `created_at`
@@ -371,27 +343,13 @@ This document describes the normalized database shape inferred from the Figma pr
 - `id`
 - `user_id`
 - `actor_user_id`
-<!-- - `type` -->
 - `title`
 - `description`
 - `entity_type`
 - `entity_id`
-<!-- - `channel` -->
 - `read_at`
 - `created_at`
 - `updated_at`
-
-<!-- ### `activity_feed`
-
-- `id`
-- `project_id`
-- `actor_user_id`
-- `type`
-- `action`
-- `title`
-- `metadata_json`
-- `created_at`
-- `updated_at` -->
 
 ## 9. Key Relationships
 

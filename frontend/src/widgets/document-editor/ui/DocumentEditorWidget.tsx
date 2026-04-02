@@ -1,0 +1,144 @@
+import { useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { CheckSquare, GitPullRequest, Rocket, Send, Video } from 'lucide-react'
+import { useParams } from 'react-router'
+
+import { documentQueries, useAddDocumentComment, useUpdateDocument } from '@/entities/document'
+import { useAddTaskComment } from '@/entities/task'
+import { parseDocumentBlocks } from '@/shared/lib/document-widgets.ts'
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, PageState, Tabs, TabsContent, TabsList, TabsTrigger, Textarea } from '@/shared/ui'
+
+export function DocumentEditorWidget() {
+  const { docId = 'doc-architecture' } = useParams()
+  const { data, isLoading, error } = useQuery(documentQueries.detail(docId))
+  const updateDocument = useUpdateDocument(docId)
+  const addComment = useAddDocumentComment(docId)
+  const quoteToTask = useAddTaskComment('task-docs')
+  const [content, setContent] = useState('')
+  const [comment, setComment] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  useEffect(() => {
+    if (data) {
+      setContent(data.content)
+    }
+  }, [data])
+
+  if (isLoading) {
+    return <PageState state='loading' title='Loading document editor' description='Resolving content, approvals, and linked delivery entities.' />
+  }
+
+  if (error || !data) {
+    return <PageState state='error' title='Document unavailable' description='The selected document could not be loaded.' />
+  }
+
+  const blocks = parseDocumentBlocks(content)
+
+  return (
+    <section className='space-y-6'>
+      <div className='flex items-start justify-between gap-4'>
+        <div>
+          <h1 className='text-2xl font-semibold'>{data.title}</h1>
+          <p className='text-muted-foreground text-sm'>Markdown editor with inline widgets for task, meeting, release, and PR context.</p>
+        </div>
+        <Button onClick={() => updateDocument.mutate(content)}>Save version {data.version}</Button>
+      </div>
+
+      <div className='grid gap-4 xl:grid-cols-[2fr_1fr]'>
+        <Card>
+          <CardHeader>
+            <CardTitle>Editor</CardTitle>
+            <CardDescription>Select text and send it back into a linked task discussion.</CardDescription>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <Tabs defaultValue='write'>
+              <TabsList>
+                <TabsTrigger value='write'>Write</TabsTrigger>
+                <TabsTrigger value='preview'>Preview</TabsTrigger>
+              </TabsList>
+              <TabsContent value='write' className='space-y-4'>
+                <Textarea ref={textareaRef} value={content} onChange={(event) => setContent(event.target.value)} className='min-h-[480px] font-mono' />
+                <div className='flex flex-wrap gap-2'>
+                  <Button
+                    variant='outline'
+                    onClick={() => {
+                      const target = textareaRef.current
+                      if (!target) return
+                      const text = target.value.slice(target.selectionStart, target.selectionEnd).trim()
+                      if (!text) return
+                      quoteToTask.mutate(`Quoted from document: "${text}"`)
+                    }}
+                  >
+                    <CheckSquare className='size-4' />
+                    Quote selection to linked task
+                  </Button>
+                </div>
+              </TabsContent>
+              <TabsContent value='preview'>
+                <div className='space-y-4 rounded-xl border p-5'>
+                  {blocks.map((block, index) => (
+                    <div key={`${block.type}-${index}`}>
+                      {block.type === 'task-widget' && <div className='border-accent bg-accent/10 flex items-center gap-2 rounded-lg border p-3 text-sm'><CheckSquare className='size-4' /> Linked task widget: {block.entityId}</div>}
+                      {block.type === 'meeting-summary' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><Video className='size-4' /> Meeting summary widget: {block.entityId}</div>}
+                      {block.type === 'release-widget' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><Rocket className='size-4' /> Release widget: {block.entityId}</div>}
+                      {block.type === 'pr-reference' && <div className='bg-muted flex items-center gap-2 rounded-lg border p-3 text-sm'><GitPullRequest className='size-4' /> Pull request reference: {block.entityId}</div>}
+                      {block.type === 'heading-1' && <h2 className='text-xl font-semibold'>{block.text}</h2>}
+                      {block.type === 'heading-2' && <h3 className='text-lg font-semibold'>{block.text}</h3>}
+                      {block.type === 'list-item' && <li className='ml-5 list-disc'>{block.text}</li>}
+                      {block.type === 'paragraph' && <p>{block.text}</p>}
+                      {block.type === 'spacer' && <div className='h-3' />}
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+
+        <div className='space-y-4'>
+          <Card>
+            <CardHeader>
+              <CardTitle>Linked entities</CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-3 text-sm'>
+              {data.linkedEntities.map((entity) => (
+                <div key={`${entity.type}-${entity.id}`} className='rounded-lg border p-3'>
+                  <p className='font-medium capitalize'>{entity.type}</p>
+                  <p className='text-muted-foreground'>{entity.title}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Discussion</CardTitle>
+            </CardHeader>
+            <CardContent className='space-y-3'>
+              <Textarea value={comment} onChange={(event) => setComment(event.target.value)} placeholder='Comment on current draft…' />
+              <Button
+                onClick={() => {
+                  if (!comment.trim()) return
+                  addComment.mutate(comment.trim())
+                  setComment('')
+                }}
+              >
+                <Send className='size-4' />
+                Add comment
+              </Button>
+              {data.comments.map((item) => (
+                <div key={item.id} className='rounded-lg border p-3 text-sm'>
+                  <div className='flex items-center justify-between'>
+                    <span className='font-medium'>{item.author.name}</span>
+                    <span className='text-muted-foreground'>{item.timestamp}</span>
+                  </div>
+                  <p className='mt-2'>{item.content}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </section>
+  )
+}

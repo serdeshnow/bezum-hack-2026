@@ -1,1 +1,1 @@
-export { theme } from './theme.ts'
+export {}

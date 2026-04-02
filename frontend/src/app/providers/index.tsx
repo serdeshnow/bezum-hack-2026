@@ -1,14 +1,17 @@
 import { ErrorBoundaryProvider } from './ErrorBoundaryProvider.tsx'
 import { QueryClientProvider } from './QueryClientProvider.tsx'
-import { RouterProvider } from './RouterProvider.tsx'
-import { ToastProvider } from './ToastProvider.tsx'
+import { ThemeProvider } from './ThemeProvider.tsx'
+import { AppRouterProvider } from './AppRouterProvider.tsx'
+import { AppToaster } from '@/shared/ui/sonner/AppToaster.tsx'
 
 export const Providers = () => {
   return (
     <ErrorBoundaryProvider>
       <QueryClientProvider>
-          <RouterProvider />
-          <ToastProvider />
+        <ThemeProvider>
+          <AppRouterProvider />
+          <AppToaster />
+        </ThemeProvider>
       </QueryClientProvider>
     </ErrorBoundaryProvider>
   )

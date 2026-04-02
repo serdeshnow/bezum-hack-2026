@@ -1,85 +1,33 @@
-import { createContext, type HTMLAttributes, type PropsWithChildren, type Ref, useContext } from 'react'
+import type { ComponentProps } from 'react'
 
-import cn from 'classnames'
+import { cn } from '@/shared/lib'
 
-import { ErrorBoundary } from 'react-error-boundary'
-import { ErrorHandler } from '@/shared/ui/error-handler/ErrorHandler.tsx'
-import { logError } from '@/shared/ui/error-handler/logError.ts'
-
-export type CardSize = 'none' | 'xs' | 'sm' | 'lg' // looks wierd I know
-
-export type CardTheme = 'primary' | 'secondary' | 'default'
-
-type CardContext = {
-  size?: CardSize
-  theme?: CardTheme
+function Card({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('bg-card text-card-foreground flex flex-col gap-4 rounded-xl border shadow-sm', className)} {...props} />
 }
 
-const CardContext = createContext<CardContext | undefined>(undefined)
-
-function useCardContext() {
-  const context = useContext(CardContext)
-  if (!context) {
-    throw new Error('useCardContext must be used within a Card')
-  }
-  return context
+function CardHeader({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('grid auto-rows-min items-start gap-1.5 px-6 pt-6', className)} {...props} />
 }
 
-type Props = CardContext &
-  PropsWithChildren &
-  HTMLAttributes<HTMLDivElement> & {
-    className?: string
-    ref?: Ref<HTMLDivElement>
-  }
-
-export function Card(props: Props) {
-  const { size = 'lg', theme = 'primary' } = props
-
-  return (
-    <ErrorBoundary FallbackComponent={ErrorHandler} onError={logError}>
-      <CardContext.Provider value={{ size, theme }}>
-        <BaseCard {...props} />
-      </CardContext.Provider>
-    </ErrorBoundary>
-  )
+function CardTitle({ className, ...props }: ComponentProps<'div'>) {
+  return <h3 className={cn('leading-none font-semibold', className)} {...props} />
 }
 
-function BaseCard(props: Props) {
-  const { className, size = 'lg', theme = 'primary', children, ...rest } = props
-  const sizeClass =
-    size === 'none' ? 'p-0' : size === 'xs' ? 'p-3 xl:p-2' : size === 'sm' ? 'p-5 xl:p-3' : 'p-6 xl:p-4'
-  const themeClass =
-    theme === 'secondary'
-      ? 'border border-slate-200 bg-white'
-      : theme === 'default'
-        ? 'border border-transparent bg-transparent'
-        : 'border border-slate-200 bg-slate-50'
-
-  return (
-    <div className={cn('w-full rounded-2xl box-border', sizeClass, themeClass, className)} {...rest}>
-      {children}
-    </div>
-  )
+function CardDescription({ className, ...props }: ComponentProps<'div'>) {
+  return <p className={cn('text-muted-foreground text-sm', className)} {...props} />
 }
 
-type PropsWithChildrenAndClassname = PropsWithChildren & {
-  className?: string
+function CardAction({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('self-start justify-self-end', className)} {...props} />
 }
 
-Card.Header = function CardHeader({ className, children }: PropsWithChildrenAndClassname) {
-  const { size: ctxSize } = useCardContext()
-  const sizeClass = ctxSize === 'sm' ? 'pb-1 mb-1' : 'min-h-[50px] pb-4 mb-4'
-
-  return <div className={cn('flex flex-row justify-between gap-4 border-b border-slate-200', sizeClass, className)}>{children}</div>
+function CardContent({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('px-6 [&:last-child]:pb-6', className)} {...props} />
 }
 
-Card.Title = function CardTitle({ className, children }: PropsWithChildrenAndClassname) {
-  const { size: ctxSize } = useCardContext()
-  const sizeClass = ctxSize === 'sm' ? 'text-base leading-6' : 'text-lg leading-7'
-
-  return <h3 className={cn('cursor-default font-semibold text-slate-900', sizeClass, className)}>{children}</h3>
+function CardFooter({ className, ...props }: ComponentProps<'div'>) {
+  return <div className={cn('flex items-center px-6 pb-6', className)} {...props} />
 }
 
-Card.Container = function CardContainer({ className, children }: PropsWithChildrenAndClassname) {
-  return <div className={cn('flex flex-col', className)}>{children}</div>
-}
+export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent }

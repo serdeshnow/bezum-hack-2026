@@ -1,2 +1,2 @@
 export { env } from './env'
-export { templateConfig, parseTemplateConfig, type TemplateConfig } from './templateConfig'
+export { appConfig } from './appConfig'

@@ -1,8 +1,8 @@
 import { spawnSync } from 'node:child_process'
 
-const schemaPath = process.env.SCHEMA_PATH ?? './examples/grass-admin/openapi/docs.json'
-const outputPath = process.env.OUTPUT_PATH ?? './src/examples/grass-admin/api/generated'
-const fileName = process.env.OUTPUT_NAME ?? 'dto-generated.ts'
+const schemaPath = process.env.SCHEMA_PATH ?? '../figma/contracts/openapi.yml'
+const outputPath = process.env.OUTPUT_PATH ?? './src/shared/api/generated'
+const fileName = process.env.OUTPUT_NAME ?? 'schema.ts'
 
 const result = spawnSync(
   'npx',

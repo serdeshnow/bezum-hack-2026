@@ -1,1 +1,1 @@
-export { corePathKeys } from './coreRouter'
+export { appRoutes, protectedRouteKeys, authRouteKeys, type AppRouteKey } from './routes'
