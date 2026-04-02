@@ -7,28 +7,23 @@ import {
   Bell,
   Calendar,
   CheckSquare,
-  ChevronDown,
   Clock,
   Code,
   FileText,
   FolderKanban,
-  FolderOpen,
   LogOut,
-  Moon,
   Plus,
   Rocket,
   Search,
   Settings,
-  Sun,
   User,
   Users
 } from 'lucide-react'
 import { sessionService, useSessionStore } from '@/entities/session'
 import { taskQueries } from '@/entities/task'
-import { notificationQueries } from '@/entities/notification'
-import { useNotificationReadActions } from '@/features/notification/mark-read'
-import { useProjectSwitcher } from '@/features/project/switcher'
-import { useThemePreference } from '@/features/theme/toggle'
+import { NotificationInboxPopover } from '@/features/notification/mark-read'
+import { ProjectSwitcher } from '@/features/project/switcher'
+import { ThemeToggleButton } from '@/features/theme/toggle'
 import { TaskStatus } from '@/shared/api'
 import { appRoutes } from '@/shared/model'
 import {
@@ -40,9 +35,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   ScrollArea,
   Separator,
   Tooltip,
@@ -122,15 +114,10 @@ function getRoleIcon(role?: string) {
 export function AppShell() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { toggleTheme } = useThemePreference()
   const [commandOpen, setCommandOpen] = useState(false)
   const currentUser = useSessionStore((state) => state.currentUser)
-  const { projects, currentProject, selectProject } = useProjectSwitcher()
   const { data: tasks = [] } = useQuery(taskQueries.list())
-  const { data: notifications = [] } = useQuery(notificationQueries.list())
-  const { markAllRead, markNotificationRead } = useNotificationReadActions()
 
-  const unreadCount = notifications.filter((item) => !item.read).length
   const openTaskCount = tasks.filter((task) => task.status !== TaskStatus.Done && task.status !== TaskStatus.Cancelled).length
   const breadcrumbs = useMemo(() => buildBreadcrumbs(location.pathname), [location.pathname])
   const roleLabel = formatRoleLabel(currentUser?.role)
@@ -175,9 +162,7 @@ export function AppShell() {
                   key={item.to}
                   item={item}
                   badge={
-                    item.to === appRoutes.notifications && unreadCount > 0 ? (
-                      <Badge className='rounded-[5px] px-2 py-0.5 text-[12px]'>{unreadCount}</Badge>
-                    ) : undefined
+                    undefined
                   }
                 />
               ))}
@@ -223,68 +208,10 @@ export function AppShell() {
                 </Button>
               </HeaderAction>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant='ghost' size='icon' className='relative size-8 rounded-[5px]'>
-                    <Bell className='size-[18px]' />
-                    {unreadCount > 0 && (
-                      <span className='bg-destructive text-destructive-foreground absolute -top-1 -right-1 flex size-[18px] items-center justify-center rounded-full text-[10px] font-medium'>
-                        {unreadCount}
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align='end' className='w-96 p-0'>
-                  <div className='flex items-center justify-between p-4'>
-                    <div>
-                      <p className='font-medium'>Unified inbox</p>
-                      <p className='text-muted-foreground text-xs'>{unreadCount} unread</p>
-                    </div>
-                    <Button variant='ghost' size='sm' onClick={() => markAllRead.mutate()}>
-                      Mark all read
-                    </Button>
-                  </div>
-                  <Separator />
-                  <ScrollArea className='h-[360px]'>
-                    <div className='space-y-2 p-2'>
-                      {notifications.map((notification) => (
-                        <button
-                          key={notification.id}
-                          type='button'
-                          className={`w-full rounded-lg border p-3 text-left ${notification.read ? 'bg-background' : 'bg-accent/20'}`}
-                          onClick={() => {
-                            markNotificationRead.mutate(notification.id)
-                            if (notification.entityId?.startsWith('doc')) navigate(`/docs/${notification.entityId}`)
-                            if (notification.entityId?.startsWith('meeting')) navigate(`/meetings/${notification.entityId}`)
-                          }}
-                        >
-                          <div className='flex items-start justify-between gap-3'>
-                            <div>
-                              <p className='text-sm font-medium'>{notification.title}</p>
-                              <p className='text-muted-foreground text-xs'>{notification.description}</p>
-                            </div>
-                            {!notification.read && <Badge className='rounded-[5px]'>New</Badge>}
-                          </div>
-                          <p className='text-muted-foreground mt-2 text-xs'>{notification.timestamp}</p>
-                        </button>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </PopoverContent>
-              </Popover>
+              <NotificationInboxPopover />
 
               <HeaderAction tooltip='Toggle theme'>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='size-8 rounded-[5px]'
-                  onClick={() => {
-                    void toggleTheme()
-                  }}
-                >
-                  <Sun className='size-[18px] dark:hidden' />
-                  <Moon className='hidden size-[18px] dark:block' />
-                </Button>
+                <ThemeToggleButton />
               </HeaderAction>
 
               <Separator orientation='vertical' className='h-6' />
@@ -318,36 +245,7 @@ export function AppShell() {
           </header>
 
           <div className='border-b border-border px-5 pt-3.5 pb-3'>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant='outline'
-                  className='bg-background h-8 w-full justify-between rounded-[5px] px-3 text-sm font-medium'
-                >
-                  <span className='flex min-w-0 items-center gap-2'>
-                    <FolderOpen className='size-[14px] shrink-0' />
-                    <span className='truncate'>{currentProject?.name ?? 'Select project'}</span>
-                  </span>
-                  <ChevronDown className='size-[14px] shrink-0' />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='start' className='w-[var(--radix-dropdown-menu-trigger-width)] min-w-72'>
-                <DropdownMenuLabel>Projects</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {projects.map((project) => (
-                  <DropdownMenuItem
-                    key={project.id}
-                    onSelect={() => {
-                      selectProject(project.id)
-                      navigate(`/projects/${project.id}`)
-                    }}
-                  >
-                    <FolderOpen className='size-4' />
-                    <span className='truncate'>{project.name}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ProjectSwitcher />
           </div>
 
           {commandOpen && (

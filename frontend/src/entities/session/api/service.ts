@@ -1,5 +1,5 @@
 import { ThemePreference } from '@/shared/api'
-import { getSettings, updateThemePreference } from '@/shared/mocks/seamless.ts'
+import { getSettings } from '@/shared/mocks/seamless.ts'
 
 import { useSessionStore } from '@/entities/session/model/session.ts'
 
@@ -30,8 +30,6 @@ export const sessionService = {
     return Promise.resolve(getSettings(userId))
   },
   setThemePreference(themePreference: ThemePreference) {
-    const userId = useSessionStore.getState().currentUserId ?? 'user-manager'
-    updateThemePreference(userId, themePreference)
     useSessionStore.getState().setThemePreference(themePreference)
     return Promise.resolve(themePreference)
   }

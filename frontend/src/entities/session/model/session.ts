@@ -3,7 +3,10 @@ import { persist } from 'zustand/middleware'
 
 import { ThemePreference, WorkspaceRole } from '@/shared/api'
 import { appConfig } from '@/shared/config'
-import { getSettings, getUserById, signInByEmail, type UserSummary } from '@/shared/mocks/seamless.ts'
+import { getSettings, getUserById, signInByEmail } from '@/shared/mocks/seamless.ts'
+
+import { adaptThemePreference, adaptUserSummaryToUser, adaptUserToSessionUser } from '@/entities/session/api/adapters.ts'
+import type { SessionUser } from '@/entities/session/model/types.ts'
 
 export type SessionStatus = 'anonymous' | 'pending-verification' | 'authenticated'
 
@@ -11,13 +14,13 @@ type SessionState = {
   status: SessionStatus
   currentUserId: string | null
   pendingUserId: string | null
-  currentUser: UserSummary | null
+  currentUser: SessionUser | null
   role: WorkspaceRole | null
   themePreference: ThemePreference
   isAuthenticated: boolean
   currentProjectId: string
-  signIn: (email: string) => UserSummary
-  verify: () => UserSummary | null
+  signIn: (email: string) => SessionUser
+  verify: () => SessionUser | null
   signOut: () => void
   setThemePreference: (themePreference: ThemePreference) => void
   setCurrentProjectId: (projectId: string) => void
@@ -28,11 +31,11 @@ const storageKey = 'seamless-session'
 
 function resolveThemePreference(userId: string | null) {
   if (!userId) return ThemePreference.System
-  return getSettings(userId).appearance.theme
+  return adaptThemePreference(getSettings(userId), ThemePreference.System)
 }
 
 function createSessionSnapshot(
-  user: UserSummary | null,
+  user: SessionUser | null,
   status: SessionStatus,
   currentProjectId: string,
   pendingUserId: string | null = null
@@ -50,18 +53,20 @@ function createSessionSnapshot(
 }
 
 const initialUser = getUserById(appConfig.sessionUserId)
+const initialSessionUser = adaptUserToSessionUser(adaptUserSummaryToUser(initialUser), initialUser.id)
 
 export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({
-      ...createSessionSnapshot(initialUser, 'authenticated', appConfig.defaultProjectId),
+      ...createSessionSnapshot(initialSessionUser, 'authenticated', appConfig.defaultProjectId),
       signIn: (email) => {
-        const user = signInByEmail(email)
+        const summary = signInByEmail(email)
+        const user = adaptUserToSessionUser(adaptUserSummaryToUser(summary), summary.id)
         set((state) => createSessionSnapshot(user, 'pending-verification', state.currentProjectId, user.id))
         return user
       },
       verify: () => {
-        let verifiedUser: UserSummary | null = null
+        let verifiedUser: SessionUser | null = null
         set((state) => {
           verifiedUser = state.currentUser
 
@@ -84,7 +89,8 @@ export const useSessionStore = create<SessionState>()(
       bootstrap: () => {
         set((state) => {
           if (state.currentUserId) {
-            const user = getUserById(state.currentUserId)
+            const summary = getUserById(state.currentUserId)
+            const user = adaptUserToSessionUser(adaptUserSummaryToUser(summary), summary.id)
             return {
               ...state,
               currentUser: user,
@@ -95,7 +101,8 @@ export const useSessionStore = create<SessionState>()(
           }
 
           if (state.pendingUserId) {
-            const user = getUserById(state.pendingUserId)
+            const summary = getUserById(state.pendingUserId)
+            const user = adaptUserToSessionUser(adaptUserSummaryToUser(summary), summary.id)
             return {
               ...state,
               status: 'pending-verification',
@@ -107,7 +114,7 @@ export const useSessionStore = create<SessionState>()(
             }
           }
 
-          return createSessionSnapshot(initialUser, 'authenticated', state.currentProjectId)
+          return createSessionSnapshot(initialSessionUser, 'authenticated', state.currentProjectId)
         })
       }
     }),

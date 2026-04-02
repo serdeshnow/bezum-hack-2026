@@ -7,7 +7,6 @@ npm run dev
 npm run lint
 npm run typecheck
 npm run test:unit
-npm run test:e2e
 npm run build
 npm run generate-api
 ```
@@ -16,8 +15,6 @@ npm run generate-api
 
 - `eslint` enforces import direction between FSD layers
 - `vitest` covers unit and component smoke cases
-- `playwright` covers browser smoke
-- `simple-git-hooks + lint-staged` run checks before commit
 
 ## Template Defaults
 

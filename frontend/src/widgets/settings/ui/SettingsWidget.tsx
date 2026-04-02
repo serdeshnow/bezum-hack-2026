@@ -1,19 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { ThemePreference } from '@/shared/api'
-import { updateNotificationSettings } from '@/shared/mocks/seamless.ts'
-import { queryClient } from '@/shared/api'
-import { sessionService, useSessionStore } from '@/entities/session'
+import { ThemePreference, type UpdateUserPreferencesRequest } from '@/shared/api'
+import { useSessionStore } from '@/entities/session'
+import { useUpdateUserNotificationPreferences, userQueries } from '@/entities/user'
 import { useThemePreference } from '@/features/theme/toggle'
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Label, PageState, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui'
 
 export function SettingsWidget() {
-  const user = useSessionStore((state) => state.currentUser)
+  const userId = useSessionStore((state) => state.currentUserId) ?? 'user-manager'
   const { applyThemePreference } = useThemePreference()
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['settings', user?.id],
-    queryFn: () => sessionService.getSettings()
-  })
+  const updateNotificationPreferences = useUpdateUserNotificationPreferences(userId)
+  const { data, isLoading, error } = useQuery(userQueries.settings(userId))
 
   if (isLoading) {
     return <PageState state='loading' title='Loading settings' description='Resolving profile, theme, and notification preferences.' />
@@ -53,7 +50,6 @@ export function SettingsWidget() {
               value={data.appearance.theme}
               onValueChange={(value) => {
                 void applyThemePreference(value as ThemePreference)
-                queryClient.invalidateQueries({ queryKey: ['settings', user?.id] })
               }}
             >
               <SelectTrigger>
@@ -82,8 +78,9 @@ export function SettingsWidget() {
                 variant={value ? 'default' : 'outline'}
                 size='sm'
                 onClick={() => {
-                  updateNotificationSettings(user?.id ?? 'user-manager', { [key]: !value })
-                  queryClient.invalidateQueries({ queryKey: ['settings', user?.id] })
+                  updateNotificationPreferences.mutate({
+                    [key]: !value
+                  } as UpdateUserPreferencesRequest)
                 }}
               >
                 {value ? 'Enabled' : 'Disabled'}

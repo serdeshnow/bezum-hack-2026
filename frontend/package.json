@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "start": "vite",
+    "prepare": "node ./scripts/cleanup-stale-hooks.mjs",
     "typecheck": "npm run typecheck:app && npm run typecheck:node && npm run typecheck:test",
     "typecheck:app": "tsc --noEmit -p tsconfig.app.json",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
