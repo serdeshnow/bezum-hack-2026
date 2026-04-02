@@ -47,16 +47,24 @@ export function Card(props: Props) {
 function BaseCard(props: Props) {
   const { className, size = 'lg', theme = 'primary', children, ...rest } = props
   const sizeClass =
-    size === 'none' ? 'p-0' : size === 'xs' ? 'p-3 xl:p-2' : size === 'sm' ? 'p-5 xl:p-3' : 'p-6 xl:p-4'
+    size === 'none' ? 'p-0' : size === 'xs' ? 'p-[1.125rem]' : size === 'sm' ? 'p-6' : 'p-7'
   const themeClass =
     theme === 'secondary'
-      ? 'border border-slate-200 bg-white'
+      ? 'border bg-[color:var(--card-highlight)]'
       : theme === 'default'
         ? 'border border-transparent bg-transparent'
-        : 'border border-slate-200 bg-slate-50'
+        : 'border bg-[color:var(--card)]'
 
   return (
-    <div className={cn('w-full rounded-2xl box-border', sizeClass, themeClass, className)} {...rest}>
+    <div
+      className={cn(
+        'w-full min-w-0 overflow-hidden rounded-[26px] box-border border-[color:var(--border)] text-[color:var(--foreground)] shadow-[var(--shadow-card)]',
+        sizeClass,
+        themeClass,
+        className
+      )}
+      {...rest}
+    >
       {children}
     </div>
   )
@@ -70,16 +78,16 @@ Card.Header = function CardHeader({ className, children }: PropsWithChildrenAndC
   const { size: ctxSize } = useCardContext()
   const sizeClass = ctxSize === 'sm' ? 'pb-1 mb-1' : 'min-h-[50px] pb-4 mb-4'
 
-  return <div className={cn('flex flex-row justify-between gap-4 border-b border-slate-200', sizeClass, className)}>{children}</div>
+  return <div className={cn('flex flex-row justify-between gap-4 border-b border-[color:var(--border)]', sizeClass, className)}>{children}</div>
 }
 
 Card.Title = function CardTitle({ className, children }: PropsWithChildrenAndClassname) {
   const { size: ctxSize } = useCardContext()
-  const sizeClass = ctxSize === 'sm' ? 'text-base leading-6' : 'text-lg leading-7'
+  const sizeClass = ctxSize === 'sm' ? 'text-base leading-6' : 'text-xl leading-7'
 
-  return <h3 className={cn('cursor-default font-semibold text-slate-900', sizeClass, className)}>{children}</h3>
+  return <h3 className={cn('cursor-default font-heading tracking-[0.01em] text-[color:var(--foreground)]', sizeClass, className)}>{children}</h3>
 }
 
 Card.Container = function CardContainer({ className, children }: PropsWithChildrenAndClassname) {
-  return <div className={cn('flex flex-col', className)}>{children}</div>
+  return <div className={cn('flex min-w-0 flex-col', className)}>{children}</div>
 }

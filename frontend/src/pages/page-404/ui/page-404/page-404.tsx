@@ -18,9 +18,9 @@ function BasePage404() {
     <div className='flex min-h-screen w-full flex-col items-center justify-center'>
       <div className='flex flex-col gap-3'>
         <h1 className='text-4xl font-semibold tracking-tight text-slate-900'>404: Page not found</h1>
-        <p>The requested route does not exist in the current template configuration.</p>
+        <p>The requested route does not exist in the current Seamless workspace.</p>
         <Link to={corePathKeys.home} className='accent_clickable' data-test='go-home-link'>
-          Go back home
+          Go back to projects
         </Link>
       </div>
     </div>

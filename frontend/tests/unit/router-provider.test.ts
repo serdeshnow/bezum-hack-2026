@@ -9,7 +9,7 @@ function collectPaths(routes: RouteObject[]): string[] {
 }
 
 const baseConfig: TemplateConfig = {
-  appName: 'Template Shell',
+  appName: 'Seamless',
   appDescription: 'Example description',
   locale: 'en-US',
   timezone: 'UTC',
@@ -20,35 +20,27 @@ const baseConfig: TemplateConfig = {
 }
 
 describe('buildAppRoutes', () => {
-  it('returns core-only routes by default', () => {
+  it('returns Seamless product routes', () => {
     const paths = collectPaths(buildAppRoutes(baseConfig))
 
     expect(paths).toContain(corePathKeys.home)
-    expect(paths).not.toContain(corePathKeys.auth.signIn)
-    expect(paths).not.toContain(corePathKeys.examples.grassAdmin)
+    expect(paths).toContain(corePathKeys.projects)
+    expect(paths).toContain(corePathKeys.projectOverview)
+    expect(paths).toContain(corePathKeys.epochs)
+    expect(paths).toContain(corePathKeys.tasks)
+    expect(paths).toContain(corePathKeys.docs)
+    expect(paths).toContain(corePathKeys.meetings)
+    expect(paths).toContain(corePathKeys.releases)
+    expect(paths).toContain(corePathKeys.notifications)
+    expect(paths).toContain(corePathKeys.settings)
   })
 
-  it('adds auth placeholders when auth is enabled without examples', () => {
-    const paths = collectPaths(
-      buildAppRoutes({
-        ...baseConfig,
-        features: { auth: true, examples: false }
-      })
-    )
+  it('does not expose template-only auth or example routes anymore', () => {
+    const paths = collectPaths(buildAppRoutes(baseConfig))
 
-    expect(paths).toContain(corePathKeys.auth.signIn)
-    expect(paths).toContain(corePathKeys.auth.verify)
-  })
-
-  it('adds example routes when examples are enabled', () => {
-    const paths = collectPaths(
-      buildAppRoutes({
-        ...baseConfig,
-        features: { auth: false, examples: true }
-      })
-    )
-
-    expect(paths).toContain(corePathKeys.examples.grassAdmin)
-    expect(paths).toContain('/dashboard')
+    expect(paths).not.toContain('/auth/sign-in')
+    expect(paths).not.toContain('/auth/verify')
+    expect(paths).not.toContain('/examples/grass-admin')
+    expect(paths).not.toContain('/dashboard')
   })
 })

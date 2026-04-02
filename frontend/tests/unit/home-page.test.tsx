@@ -1,17 +1,29 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter } from 'react-router'
 import { render, screen } from '@testing-library/react'
 
-import { HomePage } from '../../src/pages/home'
+import { ProjectsListPage } from '../../src/pages/projects/ProjectsListPage'
 
-describe('HomePage', () => {
-  it('renders the generic template shell messaging', () => {
+describe('ProjectsListPage', () => {
+  it('renders the product landing route messaging', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false
+        }
+      }
+    })
+
     render(
-      <MemoryRouter>
-        <HomePage />
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ProjectsListPage />
+        </MemoryRouter>
+      </QueryClientProvider>
     )
 
-    expect(screen.getByRole('heading', { name: 'Template Shell' })).toBeInTheDocument()
-    expect(screen.getByText(/generic application shell/i)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Projects Hub' })).toBeInTheDocument()
+    expect(await screen.findByText(/Central navigation for project health/i)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'End-to-end walkthrough' })).toBeInTheDocument()
   })
 })

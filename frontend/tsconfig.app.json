@@ -41,6 +41,8 @@
   },
   "include": ["src", "types"],
   "exclude": [
+    "src/entities/examples/**",
+    "src/features/examples/**",
     "src/entities/chart/@deprecated/**",
     "src/pages/demo/**",
     "src/widgets/header/ui/DemoHeader/**",

@@ -3,8 +3,8 @@ import { parseTemplateConfig } from '../../src/shared/config'
 describe('parseTemplateConfig', () => {
   it('applies defaults for an empty source', () => {
     expect(parseTemplateConfig({})).toEqual({
-      appName: 'Template Shell',
-      appDescription: 'A generic application shell built with React, TypeScript, Vite, and FSD.',
+      appName: 'Seamless',
+      appDescription: 'Unified project operations workspace for docs, tasks, meetings, releases, and shared project context.',
       locale: 'en-US',
       timezone: 'UTC',
       features: {

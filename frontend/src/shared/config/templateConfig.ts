@@ -15,8 +15,11 @@ const booleanFlag = z
   })
 
 const templateConfigSchema = z.object({
-  appName: z.string().min(1).default('Template Shell'),
-  appDescription: z.string().min(1).default('A generic application shell built with React, TypeScript, Vite, and FSD.'),
+  appName: z.string().min(1).default('Seamless'),
+  appDescription: z
+    .string()
+    .min(1)
+    .default('Unified project operations workspace for docs, tasks, meetings, releases, and shared project context.'),
   locale: z.string().min(2).default('en-US'),
   timezone: z.string().min(1).default('UTC'),
   features: z.object({
